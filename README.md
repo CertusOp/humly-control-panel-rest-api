@@ -872,42 +872,42 @@ export default class RoomsResource {
 
 | Name              | Type    | Comment |
 | ----------------- | ------- | ------- |
-| `status`          | Number  | `Status of HTTP/HTTPS request. |
-| `_id`             | String  | `Unique Room identifier. |
-| `name`            | String  | `Room name. |
-| `mail`            | String  | `Email that is related to this room. |
-| `address`         | String  | `Room address. |
-| `id`              | String  | `Unique Room identified on booking system. |
-| `numberOfSeats`   | Number  | `Number of seats in room. |
-| `alias`           | String  | `Room alias. |
-| `isActive`        | Boolean | `If disabled, Room can’t be used. |
-| `isDeleted`       | Boolean | `Flag showing that Room is deleted. |
-| `lights`          | Boolean | `Predefined Room equipment. Point is there lights in Room. |
-| `projector`       | Boolean | `Predefined Room equipment. Point is there projector Room. |
-| `computer`        | Boolean | `Predefined Room equipment. Point is there computer in Room. |
-| `teleConference`  | Boolean | `Predefined Room equipment. Point is there tele conference device in Room. |
-| `wifi`            | Boolean | `Predefined Room equipment. Point is there Wireless connection available for Room users. |
-| `whiteboard`      | Boolean | `Predefined Room equipment. Point is there whiteboard in Room. |
-| `videoConference` | Boolean | `Predefined Room equipment. Point is there video conference device in Room. |
-| `display`         | Boolean | `Predefined Room equipment. Point is there display in Room. |
-| `minto`           | Boolean | `Predefined Room equipment. Point is there Minto speaker in Room. |
-| `ac`              | Boolean | `Predefined Room equipment. Point is there air conditioner in Room. |
-| `information`     | String  | `Information about Room. |
-| `customEquipment` | Array   | `Array of Objects. Represent the name and presence of device present in Room. |
-| `structureId`     | String  | `Unique structure identifier. |
-| `userIds`         | Array   | `Array of Strings. Array of user ids assigned to this Room. |
-| `assigned`        | Boolean | `Is this Room assigned to any Booking device? |
-| `country`         | String  | `Country name from Structure that this Room belongs to. |
-| `city`            | String  | `City name from Structure that this Room belongs to. |
-| `building`        | String  | `Building name from Structure that this Room belongs to. |
-| `floor`           | String  | `Floor from Structure that this Room belongs to. |
-| `hasLiso`         | Boolean | `Is there online Booking device for this Room? |
-| `bookings`        | Array   | `Array of Objects containing booking data. Present only if includeBookings query parameter is set to true and there are meetings in given room for current day. |
-| `_id`             | String  | `Unique booking identifier. |
-| `startDate`       | String  | `Meeting start date. |
-| `endDate`         | String  | `Meeting end date. |
-| `subject`         | String  | `Meetings subject. |
-| `organizer`       | String  | `Unique user’s identifier that organize this meeting. |
+| `status`          | Number  | Status of HTTP/HTTPS request. |
+| `_id`             | String  | Unique Room identifier. |
+| `name`            | String  | Room name. |
+| `mail`            | String  | Email that is related to this room. |
+| `address`         | String  | Room address. |
+| `id`              | String  | Unique Room identified on booking system. |
+| `numberOfSeats`   | Number  | Number of seats in room. |
+| `alias`           | String  | Room alias. |
+| `isActive`        | Boolean | If disabled, Room can’t be used. |
+| `isDeleted`       | Boolean | Flag showing that Room is deleted. |
+| `lights`          | Boolean | Predefined Room equipment. Point is there lights in Room. |
+| `projector`       | Boolean | Predefined Room equipment. Point is there projector Room. |
+| `computer`        | Boolean | Predefined Room equipment. Point is there computer in Room. |
+| `teleConference`  | Boolean | Predefined Room equipment. Point is there tele conference device in Room. |
+| `wifi`            | Boolean | Predefined Room equipment. Point is there Wireless connection available for Room users. |
+| `whiteboard`      | Boolean | Predefined Room equipment. Point is there whiteboard in Room. |
+| `videoConference` | Boolean | Predefined Room equipment. Point is there video conference device in Room. |
+| `display`         | Boolean | Predefined Room equipment. Point is there display in Room. |
+| `minto`           | Boolean | Predefined Room equipment. Point is there Minto speaker in Room. |
+| `ac`              | Boolean | Predefined Room equipment. Point is there air conditioner in Room. |
+| `information`     | String  | Information about Room. |
+| `customEquipment` | Array   | Array of Objects. Represent the name and presence of device present in Room. |
+| `structureId`     | String  | Unique structure identifier. |
+| `userIds`         | Array   | Array of Strings. Array of user ids assigned to this Room. |
+| `assigned`        | Boolean | Is this Room assigned to any Booking device? |
+| `country`         | String  | Country name from Structure that this Room belongs to. |
+| `city`            | String  | City name from Structure that this Room belongs to. |
+| `building`        | String  | Building name from Structure that this Room belongs to. |
+| `floor`           | String  | Floor from Structure that this Room belongs to. |
+| `hasLiso`         | Boolean | Is there online Booking device for this Room? |
+| `bookings`        | Array   | Array of Objects containing booking data. Present only if includeBookings query parameter is set to true and there are meetings in given room for current day. |
+| `_id`             | String  | Unique booking identifier. |
+| `startDate`       | String  | Meeting start date. |
+| `endDate`         | String  | Meeting end date. |
+| `subject`         | String  | Meetings subject. |
+| `organizer`       | String  | Unique user’s identifier that organize this meeting. |
 
 ### Searching for available rooms
 
@@ -922,7 +922,12 @@ All query parameters are optional.
 | `seats`           | Number | Number of seats that you need. Rooms that have exact number of seats or above will be returned as exact match. |
 | `startDate`       | String | Rooms that are available in current day after specified start date. Date is provided in ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ). |
 | `endDate`         | String | Rooms that are available in current day before specified end date. Date is provided in ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ). |
-| `location`        | String | This parameter should be use if you are searching for room at exact location. Parameter should be provided as “stringified” representation of JSON object. Format: <br>```{<br>  "countryId": "aaa111",<br>  "cityId": "bbb222",<br>  "buildingId": "ccc333",<br>  "floorId": "ddd444"<br>}```<br>You can provide part of object. If you for example looking for rooms in certain country, then you can provide: <br>```{<br>  "countryId": "aaa111"<br>}```<br>as location parameter.<br>Rooms that are located at exact location will be returned as part of exact match list. |
+| `location`        | String | This parameter should be use if you are searching for room at exact location. Parameter should be provided as “stringified” representation of JSON object. Format: <br>```{
+    "countryId": "aaa111",
+    "cityId": "bbb222",
+    "buildingId": "ccc333",
+    "floorId": "ddd444"
+}```<br>You can provide part of object. If you for example looking for rooms in certain country, then you can provide: <br>```{<br>  "countryId": "aaa111"<br>}```<br>as location parameter.<br>Rooms that are located at exact location will be returned as part of exact match list. |
 | `equipment`       | String | This parameter should be use if you are searching for room with specific equipment. Rooms that have all wanted equipment will be return as exact match, other rooms will be listed in partially match. Parameter should be provided as “stringified” representation of JSON object. Format: <br>```{<br>  "lights": true,<br>  "projector": true,<br>  "computer": true<br>}```<br>List only equipment that you need. |
 | `customEquipment` | String | This parameter should be use if you are searching for room with specific custom equipment. Rooms that have all wanted custom equipment will be return as exact match, other rooms will be listed in partially match. Parameter should be provided as “stringified” representation of JSON object. Format: <br>```[{<br>  "_id": "eee555",<br>  "isChecked": true<br>}]```<br>List only equipment that you need. |
 
