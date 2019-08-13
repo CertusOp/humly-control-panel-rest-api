@@ -922,14 +922,9 @@ All query parameters are optional.
 | `seats`           | Number | Number of seats that you need. Rooms that have exact number of seats or above will be returned as exact match. |
 | `startDate`       | String | Rooms that are available in current day after specified start date. Date is provided in ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ). |
 | `endDate`         | String | Rooms that are available in current day before specified end date. Date is provided in ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ). |
-| `location`        | String | This parameter should be use if you are searching for room at exact location. Parameter should be provided as “stringified” representation of JSON object. Format: <br>```{
-    "countryId": "aaa111",
-    "cityId": "bbb222",
-    "buildingId": "ccc333",
-    "floorId": "ddd444"
-}```<br>You can provide part of object. If you for example looking for rooms in certain country, then you can provide: <br>```{<br>  "countryId": "aaa111"<br>}```<br>as location parameter.<br>Rooms that are located at exact location will be returned as part of exact match list. |
-| `equipment`       | String | This parameter should be use if you are searching for room with specific equipment. Rooms that have all wanted equipment will be return as exact match, other rooms will be listed in partially match. Parameter should be provided as “stringified” representation of JSON object. Format: <br>```{<br>  "lights": true,<br>  "projector": true,<br>  "computer": true<br>}```<br>List only equipment that you need. |
-| `customEquipment` | String | This parameter should be use if you are searching for room with specific custom equipment. Rooms that have all wanted custom equipment will be return as exact match, other rooms will be listed in partially match. Parameter should be provided as “stringified” representation of JSON object. Format: <br>```[{<br>  "_id": "eee555",<br>  "isChecked": true<br>}]```<br>List only equipment that you need. |
+| `location`        | String | This parameter should be use if you are searching for room at exact location. Parameter should be provided as “stringified” representation of JSON object. Format: <br>{<br>    "countryId": "aaa111",<br>    "cityId": "bbb222",<br>    "buildingId": "ccc333",<br>    "floorId": "ddd444"<br>}<br>You can provide part of object. If you for example looking for rooms in certain country, then you can provide: <br>{<br>  "countryId": "aaa111"<br>}<br>as location parameter.<br>Rooms that are located at exact location will be returned as part of exact match list. |
+| `equipment`       | String | This parameter should be use if you are searching for room with specific equipment. Rooms that have all wanted equipment will be return as exact match, other rooms will be listed in partially match. Parameter should be provided as “stringified” representation of JSON object. Format: <br>{<br>  "lights": true,<br>  "projector": true,<br>  "computer": true<br>}<br>List only equipment that you need. |
+| `customEquipment` | String | This parameter should be use if you are searching for room with specific custom equipment. Rooms that have all wanted custom equipment will be return as exact match, other rooms will be listed in partially match. Parameter should be provided as “stringified” representation of JSON object. Format: <br>[{<br>  "_id": "eee555",<br>  "isChecked": true<br>}]<br>List only equipment that you need. |
 
 ### Request example
 
@@ -1019,8 +1014,8 @@ All query parameters are optional.
 
 | Name              | Type   | Comment |
 | ----------------- | -------| ------- |
-| `equipment`       | String | This parameter should be used to report broken or fixed equipment for given room. Parameter should be provided as “stringified” representation of JSON object. Format: <br>```{<br>  "lights": true,<br>  "projector": false,<br>  "computer": true<br>}```<br>Room equipment will be reported as fixed by specifying “true” as their value or broken if “false” is provided. List only equipment that should change state from broken to fixed, or vice versa. |
-| `customEquipment` | String | This parameter should be used to report broken or fixed custom equipment for given room. Parameter should be provided as “stringified” representation of JSON object. Format: <br>[<br>  {<br>    "name": "Gadget",<br>    "isChecked": false<br>  }<br>]<br>Room custom equipment will be reported as fixed by specifying “true” as value of “isChecked” parameter or broken if “false” is provided. List only custom equipment that should change state from broken to fixed, or vice versa. |
+| `equipment`       | String | This parameter should be used to report broken or fixed equipment for given room. Parameter should be provided as “stringified” representation of JSON object. Format: <br>{<br>  "lights": true,<br>  "projector": false,<br>  "computer": true<br>}<br>Room equipment will be reported as fixed by specifying “true” as their value or broken if “false” is provided. List only equipment that should change state from broken to fixed, or vice versa. |
+| `customEquipment` | String | This parameter should be used to report broken or fixed custom equipment for given room. Parameter should be provided as “stringified” representation of JSON object. Format: <br>[<br>&nbsp;&nbsp;{<br>    "name": "Gadget",<br>    "isChecked": false<br>  }<br>]<br>Room custom equipment will be reported as fixed by specifying “true” as value of “isChecked” parameter or broken if “false” is provided. List only custom equipment that should change state from broken to fixed, or vice versa. |
 
 ### Request example
 
