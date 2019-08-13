@@ -9,9 +9,9 @@ API documentation for Humly Control Panel version: `v1.0.x`
 - [Get rooms data - {HCP_URL}/api/v1/rooms](#rooms)
 - [Working with “bookings” API - {HCP_URL}/api/v1/bookings](#bookings)
 - [Get organizer meetings – GET {HCP_URL}/api/v1/bookings](#getMeetings)
-- [Create a meeting - POST {HCP_URL}/api/v1/bookings](#createMeetings)
-- [Update a meeting - PATCH {HCP_URL}/api/v1/bookings/:bookingId](#updateMeetings)
-- [Delete a meeting - DELETE {HCP_URL}/api/v1/bookings/:bookingId](#deleteMeetings)
+- [Create a meeting - POST {HCP_URL}/api/v1/bookings](#createMeeting)
+- [Update a meeting - PATCH {HCP_URL}/api/v1/bookings/:bookingId](#updateMeeting)
+- [Delete a meeting - DELETE {HCP_URL}/api/v1/bookings/:bookingId](#deleteMeeting)
 - [Check-in a meeting - {HCP_URL}/api/v1/bookings/checkedIn?bookingId=:bookingId](#checkInMeeting)
 
 ## <a name="introduction"></a> Introduction
@@ -204,7 +204,7 @@ Error response for /logout
 }
 ```
 
-## <a name="clientGroups"></a> Register a client group - POST {HCP_URL}/api/v1/clientGroups
+## <a name="clientGroups"></a> Register a client group - `POST {HCP_URL}/api/v1/clientGroups`
 
 This endpoint is available only for defaultDevIntegrationUser user. You can use it to register a new client group. Endpoint receives only one parameter name -name of client group (e.g. Humly Integration Group). Type of this parameter is string and it is mandatory to provide it. 
 
@@ -310,7 +310,7 @@ Type of the groupToken is string.
 }
 ```
 
-## <a name="users"></a> Working with “users” API - {HCP_URL}/api/v1/users/integration
+## <a name="users"></a> Working with “users” API - `{HCP_URL}/api/v1/users/integration`
 
 “Users” API is created for defaultDevIntegrationUser. All other users of APIIntegration type (users created through this API) can only see their profile.  defaultDevIntegrationUser through this endpoint it is possible to create new users and see data of existing ones. 
 
@@ -526,7 +526,7 @@ export default class UsersResource {
 }
 ```
 
-## <a name="rooms"></a> Get rooms data - {HCP_URL}/api/v1/rooms
+## <a name="rooms"></a> Get rooms data - `{HCP_URL}/api/v1/rooms`
 
 By using these endpoints, you can get information about all rooms, and single room. You can also check for available rooms, get room equipment, and report broken equipment.
 
@@ -1110,7 +1110,7 @@ You can report broken or fixed equipment by executing some code like this.
 }
 ```
 
-## <a name="bookings"></a> Working with “bookings” API - {HCP_URL}/api/v1/bookings
+## <a name="bookings"></a> Working with “bookings” API - `{HCP_URL}/api/v1/bookings`
 
 By using these endpoints, you can get information about your bookings. You can create, update, or delete booking
 
@@ -1251,7 +1251,7 @@ export default class BookingsResource {
 
 ```
 
-## <a name="getMeetings"></a> Get organizer meetings – GET {HCP_URL}/api/v1/bookings
+## <a name="getMeetings"></a> Get organizer meetings – `GET {HCP_URL}/api/v1/bookings`
 
 This endpoint is used to get meetings organized by given user.
 
@@ -1320,7 +1320,7 @@ This endpoint is used to get meetings organized by given user.
 }
 ```
 
-## <a name="createMeeting"></a> Create a meeting – POST {HCP_URL}/api/v1/bookings
+## <a name="createMeeting"></a> Create a meeting – `POST {HCP_URL}/api/v1/bookings`
 
 This endpoint is used to create a new meeting.
 
@@ -1382,7 +1382,7 @@ The id is unique identifier of newly created meeting. id refers to _id in bookin
 }
 ```
 
-## <a name="updateMeeting"></a> Update a meeting - PATCH {HCP_URL}/api/v1/bookings/:bookingId
+## <a name="updateMeeting"></a> Update a meeting - `PATCH {HCP_URL}/api/v1/bookings/:bookingId`
 
 This endpoint is used to update existing meetings. Through it you can update meeting start time, end time and subject.
 
@@ -1439,7 +1439,7 @@ This endpoint is used to update existing meetings. Through it you can update mee
 }
 ```
 
-## <a name="deleteMeeting"></a> Delete a meeting - DELETE {HCP_URL}/api/v1/bookings/:bookingId
+## <a name="deleteMeeting"></a> Delete a meeting - `DELETE {HCP_URL}/api/v1/bookings/:bookingId`
 
 Through this endpoint you can delete existing meetings.
 
@@ -1472,7 +1472,7 @@ Through this endpoint you can delete existing meetings.
 }
 ```
 
-## <a name="checkInMeeting"></a> Check-in a meeting - PUT {HCP_URL}/api/v1/bookings/checkedIn?bookingId=:bookingId
+## <a name="checkInMeeting"></a> Check-in a meeting - `PUT {HCP_URL}/api/v1/bookings/checkedIn?bookingId=:bookingId`
 
 This endpoint is used to check-in an existing meeting.
 
