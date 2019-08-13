@@ -1015,7 +1015,7 @@ All query parameters are optional.
 | Name              | Type   | Comment |
 | ----------------- | -------| ------- |
 | `equipment`       | String | This parameter should be used to report broken or fixed equipment for given room. Parameter should be provided as “stringified” representation of JSON object. Format: <br>`{`<br>`  "lights": true,`<br>`  "projector": false,`<br>`  "computer": true`<br>`}`<br>Room equipment will be reported as fixed by specifying “true” as their value or broken if “false” is provided. List only equipment that should change state from broken to fixed, or vice versa. |
-| `customEquipment` | String | This parameter should be used to report broken or fixed custom equipment for given room. Parameter should be provided as “stringified” representation of JSON object. Format: <br>`[`<br>  `{`<br>`    "name": "Gadget",`<br>`    "isChecked": false`<br>`  }`<br>`]`<br>Room custom equipment will be reported as fixed by specifying “true” as value of “isChecked” parameter or broken if “false” is provided. List only custom equipment that should change state from broken to fixed, or vice versa. |
+| `customEquipment` | String | This parameter should be used to report broken or fixed custom equipment for given room. Parameter should be provided as “stringified” representation of JSON object. Format: <br>`[{`<br>`    "name": "Gadget",`<br>`    "isChecked": false`<br>`  }]`<br>Room custom equipment will be reported as fixed by specifying “true” as value of “isChecked” parameter or broken if “false” is provided. List only custom equipment that should change state from broken to fixed, or vice versa. |
 
 ### Request example
 
