@@ -6,7 +6,7 @@ In order to use this collection, you have to import <b>Humly Environment</b> fir
 
 ## Import Humly Postman Collection
 
-From menu select File --> Import. In “Import File” tab provide click on “Choose File” and navigate to “Humly REST integration.postman_collection.json” file. By clicking on “Open” button you will finish import process.
+From menu select File --> Import. In “Import File” tab provide click on “Choose File” and navigate to `Humly REST integration.postman_collection.json` file. By clicking on “Open” button you will finish import process.
 
 ## Working with Humly Postman Collection
 
