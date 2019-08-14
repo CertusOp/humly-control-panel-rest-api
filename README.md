@@ -12,7 +12,7 @@ API documentation for Humly Control Panel version: `v1.0.x`
 - [Create a meeting - POST {HCP_URL}/api/v1/bookings](#createMeeting)
 - [Update a meeting - PATCH {HCP_URL}/api/v1/bookings/:bookingId](#updateMeeting)
 - [Delete a meeting - DELETE {HCP_URL}/api/v1/bookings/:bookingId](#deleteMeeting)
-- [Check-in a meeting - {HCP_URL}/api/v1/bookings/checkedIn?bookingId=:bookingId](#checkInMeeting)
+- [Check-in a meeting - PUT {HCP_URL}/api/v1/bookings/checkedIn?bookingId=:bookingId](#checkInMeeting)
 
 ## <a name="introduction"></a> Introduction
 
@@ -37,9 +37,10 @@ To authenticate, you can only use the username/password of an user of APIIntegra
 
 Following example is provided for REACT applications.
 You can create Auth Resource file to communicate with REST API.
-import Axios from "axios";
 
 ```js
+import Axios from "axios";
+
 export default class AuthResource {
     API_URL = "https://localhost:3002/api/v1";
 
@@ -96,6 +97,8 @@ To consume login REST API you can create something like this at your template fi
 import AuthResource from "./authResource";
 // Other imports.
 
+// class declaraction
+
     constructor(authResource = new AuthResource()) {
         this.authResource = authResource;
     }
@@ -130,11 +133,13 @@ import AuthResource from "./authResource";
     }
 }
 
+// Other code
+
 ```
 
 ### Response example
 
-The userId is unique identifier of your user (in example above it is defaultDevIntegrationUser). The authToken is token for authenticating API requests. Both values are string.
+The userId is unique identifier of your user (in example above it is defaultDevIntegrationUser). The authToken is token for authenticating API requests. Both values are string.<br>
 Response example for /login.
 
 ```json
@@ -186,7 +191,11 @@ Error response for /login
     "status": "error"
   }
 }
+```
+
 Error response for /logout
+
+```
 // User lacks permission
 {
   "status": 403,
@@ -280,7 +289,7 @@ import ClientGroupsResource from "./clientGroupsResource";
 
 ### Response example
 
-Type of the groupToken is string.
+Type of the `groupToken` is string.
 
 ```json
 {
@@ -314,12 +323,12 @@ Type of the groupToken is string.
 
 ## <a name="users"></a> Working with “users” API - <sub>`{HCP_URL}/api/v1/users/integration`</sub>
 
-“Users” API is created for defaultDevIntegrationUser. All other users of APIIntegration type (users created through this API) can only see their profile.  defaultDevIntegrationUser through this endpoint it is possible to create new users and see data of existing ones. 
+“Users” API is created for `defaultDevIntegrationUser`. All other users of `APIIntegration` type (users created through this API) can only see their profile. `defaultDevIntegrationUser` users, through this endpoint can create new users and see data of existing ones. 
 
-### Parameters for POST {HCP_URL}/api/v1/users/integration endpoint
+### Parameters for `POST {HCP_URL}/api/v1/users/integration` endpoint
 | Name         | Type   | Mandatory | Comment |
 | ------------ | ------ | --------- | ------- |
-| `name`       | String | Yes       | Name and username of APIIntegration user. |
+| `name`       | String | Yes       | Name and username of `APIIntegration` user. |
 | `groupToken` | String | Yes       | Group token of users group. You can use one created through “Register Client Group” endpoint. This string will serve as user’s password. |
 
 ### Requests example
@@ -1225,7 +1234,7 @@ This endpoint is used to get meetings organized by given user.
 
 | Name            | Type   | Mandatory | Comment |
 | --------------- | ------ | --------- | ------- |
-| `organizerUser` | String | Yes       | Unique identifier of the user. userId string returned by login. Users can see only their own bookings. |
+| `organizerUser` | String | Yes       | Unique identifier of the user. `userId` string returned by login. Users can see only their own bookings. |
 | `startDate`     | String | No        | Limits returned meetings data to include meetings that have start date greater or equal to provided date. If this parameter is not provided this endpoint will return all bookings for this user from start of the ongoing day. Date must be in ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ). |
 | `endDate`       | String | No        | Limits returned meetings data to include meetings that have end date lower than provided date. If this parameter is not provided this endpoint will return all bookings for this user until end of the ongoing day. Date must be in ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ). |
 
@@ -1294,10 +1303,10 @@ This endpoint is used to create a new meeting.
 
 | Name        | Type   | Mandatory | Comment |
 | ----------- | ------ | --------- | ------- |
-| `roomId`    | String | Yes       | Unique identifier of the room _id string in Room data. |
+| `roomId`    | String | Yes       | Unique identifier of the room `_id` string in Room data. |
 | `startDate` | String | Yes       | Meeting start date in ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ). |
 | `endDate`   | String | Yes       | Meeting end date in ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ). |
-| `subject`   | String | No        | The meeting subject. |
+| `subject`   | String | No        | Meeting subject. |
 
 ### Request example
 
@@ -1358,7 +1367,7 @@ This endpoint is used to update existing meetings. Through it you can update mee
 | ----------- | ------ | --------- | ------- |
 | `startDate` | String | Yes       | Meeting start date in ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ). |
 | `endDate`   | String | Yes       | Meeting end date in ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ). |
-| `subject`   | String | No        | The meeting subject. |
+| `subject`   | String | No        | Meeting subject. |
 
 ### Request example
 

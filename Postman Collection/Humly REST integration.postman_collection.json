@@ -1,0 +1,1083 @@
+{
+	"info": {
+		"_postman_id": "c72cc80b-2aa0-477b-8388-9d97edb7322e",
+		"name": "Humly REST integration",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "aedcbca3-4e2f-4ef1-9f8a-6ddd6717b5c7",
+								"exec": [
+									"if (pm.response.status === \"OK\") {\r",
+									"    var jsonData = JSON.parse(responseBody);\r",
+									"    postman.setEnvironmentVariable(\"XAuthToken\", jsonData.data.authToken);\r",
+									"    postman.setEnvironmentVariable(\"XUserId\", jsonData.data.userId);\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "{{username}}",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://localhost:3002/api/v1/login",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3002",
+							"path": [
+								"api",
+								"v1",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fb22ed0b-8fbb-414a-b66e-3fa859f620a7",
+								"exec": [
+									"if (pm.response.status === \"OK\") {\r",
+									"  postman.setEnvironmentVariable(\"XAuthToken\", \"\");\r",
+									"  postman.setEnvironmentVariable(\"XUserId\", \"\");\r",
+									"  postman.setEnvironmentVariable(\"newClientGroupToken\", \"\");\r",
+									"  postman.setEnvironmentVariable(\"roomId\", \"\");\r",
+									"  postman.setEnvironmentVariable(\"bookingId\", \"\");\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-User-Id",
+								"value": "{{XUserId}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{XAuthToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:3002/api/v1/logout",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3002",
+							"path": [
+								"api",
+								"v1",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Client Groups",
+			"item": [
+				{
+					"name": "Create Client Group",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7940534c-760d-42b2-9976-a2739a000ac7",
+								"exec": [
+									"if (pm.response.status === \"Created\") {\r",
+									"    var jsonData = JSON.parse(responseBody);\r",
+									"    postman.setEnvironmentVariable(\"newClientGroupToken\", jsonData.groupToken);\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-User-Id",
+								"value": "{{XUserId}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{XAuthToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "HumlyIntegration",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://localhost:3002/api/v1/clientGroups",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3002",
+							"path": [
+								"api",
+								"v1",
+								"clientGroups"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Create User",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-User-Id",
+								"value": "{{XUserId}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{XAuthToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "HumlyIntegrationUser",
+									"type": "text"
+								},
+								{
+									"key": "groupToken",
+									"value": "{{newClientGroupToken}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://localhost:3002/api/v1/users/integration",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3002",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"integration"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "API Integration Users",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-User-Id",
+								"value": "{{XUserId}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{XAuthToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "https://localhost:3002/api/v1/users/integration",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3002",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"integration"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "One API Integration User",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-User-Id",
+								"value": "{{XUserId}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{XAuthToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "https://localhost:3002/api/v1/users/integration/{{XUserId}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3002",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"integration",
+								"{{XUserId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Bookings",
+			"item": [
+				{
+					"name": "All Bookings",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-User-Id",
+								"value": "{{XUserId}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{XAuthToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "https://localhost:3002/api/v1/bookings",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3002",
+							"path": [
+								"api",
+								"v1",
+								"bookings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Bookings for organizer",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-User-Id",
+								"value": "{{XUserId}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{XAuthToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "https://localhost:3002/api/v1/bookings?organizerUser={{XUserId}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3002",
+							"path": [
+								"api",
+								"v1",
+								"bookings"
+							],
+							"query": [
+								{
+									"key": "organizerUser",
+									"value": "{{XUserId}}"
+								},
+								{
+									"key": "startDate",
+									"value": "YYYY-MM-DDTHH:MI:SS%2B00:00",
+									"disabled": true
+								},
+								{
+									"key": "endDate",
+									"value": "YYYY-MM-DDTHH:MI:SS%2B00:00",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Booking",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "93d839c3-1fa6-4dc3-a14c-d693f3698963",
+								"exec": [
+									"if (pm.response.status === \"Created\") {\r",
+									"    var jsonData = JSON.parse(responseBody);\r",
+									"    postman.setEnvironmentVariable(\"bookingId\", jsonData.id);\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-User-Id",
+								"value": "{{XUserId}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{XAuthToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "roomId",
+									"value": "{{roomId}}",
+									"type": "text"
+								},
+								{
+									"key": "startDate",
+									"value": "YYYY-MM-DDTHH:MI:SS+00:00",
+									"type": "text"
+								},
+								{
+									"key": "endDate",
+									"value": "YYYY-MM-DDTHH:MI:SS+00:00",
+									"type": "text"
+								},
+								{
+									"key": "subject",
+									"value": "Humly Integration Test",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://localhost:3002/api/v1/bookings",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3002",
+							"path": [
+								"api",
+								"v1",
+								"bookings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Booking",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6ae83e3c-2087-4a88-b0b7-8bef48cf1765",
+								"exec": [
+									"if (pm.response.status === \"OK\") {\r",
+									"  postman.setEnvironmentVariable(\"bookingId\", \"\");\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-User-Id",
+								"value": "{{XUserId}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{XAuthToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "https://localhost:3002/api/v1/bookings/{{bookingId}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3002",
+							"path": [
+								"api",
+								"v1",
+								"bookings",
+								"{{bookingId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Patch Booking",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "X-User-Id",
+								"value": "{{XUserId}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{XAuthToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "startDate",
+									"value": "YYYY-MM-DDTHH:MI:SS+00:00",
+									"type": "text"
+								},
+								{
+									"key": "endDate",
+									"value": "YYYY-MM-DDTHH:MI:SS+00:00",
+									"type": "text"
+								},
+								{
+									"key": "subject",
+									"value": "Humly Integration Test",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://localhost:3002/api/v1/bookings/{{bookingId}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3002",
+							"path": [
+								"api",
+								"v1",
+								"bookings",
+								"{{bookingId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check In Booking",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "X-User-Id",
+								"value": "{{XUserId}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{XAuthToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "https://localhost:3002/api/v1/bookings/checkedIn?bookingId={{bookingId}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3002",
+							"path": [
+								"api",
+								"v1",
+								"bookings",
+								"checkedIn"
+							],
+							"query": [
+								{
+									"key": "bookingId",
+									"value": "{{bookingId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Rooms",
+			"item": [
+				{
+					"name": "All Rooms",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9be8830b-1405-4209-80d0-7d65abe3b9f0",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"if (pm.response.status === \"OK\" && jsonData.length > 0) {\r",
+									"    postman.setEnvironmentVariable(\"roomId\", jsonData[0]._id);\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-User-Id",
+								"value": "{{XUserId}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{XAuthToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "https://localhost:3002/api/v1/rooms?",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3002",
+							"path": [
+								"api",
+								"v1",
+								"rooms"
+							],
+							"query": [
+								{
+									"key": "country",
+									"value": "%Country Name%",
+									"disabled": true
+								},
+								{
+									"key": "city",
+									"value": "%City Name%",
+									"disabled": true
+								},
+								{
+									"key": "building",
+									"value": "%Building Name%",
+									"disabled": true
+								},
+								{
+									"key": "floor",
+									"value": "%Flor Name%",
+									"disabled": true
+								},
+								{
+									"key": "minNumberOfSeats",
+									"value": "number",
+									"disabled": true
+								},
+								{
+									"key": "maxNumberOfSeats",
+									"value": "number",
+									"disabled": true
+								},
+								{
+									"key": "includeBookings",
+									"value": "boolean",
+									"disabled": true
+								},
+								{
+									"key": "startBookings",
+									"value": "YYYY-MM-DDTHH:MI:SS%2B00:00",
+									"disabled": true
+								},
+								{
+									"key": "endBookings",
+									"value": "YYYY-MM-DDTHH:MI:SS%2B00:00",
+									"disabled": true
+								},
+								{
+									"key": "start",
+									"value": "number",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "number",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "One Room",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-User-Id",
+								"value": "{{XUserId}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{XAuthToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "https://localhost:3002/api/v1/rooms/{{roomId}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3002",
+							"path": [
+								"api",
+								"v1",
+								"rooms",
+								"{{roomId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Available Rooms",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-User-Id",
+								"value": "{{XUserId}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{XAuthToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "https://localhost:3002/api/v1/rooms/available?",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3002",
+							"path": [
+								"api",
+								"v1",
+								"rooms",
+								"available"
+							],
+							"query": [
+								{
+									"key": "seats",
+									"value": "number",
+									"disabled": true
+								},
+								{
+									"key": "startDate",
+									"value": "YYYY-MM-DDTHH:MI:SS%2B00:00",
+									"disabled": true
+								},
+								{
+									"key": "endDate",
+									"value": "YYYY-MM-DDTHH:MI:SS%2B00:00",
+									"disabled": true
+								},
+								{
+									"key": "location",
+									"value": "{\n\"countryId\": \"%Country ID%\",\n\"cityId\": \"%City ID%\",\n\"buildingId\": \"%Building ID%\",\n\"floorId\": \"%Flor ID%\"\n}",
+									"disabled": true
+								},
+								{
+									"key": "equipment",
+									"value": "{\n\"lights\": boolean,\n\"projector\": boolean,\n\"computer\": boolean,\n\"teleConference\": boolean,\n\"wifi\": boolean,\n\"whiteboard\": boolean,\n\"videoConference\": boolean,\n\"display\": boolean,\n\"minto\": boolean,\n\"ac\": boolean\n}",
+									"disabled": true
+								},
+								{
+									"key": "customEquipment",
+									"value": "[{\n\"_id\": \"%Custom Equipment ID%\",\n\"isChecked\": boolean\n}]",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Report Equipment",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "{{XUserId}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{XAuthToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "equipment",
+									"value": "{\n\"lights\": boolean,\n\"projector\": boolean,\n\"computer\": boolean,\n\"teleConference\": boolean,\n\"wifi\": boolean,\n\"whiteboard\": boolean,\n\"videoConference\": boolean,\n\"display\": boolean,\n\"minto\": boolean,\n\"ac\": boolean\n}",
+									"type": "text"
+								},
+								{
+									"key": "customEquipment",
+									"value": "[{ \"name\": \"%Equipment Name%\", \"isChecked\": boolean}]",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://localhost:3002/api/v1/rooms/{{roomId}}/equipment",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3002",
+							"path": [
+								"api",
+								"v1",
+								"rooms",
+								"{{roomId}}",
+								"equipment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Equipment",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-User-Id",
+								"value": "{{XUserId}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{XAuthToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "https://localhost:3002/api/v1/rooms/{{roomId}}/equipment",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3002",
+							"path": [
+								"api",
+								"v1",
+								"rooms",
+								"{{roomId}}",
+								"equipment"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Structures",
+			"item": [
+				{
+					"name": "All Structures",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-User-Id",
+								"value": "{{XUserId}}",
+								"type": "text"
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "{{XAuthToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "https://localhost:3002/api/v1/structures",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3002",
+							"path": [
+								"api",
+								"v1",
+								"structures"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
