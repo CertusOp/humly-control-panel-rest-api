@@ -4,15 +4,15 @@ API documentation for Humly Control Panel version: `v1.0.x`
 
 - [Introduction](#introduction)
 - [Authenticate with Humly Control Panel](#authentication)
-- [Register a client group - <i>POST</i> `{HCP_URL}/api/v1/clientGroups`](#clientGroups)
+- [Register a client group - `POST {HCP_URL}/api/v1/clientGroups`](#clientGroups)
 - [Working with “users” API - `{HCP_URL}/api/v1/users/integration`](#users)
 - [Get rooms data - `{HCP_URL}/api/v1/rooms`](#rooms)
 - [Working with “bookings” API - `{HCP_URL}/api/v1/bookings`](#bookings)
-- [Get organizer meetings – <i>GET</i> `{HCP_URL}/api/v1/bookings`](#getMeetings)
-- [Create a meeting - <i>POST</i> `{HCP_URL}/api/v1/bookings`](#createMeeting)
-- [Update a meeting - <i>PATCH</i> `{HCP_URL}/api/v1/bookings/:bookingId`](#updateMeeting)
-- [Delete a meeting - <i>DELETE</i> `{HCP_URL}/api/v1/bookings/:bookingId`](#deleteMeeting)
-- [Check-in a meeting - <i>PUT</i> `{HCP_URL}/api/v1/bookings/checkedIn?bookingId=:bookingId`](#checkInMeeting)
+- [Get organizer meetings – `GET {HCP_URL}/api/v1/bookings`](#getMeetings)
+- [Create a meeting - `POST {HCP_URL}/api/v1/bookings`](#createMeeting)
+- [Update a meeting - `PATCH {HCP_URL}/api/v1/bookings/:bookingId`](#updateMeeting)
+- [Delete a meeting - `DELETE {HCP_URL}/api/v1/bookings/:bookingId`](#deleteMeeting)
+- [Check-in a meeting - `PUT {HCP_URL}/api/v1/bookings/checkedIn?bookingId=:bookingId`](#checkInMeeting)
 
 ## <a name="introduction"></a> Introduction
 
