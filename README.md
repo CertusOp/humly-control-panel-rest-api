@@ -3,6 +3,7 @@
 API documentation for Humly Control Panel version: `v1.0.x`
 
 - [Introduction](#introduction)
+- [Response content](#responseContent)
 - [Authenticate with Humly Control Panel](#authentication)
 - [Register a client group - `POST {HCP_URL}/api/v1/clientGroups`](#clientGroups)
 - [Working with “users” API - `{HCP_URL}/api/v1/users/integration`](#users)
@@ -13,19 +14,58 @@ API documentation for Humly Control Panel version: `v1.0.x`
 - [Update a meeting - `PATCH {HCP_URL}/api/v1/bookings/:bookingId`](#updateMeeting)
 - [Delete a meeting - `DELETE {HCP_URL}/api/v1/bookings/:bookingId`](#deleteMeeting)
 - [Check-in a meeting - `PUT {HCP_URL}/api/v1/bookings/checkedIn?bookingId=:bookingId`](#checkInMeeting)
+- [Get structures data - `GET {HCP_URL}/api/v1/structures`](#structures)
 
 ## <a name="introduction"></a> Introduction
 
 Welcome and thank you for using Humly Control Panel API!
-In this document you can find description of available API enpoints for integrating with Humly Control Panel (HCP) along with parameters specification. You can also find basic examples written in React using Axios library. 
+In this document you can find description of available API endpoints for integrating with Humly Control Panel (HCP) along with parameters specification. You can also find basic examples written in React using Axios library. 
 
 > 👉 **Disclaimer!** The code examples provided in this document are written as basic examples. You should change and adopt this code according to your production needs.
 
 Humly Control Panel is the server-side software used to manage and monitor your Humly devices. These devices provide booking functionalities for you. You can display, book, confirm etc. your booking by using them. Humly Control Panel also serves as central data repository used to synchronize all your devices. This platform is built on the full stack JavaScript framework [Meteor](https://www.meteor.com/) which uses the DDP protocol to send/receive requests. 
 
+## <a name="responseContent"></a> Response content
+
+Responses from Humly Control Panel API have standardized format. There are two response types that you can expect: <b><i>success response</i></b> and <b><i>error response</i></b>.<br><br>
+Format of <b><i>success response</i></b> is:<br>
+```c++
+{
+  "status": "success",
+  "data": %any%,                 // Mandatory part of response. Type of data can be null, string, number, boolean, object {} or array []. It represents data returned from endpoint.
+  "page": {                      // Optional object. Present only in case of pagination.
+    "first": %boolean%,          // Is first page?
+    "last": %boolean%,           // Is last page?
+    "size": %number%,            // Number of elements per page.
+    "totalElements": %number%,   // Total elements that query returns.
+    "totalPages": %number%,      // Total number of pages.
+    "number": %number%,          // Number of current page.
+    "numberOfElements": %number% // Number of elements on current page. Last page could be partially filled.
+  },
+  "sort": [                      // Optional array of objects. Present only in case of data sorting.
+    {
+      "property": %string%,      // name of property to sort by
+      "direction": %string%      // "ASC" or "DESC". Lowercase values are also acceptable.
+    }
+  ],
+}
+```
+In examples provided in rest of this document you can find this object as part of <i>responseData</i>.<br> If API endpoint returns array or results then you can expect to have pagination and sort options.<br>
+Data paging is done by providing two variables as request params. <b><i>pageNumber</i></b> param is used to navigate through paginated data and <b><i>pageSize</i></b> is used to limit maximum number of data returned by endpoint. Default values for pageNumber is 1 and for pageSize is 10. If endpoint supports data paging then you can always expect to have <b><i>page</i></b> object (documented above) in case of success.<br>
+Sorting is done by providing <b><i>sort</i></b> stringified object as a request param. Object should contain key value pairs where key should be name of response data property and value should be one of "asc" od "desc". If you want to sort data by some nested property inside other object then you should use dot notation to point to that property. For example sort param could look like: `{ "booking.location": "asc", "booking.startDate": "desc" }` or `{ "name": "desc" }`. Default sort property will be returned for every and point that have this functionality implemented.
+
+<br><br>
+Format of <b><i>error response</i></b> is:<br>
+```c++
+{
+  "status": "error",
+  "message": %string%,  // Mandatory part of response. Description of error that have occurred.
+}
+```
+
 ## <a name="authentication"></a> Authenticate with Humly Control Panel
 
-Humly Control Panel is built on full stack JavaScript framework [Meteor](https://www.meteor.com/) which uses the DDP protocol to communicate. [Restivus](https://github.com/kahmali/meteor-restivus) package is used to expose thiese REST API endpoints.
+Humly Control Panel is built on full stack JavaScript framework [Meteor](https://www.meteor.com/) which uses the DDP protocol to communicate. [Restivus](https://github.com/kahmali/meteor-restivus) package is used to expose these REST API endpoints.
 To access API on your unencrypted application port (default 3000) you can use HTTP protocol or an encrypted HTTPS protocol on your encrypted application port (default 3002) over TLS v1.2. For example, API URL can be something like this:
 
 - Unencrypted: http://localhost:3000/api/v1
@@ -56,11 +96,11 @@ export default class AuthResource {
             { username, password },
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });
@@ -78,11 +118,11 @@ export default class AuthResource {
             `${this.API_URL}/logout`,
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });
@@ -144,13 +184,13 @@ Response example for /login.
 
 ```json
 {
-  "status": 200,
-  "data": {
+  "responseStatus": 200,
+  "responseData": {
+    "status": "success",
     "data": {
       "authToken": "abcdefghijklmnoprstuvzabcdefghijklmnoprstuvz",
       "userId": "1234abcd5678efgh"
-    },
-    "status": "success"
+    }
   }
 }
 ```
@@ -159,12 +199,12 @@ Response example for /logout.
 
 ```json
 {
-  "status": 200,
-  "data": {
+  "responseStatus": 200,
+  "responseData": {
+    "status": "success",
     "data": {
       "message": "You've been logged out!"
-    },
-    "status": "success"
+    }
   }
 }
 ```
@@ -176,41 +216,41 @@ Error response for /login
 ```json
 // Invalid username or password
 {
-  "status": 401,
-  "data": {
-    "message": "Wrong username or password!",
-    "status": "error"
+  "responseStatus": 401,
+  "responseData": {
+    "status": "error",
+    "message": "Wrong username or password!"
   }
 }
 
 // User lacks permission
 {
-  "status": 403,
-  "data": {
-    "message": "This type of user is not allowed to login!",
-    "status": "error"
+  "responseStatus": 403,
+  "responseData": {
+    "status": "error",
+    "message": "This type of user is not allowed to login!"
   }
 }
 ```
 
 Error response for /logout
 
-```
+```json
 // User lacks permission
 {
-  "status": 403,
-  "data": {
-    "message": "You are not authorized!",
-    "status": "error"
+  "responseStatus": 403,
+  "responseData": {
+    "status": "error",
+    "message": "You are not authorized!"
   }
 }
 
 // User not logged in
 {
-  "status": 401,
-  "data": {
-    "message": "You must be logged in to do this.",
-    "status": "error"
+  "responseStatus": 401,
+  "responseData": {
+    "status": "error",
+    "message": "You must be logged in to do this."
   }
 }
 ```
@@ -243,11 +283,11 @@ export default class ClientGroupsResource {
             clientGroupData,
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });
@@ -293,9 +333,14 @@ Type of the `groupToken` is string.
 
 ```json
 {
-  "status": 201,
-  "data": {
-    "groupToken": "1234abcd5678efgh1234ijkl"
+  "responseStatus": 201,
+  "responseData": {
+    "status": "success",
+    "data": {
+      "_id": "1234zvu9876",
+      "groupName": "Humly Integration Group",
+      "groupToken": "1234abcd5678efgh1234ijkl"
+    }
   }
 }
 ```
@@ -305,18 +350,19 @@ Type of the `groupToken` is string.
 ```json
 // User group already exists
 {
-  "status": 500,
-  "data": {
+  "responseStatus": 500,
+  "responseData": {
+     "status": "error",
      "message": "Unable to register client group with that name. Client group already exists."
   }
 }
 
 // Not authorized
 {
-  "status": 401,
-  "data": {
-    "message": "You must be logged in to do this.",
-    "status": "error"
+  "responseStatus": 401,
+  "responseData": {
+    "status": "error",
+    "message": "You must be logged in to do this."
   }
 }
 ```
@@ -355,21 +401,26 @@ export default class UsersResource {
             userData,
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });
     }
 
-    getUsers(userId, authToken) {
+    getUsers(userId, authToken, queryParams) {
         const requestOptions = {
             headers: {
                 "X-User-Id": userId,
                 "X-Auth-Token": authToken,
+            },
+            params: {
+                pageNumber: queryParams.pageNumber,
+                pageSize: queryParams.pageSize,
+                sort: queryParams.sort,
             },
         };
 
@@ -377,11 +428,11 @@ export default class UsersResource {
             `${this.API_URL}/users/integration`,
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });
@@ -399,11 +450,11 @@ export default class UsersResource {
             `${this.API_URL}/users/integration/${apiIntegrationUserId}`,
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });
@@ -417,29 +468,88 @@ export default class UsersResource {
 ```json
 // Create user response
 {
-  "status": 201,
-  "data": {
-    "_id": "3333bbbb4444",
-    "username": "Humly Integration User",
-    "createdAt": "2019-08-01T14:01:18.626Z",
-    "profile": {
-      "clientGroup": "Humly Integration Group",
-      "description": "",
-      "groupToken": "1234abcd5678efgh1234ijkl",
-      "name": "Humly Integration User",
-      "originalToken": null,
-      "pin": "",
-      "rfid": "",
-      "type": "APIIntegration",
+  "responseStatus": 201,
+  "responseData": {
+    "status": "success",
+    "data": {
+      "_id": "3333bbbb4444",
+      "username": "Humly Integration User",
+      "createdAt": "2019-08-01T14:01:18.626Z",
+      "profile": {
+        "clientGroup": "Humly Integration Group",
+        "description": "",
+        "groupToken": "1234abcd5678efgh1234ijkl",
+        "name": "Humly Integration User",
+        "originalToken": null,
+        "pin": "",
+        "rfid": "",
+        "type": "APIIntegration",
+      }
     }
   }
 }
 
 // Get all users response
 {
-  "status": 200,
-  "data": [
-    {
+  "responseStatus": 200,
+  "responseData": {
+    "status": "success",
+    "data": [
+      {
+        "_id": "1111aaaa2222",
+        "username": "defaultDevIntegrationUser",
+        "createdAt": "2019-07-24T14:02:16.723Z",
+        "profile": {
+          "clientGroup": "DevAPIIntegration",
+          "description": "",
+          "groupToken": "1234567890abcdefghij",
+          "name": "defaultDevIntegrationUser",
+          "originalToken": null,
+          "pin": "",
+          "rfid": "",
+          "type": "APIIntegration"
+        }
+      },
+      {
+        "_id": "3333bbbb4444",
+        "username": "Humly Integration User",
+        "createdAt": "2019-07-25T13:57:07.934Z",
+        "profile": {
+          "clientGroup": "Humly Integration Group",
+          "description": "",
+          "groupToken": "1234abcd5678efgh1234ijkl",
+          "name": "Humly Integration User",
+          "originalToken": null,
+          "pin": "",
+          "rfid": "",
+          "type": "APIIntegration"
+        }
+      }
+    ],
+    "page": {
+      "first": true,
+      "last": true,
+      "size": 10,
+      "totalElements": 2,
+      "totalPages": 1,
+      "number": 1,
+      "numberOfElements": 2
+    },
+    "sort": [
+      {
+        "property": "username",
+        "direction": "ASC"
+      }
+    ]
+  }
+}
+
+// Get one user response
+{
+  "responseStatus": 200,
+  "responseData": {
+    "status": "success",
+    "data": {
       "_id": "1111aaaa2222",
       "username": "defaultDevIntegrationUser",
       "createdAt": "2019-07-24T14:02:16.723Z",
@@ -453,41 +563,6 @@ export default class UsersResource {
         "rfid": "",
         "type": "APIIntegration"
       }
-    },
-    {
-      "_id": "3333bbbb4444",
-      "username": "Humly Integration User",
-      "createdAt": "2019-07-25T13:57:07.934Z",
-      "profile": {
-        "clientGroup": "Humly Integration Group",
-        "description": "",
-        "groupToken": "1234abcd5678efgh1234ijkl",
-        "name": "Humly Integration User",
-        "originalToken": null,
-        "pin": "",
-        "rfid": "",
-        "type": "APIIntegration"
-      }
-    }
-  ]
-}
-
-// Get one user response
-{
-  "status": 200,
-  "data": {
-    "_id": "1111aaaa2222",
-    "username": "defaultDevIntegrationUser",
-    "createdAt": "2019-07-24T14:02:16.723Z",
-    "profile": {
-      "clientGroup": "DevAPIIntegration",
-      "description": "",
-      "groupToken": "1234567890abcdefghij",
-      "name": "defaultDevIntegrationUser",
-      "originalToken": null,
-      "pin": "",
-      "rfid": "",
-      "type": "APIIntegration"
     }
   }
 }
@@ -498,6 +573,7 @@ export default class UsersResource {
 | Name            | Type   | Comment |
 | --------------- | ------ | ------- |
 | `status`        | Number | Status of HTTP/HTTPS request. |
+| `status`        | Boolean | Status of API response. Can have values: success or error. |
 | `_id`           | String | Unique user’s identifier generated by system. |
 | `username`      | String | User’s username. |
 | `createdAt`     | String | Date when user is created. Date is provided in ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ). |
@@ -515,24 +591,28 @@ export default class UsersResource {
 ```json
 // User already exists
 {
-  "status": 500,
-  "data": {
+  "responseStatus": 500,
+  "responseData": {
+     "status": "error",
      "message": " Username already exists."
   }
 }
 
 // Not authorized to create or to get users
 {
-  "status": 403,
-  "data": ""
+  "responseStatus": 403,
+  "responseData": {
+    "status": "error",
+    "message": "You are not authorized to access this resource!"
+  }
 }
 
 // Not logged in
 {
-  "status": 401,
-  "data": {
-    "message": "You must be logged in to do this.",
-    "status": "error"
+  "responseStatus": 401,
+  "responseData": {
+    "status": "error",
+    "message": "You must be logged in to do this."
   }
 }
 ```
@@ -553,11 +633,9 @@ All query parameters are optional.
 | `floor`            | String  | Name of Floor that rooms belong to. If provided, then `country`, `city` and `building` parameters should be provided too.
 | `minNumberOfSeats` | Number  | Minimum required seats in room.
 | `maxNumberOfSeats` | Number  | Maximum required seats in room.
-| `includeBookings`  | Boolean | If set to `true`, booking data will be included in returned data.
-| `startBookings`    | String  | Limits returned meetings data to include meetings that have start date greater or equal to provided date. Used only if `includeBookings` is set to true. Date must be in ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ).
-| `endBookings`      | String  | Limits returned meetings data to include meetings that have end date lower than provided date. Used only if `includeBookings` is set to true. Date must be in ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ).
-| `start`            | Number  | Get rooms data starting from this position in array.
-| `limit`            | Number  | Get rooms data to this position in array.
+| `pageNumber`       | Number  | Get rooms data starting from this page. Pages are count from 1.
+| `pageSize`         | Number  | Limit size of rooms array (page size) that will be returned. Last page can be partially filled.
+| `sort`             | String  | “Stringified” representation of JSON object. Format: <br>`{`<br>`  "any.property": "asc/desc",`<br>`  "any.property": asc/desc`<br>`}`<br>
 
 ### Request example
 
@@ -583,9 +661,9 @@ export default class RoomsResource {
                 floor: queryParams.floor,
                 minNumberOfSeats: queryParams.minNumberOfSeats,
                 maxNumberOfSeats: queryParams.maxNumberOfSeats,
-                includeBookings: queryParams.includeBookings,
-                startBookings: queryParams.startBookings,
-                endBookings: queryParams.endBookings,
+                pageNumber: queryParams.pageNumber,
+                pageSize: queryParams.pageSize,
+                sort: queryParams.sort,
             },
         };
 
@@ -593,11 +671,11 @@ export default class RoomsResource {
             `${this.API_URL}/rooms`,
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });
@@ -616,11 +694,11 @@ export default class RoomsResource {
             `${this.API_URL}/rooms/${roomId}`,
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });
@@ -639,6 +717,9 @@ export default class RoomsResource {
                 location: queryParams.location,
                 equipment: queryParams.equipment,
                 customEquipment: queryParams.customEquipment,
+                pageNumber: queryParams.pageNumber,
+                pageSize: queryParams.pageSize,
+                sort: queryParams.sort,
             },
         };
 
@@ -646,11 +727,11 @@ export default class RoomsResource {
             `${this.API_URL}/rooms/available`,
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });
@@ -668,11 +749,11 @@ export default class RoomsResource {
             `${this.API_URL}/rooms/${roomId}/equipment`,
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });
@@ -692,11 +773,11 @@ export default class RoomsResource {
             equipmentData,
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });
@@ -710,9 +791,103 @@ export default class RoomsResource {
 ```json
 // Get all rooms data
 {
-  "status": 200,
-  "data": [
-    {
+  "responseStatus": 200,
+  "responseData": {
+    "status": "success",
+    "data": [
+      {
+        "_id": "1a2b3c4d5e6f7g8h",
+        "name": "Room 1",
+        "mail": "room1@humly.integration.com",
+        "address": "room1@humly.integration.com",
+        "id": "room1",
+        "numberOfSeats": 0,
+        "alias": "Room 1",
+        "isActive": true,
+        "isDeleted": false,
+        "equipment": {
+          "lights":  null,
+          "projector":  null,
+          "computer": null,
+          "teleConference": null,
+          "wifi": null,
+          "whiteboard": null,
+          "videoConference": null,
+          "display": null,
+          "minto": null,
+          "ac": null,
+          "information": null
+        },
+        "customEquipment": [
+          {
+            "name": "Gadget",
+            "isChecked": true,
+            "_id": "abc123def456ghi"
+          }
+        ],
+        "structureId": "11223344aabbccdd",
+        "userIds": [],
+        "assigned": true
+      },
+      {
+        "_id": "1i2j3k4l5m6n7o8p",
+        "name": "Room 2",
+        "mail": "room2@humly.integration.com",
+        "address": "room2@humly.integration.com",
+        "id": "room2",
+        "numberOfSeats": 0,
+        "alias": "room117",
+        "isActive": true,
+        "isDeleted": false,
+        "equipment": {
+          "lights": null,
+          "projector": null,
+          "computer": null,
+          "teleConference": null,
+          "wifi": null,
+          "whiteboard": null,
+          "videoConference": null,
+          "display": null,
+          "minto": null,
+          "ac": null,
+          "information": null
+        },
+        "customEquipment": [
+          {
+            "name": "Gadget",
+            "isChecked": true,
+            "_id": "abc123def456ghi"
+          }
+        ],
+        "structureId": "11223344aabbccdd",
+        "userIds": [],
+        "assigned": true
+      }
+    ],
+    "page": {
+      "first": true,
+      "last": true,
+      "size": 10,
+      "totalElements": 9,
+      "totalPages": 1,
+      "number": 1,
+      "numberOfElements": 9
+    },
+    "sort": [
+      {
+        "property": "name",
+        "direction": "ASC"
+      }
+    ]
+  }
+}
+
+// Get one room data
+{
+  "responseStatus": 200,
+  "responseData": {
+    "status": "success",
+    "data": {
       "_id": "1a2b3c4d5e6f7g8h",
       "name": "Room 1",
       "mail": "room1@humly.integration.com",
@@ -744,112 +919,15 @@ export default class RoomsResource {
       ],
       "structureId": "11223344aabbccdd",
       "userIds": [],
-      "assigned": true,
-      "country": "Humly",
-      "city": "API",
-      "building": "Integration",
-      "floor": "v_1",
-      "hasLiso": false,
-      "bookings": [
-        {
-          "_id": "1x1x2y2y3z3z",
-          "startDate": "2019-09-01T07:30:00+00:00",
-          "endDate": "2019-09-01T08:00:00+00:00",
-          "subject": "Humly Open API Booking Example",
-          "organizer": "1234abcd5678efgh"
-        }
-      ]
-    },
-    {
-      "_id": "1i2j3k4l5m6n7o8p",
-      "name": "Room 2",
-      "mail": "room2@humly.integration.com",
-      "address": "room2@humly.integration.com",
-      "id": "room2",
-      "numberOfSeats": 0,
-      "alias": "room117",
-      "isActive": true,
-      "isDeleted": false,
-      "equipment": {
-        "lights": null,
-        "projector": null,
-        "computer": null,
-        "teleConference": null,
-        "wifi": null,
-        "whiteboard": null,
-        "videoConference": null,
-        "display": null,
-        "minto": null,
-        "ac": null,
-        "information": null
-      },
-      "customEquipment": [
-        {
-          "name": "Gadget",
-          "isChecked": true,
-          "_id": "abc123def456ghi"
-        }
-      ],
-      "structureId": "11223344aabbccdd",
-      "userIds": [],
-      "assigned": true,
-      "country": "Humly",
-      "city": "API",
-      "building": "Integration",
-      "floor": "v_1",
-      "hasLiso": false
+      "assigned": true
     }
-  ]
-}
-
-// Get one room data
-{
-  "status": 200,
-  "data": {
-    "_id": "1a2b3c4d5e6f7g8h",
-    "name": "Room 1",
-    "mail": "room1@humly.integration.com",
-    "address": "room1@humly.integration.com",
-    "id": "room1",
-    "numberOfSeats": 0,
-    "alias": "Room 1",
-    "isActive": true,
-    "isDeleted": false,
-    "equipment": {
-      "lights":  null,
-      "projector":  null,
-      "computer": null,
-      "teleConference": null,
-      "wifi": null,
-      "whiteboard": null,
-      "videoConference": null,
-      "display": null,
-      "minto": null,
-      "ac": null,
-      "information": null
-    },
-    "customEquipment": [
-      {
-        "name": "Gadget",
-        "isChecked": true,
-        "_id": "abc123def456ghi"
-      }
-    ],
-    "structureId": "11223344aabbccdd",
-    "userIds": [],
-    "assigned": true,
-    "country": "Humly",
-    "city": "API",
-    "building": "Integration",
-    "floor": "v_1",
-    "hasLiso": false
   }
 }
 
 // Get room equipment
 {
-  "status": 200,
-  "data": {
+  "responseStatus": 200,
+  "responseData": {
     "status": "success",
     "data": {
       "equipment": {
@@ -881,7 +959,8 @@ export default class RoomsResource {
 
 | Name              | Type    | Comment |
 | ----------------- | ------- | ------- |
-| `status`          | Number  | Status of HTTP/HTTPS request. |
+| `responseStatus`  | Number  | Status of HTTP/HTTPS request. |
+| `status`          | Boolean | Status of API response. Can have values: success or error. |
 | `_id`             | String  | Unique Room identifier. |
 | `name`            | String  | Room name. |
 | `mail`            | String  | Email that is related to this room. |
@@ -906,17 +985,6 @@ export default class RoomsResource {
 | `structureId`     | String  | Unique structure identifier. |
 | `userIds`         | Array   | Array of Strings. Array of user ids assigned to this Room. |
 | `assigned`        | Boolean | Is this Room assigned to any Booking device? |
-| `country`         | String  | Country name from Structure that this Room belongs to. |
-| `city`            | String  | City name from Structure that this Room belongs to. |
-| `building`        | String  | Building name from Structure that this Room belongs to. |
-| `floor`           | String  | Floor from Structure that this Room belongs to. |
-| `hasLiso`         | Boolean | Is there online Booking device for this Room? |
-| `bookings`        | Array   | Array of Objects containing booking data. Present only if includeBookings query parameter is set to true and there are meetings in given room for current day. |
-| `_id`             | String  | Unique booking identifier. |
-| `startDate`       | String  | Meeting start date. |
-| `endDate`         | String  | Meeting end date. |
-| `subject`         | String  | Meetings subject. |
-| `organizer`       | String  | Unique user’s identifier that organize this meeting. |
 
 ### Searching for available rooms
 
@@ -934,6 +1002,9 @@ All query parameters are optional.
 | `location`        | String | This parameter should be use if you are searching for room at exact location. Parameter should be provided as “stringified” representation of JSON object. Format: <br>`{`<br>`    "countryId": "aaa111",`<br>`    "cityId": "bbb222",`<br>`    "buildingId": "ccc333",`<br>`    "floorId": "ddd444"`<br>`}`<br>You can provide part of object. If you for example looking for rooms in certain country, then you can provide: <br>`{`<br>`  "countryId": "aaa111"`<br>`}`<br>as location parameter.<br>Rooms that are located at exact location will be returned as part of exact match list. |
 | `equipment`       | String | This parameter should be use if you are searching for room with specific equipment. Rooms that have all wanted equipment will be return as exact match, other rooms will be listed in partially match. Parameter should be provided as “stringified” representation of JSON object. Format: <br>`{`<br>`  "lights": true,`<br>`  "projector": true,`<br>`  "computer": true`<br>`}`<br>List only equipment that you need. |
 | `customEquipment` | String | This parameter should be use if you are searching for room with specific custom equipment. Rooms that have all wanted custom equipment will be return as exact match, other rooms will be listed in partially match. Parameter should be provided as “stringified” representation of JSON object. Format: <br>`[{`<br>`  "_id": "eee555",`<br>`  "isChecked": true`<br>`}]`<br>List only equipment that you need. |
+| `pageNumber`      | Number | Get rooms data starting from this page. Pages are count from 1.
+| `pageSize`        | Number | Limit size of rooms array (page size) that will be returned. Last page can be partially filled.
+| `sort`            | String | “Stringified” representation of JSON object. Format: <br>`{`<br>`  "any.property": "asc/desc",`<br>`  "any.property": asc/desc`<br>`}`<br>
 
 ### Request example
 
@@ -965,50 +1036,63 @@ You can use some similar code to find available room.
 ```json
 // Get available rooms
 {
-  "status": 200,
-  "data": {
+  "responseStatus": 200,
+  "responseData": {
     "status": "success",
     "data": {
-      "rooms": {
-        "fullMatchArray": [
-          {
-            "_id": "1a2b3c4d5e6f7g8h",
-            "name": "Room 1",
-            "mail": "room1@humly.integration.com",
-            "address": "room1@humly.integration.com",
-            "id": "room1",
-            "numberOfSeats": 0,
-            "alias": "Room 1",
-            "isActive": true,
-            "isDeleted": false,
-            "equipment": {
-              "lights":  null,
-              "projector":  null,
-              "computer": null,
-              "teleConference": null,
-              "wifi": null,
-              "whiteboard": null,
-              "videoConference": null,
-              "display": null,
-              "minto": null,
-              "ac": null,
-              "information": null
-            },
-            "customEquipment": [
-              {
-                "name": "Gadget",
-                "isChecked": true,
-                "_id": "abc123def456ghi"
-              }
-            ],
-            "structureId": "11223344aabbccdd",
-            "userIds": [],
-            "assigned": true,
-          }
-        ],
-        "partialMatchArray": []
+      "fullMatchArray": [
+        {
+          "_id": "1a2b3c4d5e6f7g8h",
+          "name": "Room 1",
+          "mail": "room1@humly.integration.com",
+          "address": "room1@humly.integration.com",
+          "id": "room1",
+          "numberOfSeats": 0,
+          "alias": "Room 1",
+          "isActive": true,
+          "isDeleted": false,
+          "equipment": {
+            "lights":  null,
+            "projector":  null,
+            "computer": null,
+            "teleConference": null,
+            "wifi": null,
+            "whiteboard": null,
+            "videoConference": null,
+            "display": null,
+            "minto": null,
+            "ac": null,
+            "information": null
+          },
+          "customEquipment": [
+            {
+              "name": "Gadget",
+              "isChecked": true,
+              "_id": "abc123def456ghi"
+            }
+          ],
+          "structureId": "11223344aabbccdd",
+          "userIds": [],
+          "assigned": true,
+        }
+      ],
+      "partialMatchArray": []
+    },
+    "page": {
+      "first": true,
+      "last": true,
+      "size": 10,
+      "totalElements": 1,
+      "totalPages": 1,
+      "number": 1,
+      "numberOfElements": 1
+    },
+    "sort": [
+      {
+        "property": "name",
+        "direction": "ASC"
       }
-    }
+    ]
   }
 }
 ```
@@ -1055,8 +1139,8 @@ You can report broken or fixed equipment by executing some code like this.
 ```json
 // Report broken or fixed equipment
 {
-  "status": 200,
-  "data": {
+  "responseStatus": 200,
+  "responseData": {
     "status": "success",
     "data": {
       "equipment": {
@@ -1100,7 +1184,7 @@ import Axios from "axios";
 export default class BookingsResource {
     API_URL = "https://localhost:3002/api/v1";
 
-    getOrganizerBookings(userId, authToken, startDate, endDate) {
+    getOrganizerBookings(userId, authToken, queryParams) {
         const requestOptions = {
             headers: {
                 "X-User-Id": userId,
@@ -1108,8 +1192,11 @@ export default class BookingsResource {
             },
             params: {
                 organizerUser: userId,
-                startDate,
-                endDate,
+                startDate: queryParams.startDate,
+                endDate: queryParams.endDate,
+                pageNumber: queryParams.pageNumber,
+                pageSize: queryParams.pageSize,
+                sort: queryParams.sort,
             },
         };
 
@@ -1117,11 +1204,11 @@ export default class BookingsResource {
             `${this.API_URL}/bookings`,
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });
@@ -1141,11 +1228,11 @@ export default class BookingsResource {
             bookingData,
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });
@@ -1165,11 +1252,11 @@ export default class BookingsResource {
             bookingData,
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });
@@ -1187,11 +1274,11 @@ export default class BookingsResource {
             `${this.API_URL}/bookings/${bookingId}`,
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });
@@ -1213,11 +1300,11 @@ export default class BookingsResource {
             null,
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });
@@ -1237,17 +1324,23 @@ This endpoint is used to get meetings organized by given user.
 | `organizerUser` | String | Yes       | Unique identifier of the user. `userId` string returned by login. Users can see only their own bookings. |
 | `startDate`     | String | No        | Limits returned meetings data to include meetings that have start date greater or equal to provided date. If this parameter is not provided this endpoint will return all bookings for this user from start of the ongoing day. Date must be in ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ). |
 | `endDate`       | String | No        | Limits returned meetings data to include meetings that have end date lower than provided date. If this parameter is not provided this endpoint will return all bookings for this user until end of the ongoing day. Date must be in ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ). |
+| `pageNumber`    | Number | No        | Get rooms data starting from this page. Pages are count from 1.
+| `pageSize`      | Number | No        | Limit size of rooms array (page size) that will be returned. Last page can be partially filled.
+| `sort`          | String | No        | “Stringified” representation of JSON object. Format: <br>`{`<br>`  "any.property": "asc/desc",`<br>`  "any.property": asc/desc`<br>`}`<br>
 
 ### Request example
 
 ```js
     getOrganizerBookings() {
+        const queryData = {
+          startDate: "2019-09-01T12:00:00+00:00",
+          endDate: null,
+        };
         this.bookingsResource
             .getOrganizerBookings(
                 "1234abcd5678efgh",
                 "abcdefghijklmnoprstuvzabcdefghijklmnoprstuvz",
-                "2019-09-01T12:00:00+00:00",
-                null
+                queryData
             )
             .then((response) => {
                 console.log("BOOKINGS FOR ORGANIZER --> response", response);
@@ -1262,38 +1355,95 @@ This endpoint is used to get meetings organized by given user.
 
 ```json
 {
-  "status": 200,
-  "data": [
-    {
-      "bookingId": "1a2b3c4d5e6f7g8h",
-      "subject": "Humly Integration Meeting",
-      "startDate": "2019-09-01T12:00:00+00:00",
-      "endDate": "2019-09-01T13:00:00+00:00",
-      "confirmed": true,
-      "organizer": "1234abcd5678efgh",
-      "room": {
-        "id": "1a2b3c4d5e6f7g8h",
-        "name": "Room 1",
-        "floor": "1",
-        "capacity": 25,
-        "equipment": {
-          "ac": true,
-          "computer": true,
-          "display": true,
-          "information": null,
-          "lights": true,
-          "minto": true,
-          "projector": true,
-          "teleConference": true,
-          "videoConference": true,
-          "whiteboard": true,
-          "wifi": true,
+  "responseStatus": 200,
+  "responseData": {
+    "status": "success",
+    "data": [
+      {
+        "_id": "1a2b3c4d5e6f7g8h",
+        "id": "ABCDEFGHIJKL1234567890ABCDEFGHIJKLMN1234567890ABCDEFGHIJKLMN",
+        "changeKey": "ABCDEFGHIJKL1234567890AB",
+        "booking": {
+          "startDate": "2019-09-01T12:00:00+00:00",
+          "endDate": "2019-09-01T12:30:00+00:00",
+          "location": "Humly-Room",
+          "startTime": "12:00",
+          "endTime": "12:30",
+          "onlyDate": "2019-09-01",
+          "dateForStatistics": "2019-09-01T12:00:00+00:00",
+          "createdBy": {
+            "name": "HumlyIntegrationUser",
+            "mail": "HumlyIntegrationUser"
+          },
+          "dateCreated": "2019-09-01T11:55:05+00:00",
+          "endType": null,
+          "confirmed": false,
+          "subject": "Humly meeting",
+          "equipment": null,
+          "freeBusyStatus": "Busy",
+          "showConfirm": false,
+          "numberOfExpectedReminderResponses": null,
+          "numberOfReceivedReminderResponses": null,
+          "sendReminderEmailCheck": null,
+          "sendReminderEmailCheckTime": null,
+          "numberOfExpectedCancellationResponses": null,
+          "numberOfReceivedCancellationResponses": null,
+          "sendCancellationEmailCheck": null,
+          "sendCancellationEmailCheckTime": null,
+          "reminderEmailSent": null,
+          "cancellationEmailSent": null,
+          "fetchedOrganizer": null
         }
       }
-    }
-  ]
+    ],
+    "page": {
+      "first": true,
+      "last": true,
+      "size": 10,
+      "totalElements": 1,
+      "totalPages": 1,
+      "number": 1,
+      "numberOfElements": 1
+    },
+    "sort": [
+      {
+        "property": "booking.startDate",
+        "direction": "ASC"
+      }
+    ]
+  }
 }
 ```
+### Type of response data
+
+| Name                | Type    | Comment |
+| ------------------- | ------- | ------- |
+| `responseStatus`    | Number  | Status of HTTP/HTTPS request. |
+| `status`            | Boolean | Status of API response. Can have values: success or error. |
+| `_id`               | String  | Unique Room identifier. |
+| `id`                | String  | Booking system unique identifier. |
+| `changeKey`         | String  | Booking system change key value. |
+| `startDate`         | String  | UTC meeting start date in ISO date format. |
+| `endDate`           | String  | UTC meeting end date in ISO date format. |
+| `location`          | String  | Room name on booking system. |
+| `startTime`         | String  | Meeting start time in 24 hours format (HH24:MI). |
+| `endTime`           | String  | Meeting end time in 24 hours format (HH24:MI). |
+| `onlyDate`          | String  | Date of meeting in YYYY-MM-DD format. |
+| `dateForStatistics` | String  | Date used for statistics processing. |
+| `name`              | String  | Name of user that booked a meeting. |
+| `mail`              | String  | Email of user that booked a meeting if available, otherwise same as name. |
+| `dateCreated`       | String  | UTC date of meeting creation in ISO date format. |
+| `endType`           | String  | Description of meeting end event. |
+| `confirmed`         | Boolean | `true` if meeting is checked in. |
+| `subject`           | String  | Meeting subject. |
+| `freeBusyStatus`    | String  | Booking system specific value. |
+| `showConfirm`       | Boolean | `true` if check in functionality is enabled. |
+| `sendReminderEmailCheck` | Boolean | `true` if Send email remainder functionality is enabled. |
+| `sendReminderEmailCheckTime` | Number  | Used to calculate a time when to send check in remainder email. Provided in number of minutes before meeting start. |
+| `sendCancellationEmailCheck` | Boolean | `true` if email should be send to meeting organizer after meeting is automatically deleted after checking period. |
+| `reminderEmailSent` | Boolean | `true` if remainder email has been sent to organizer 5 minutes before meeting start. |
+| `cancellationEmailSent` | Boolean | `true` if cancellation email has been sent to organizer after meeting is automatically deleted after check in period. |
+| `fetchedOrganizer`  | String  | Organizer fetched from booking system. |
 
 ## <a name="createMeeting"></a> Create a meeting – <sub>`POST {HCP_URL}/api/v1/bookings`</sub>
 
@@ -1337,9 +1487,45 @@ The id is unique identifier of newly created meeting. id refers to _id in bookin
 
 ``` json
 {
-  "status": 201,
-  "data": {
-    "id": "1x1x2y2y3z3z"
+  "responseStatus": 201,
+  "responseData": {
+    "status": "success",
+    "data": {
+      "_id": "1a2b3c4d5e6f7g8h",
+      "id": "ABCDEFGHIJKL1234567890ABCDEFGHIJKLMN1234567890ABCDEFGHIJKLMN",
+      "changeKey": "ABCDEFGHIJKL1234567890AB",
+      "booking": {
+        "startDate": "2019-09-01T12:00:00+00:00",
+        "endDate": "2019-09-01T12:30:00+00:00",
+        "location": "Humly-Room",
+        "startTime": "12:00",
+        "endTime": "12:30",
+        "onlyDate": "2019-09-01",
+        "dateForStatistics": "2019-09-01T12:00:00+00:00",
+        "createdBy": {
+          "name": "HumlyIntegrationUser",
+          "mail": "HumlyIntegrationUser"
+        },
+        "dateCreated": "2019-09-01T11:55:05+00:00",
+        "endType": null,
+        "confirmed": false,
+        "subject": "Humly meeting",
+        "equipment": null,
+        "freeBusyStatus": "Busy",
+        "showConfirm": false,
+        "numberOfExpectedReminderResponses": null,
+        "numberOfReceivedReminderResponses": null,
+        "sendReminderEmailCheck": null,
+        "sendReminderEmailCheckTime": null,
+        "numberOfExpectedCancellationResponses": null,
+        "numberOfReceivedCancellationResponses": null,
+        "sendCancellationEmailCheck": null,
+        "sendCancellationEmailCheckTime": null,
+        "reminderEmailSent": null,
+        "cancellationEmailSent": null,
+        "fetchedOrganizer": null
+      }
+    }
   }
 }
 ```
@@ -1349,10 +1535,10 @@ The id is unique identifier of newly created meeting. id refers to _id in bookin
 ```json
 // A meeting already exists
 {
-  "status": 400,
-  "data": {
-    "message": "MeetingSuccessExists [400]",
-    "status": "failure"
+  "responseStatus": 400,
+  "responseData": {
+    "status": "error",
+    "message": "Unfortunately another user just booked this room"
   }
 }
 ```
@@ -1396,8 +1582,46 @@ This endpoint is used to update existing meetings. Through it you can update mee
 
 ```json
 {
-  "status": 200,
-  "data": ""
+  "responseStatus": 200,
+  "responseData": {
+    "status": "success",
+    "data": {
+      "_id": "1a2b3c4d5e6f7g8h",
+      "id": "ABCDEFGHIJKL1234567890ABCDEFGHIJKLMN1234567890ABCDEFGHIJKLMN",
+      "changeKey": "ABCDEFGHIJKL1234567890AB",
+      "booking": {
+        "startDate": "2019-09-01T12:00:00+00:00",
+        "endDate": "2019-09-01T14:00:00+00:00",
+        "location": "Humly-Room",
+        "startTime": "12:00",
+        "endTime": "14:00",
+        "onlyDate": "2019-09-01",
+        "dateForStatistics": "2019-09-01T12:00:00+00:00",
+        "createdBy": {
+          "name": "HumlyIntegrationUser",
+          "mail": "HumlyIntegrationUser"
+        },
+        "dateCreated": "2019-09-01T11:55:05+00:00",
+        "endType": null,
+        "confirmed": false,
+        "subject": "Humly meeting",
+        "equipment": null,
+        "freeBusyStatus": "Busy",
+        "showConfirm": false,
+        "numberOfExpectedReminderResponses": null,
+        "numberOfReceivedReminderResponses": null,
+        "sendReminderEmailCheck": null,
+        "sendReminderEmailCheckTime": null,
+        "numberOfExpectedCancellationResponses": null,
+        "numberOfReceivedCancellationResponses": null,
+        "sendCancellationEmailCheck": null,
+        "sendCancellationEmailCheckTime": null,
+        "reminderEmailSent": null,
+        "cancellationEmailSent": null,
+        "fetchedOrganizer": null
+      }
+    }
+  }
 }
 ```
 
@@ -1406,8 +1630,8 @@ This endpoint is used to update existing meetings. Through it you can update mee
 ```json
 // Error while extending meeting. Conflict with another existing meeting.
 {
-  "status": 400,
-  "data": {
+  "responseStatus": 400,
+  "responseData": {
     "message": "MeetingInvalidExtend [400]",
     "status": "failure"
   }
@@ -1442,8 +1666,47 @@ Through this endpoint you can delete existing meetings.
 
 ```json
 {
-  "status": 200,
-  "data": ""
+  "responseStatus": 200,
+  "responseData": {
+    "status": "success",
+    "data": {
+      "_id": "1a2b3c4d5e6f7g8h",
+      "id": "ABCDEFGHIJKL1234567890ABCDEFGHIJKLMN1234567890ABCDEFGHIJKLMN=",
+      "changeKey": "ABCDEFGHIJKL1234567890AB",
+      "booking": {
+        "location": "Humly-Room",
+        "startDate": "2019-09-01T12:00:00+00:00",
+        "endDate": "2019-09-01T12:30:00+00:00",
+        "dateForStatistics": "2019-09-01T12:00:00+00:00",
+        "subject": "Humly meeting",
+        "body": "Humly-Room",
+        "onlyDate": "2019-09-01",
+        "startTime": "12:0",
+        "endTime": "12:30",
+        "createdBy": {
+          "name": "HumlyIntegrationUser",
+          "mail": "HumlyIntegrationUser"
+        },
+        "sensitivity": "Normal",
+        "confirmed": false,
+        "showConfirm": false,
+        "numberOfExpectedReminderResponses": null,
+        "numberOfReceivedReminderResponses": null,
+        "sendReminderEmailCheck": null,
+        "sendReminderEmailCheckTime": null,
+        "numberOfExpectedCancellationResponses": null,
+        "numberOfReceivedCancellationResponses": null,
+        "sendCancellationEmailCheck": null,
+        "sendCancellationEmailCheckTime": null,
+        "reminderEmailSent": null,
+        "cancellationEmailSent": null,
+        "fetchedOrganizer": null,
+        "endType": null,
+        "freeBusyStatus": "Busy",
+        "isDeleted": true
+      }
+    }
+  }
 }
 ```
 
@@ -1475,13 +1738,46 @@ This endpoint is used to check-in an existing meeting.
 
 ```json
 {
-  "status": 200,
-  "data": {
-    "body": {
-      "_id": "55hh66ii77jj88kk"
-    },
-    "message": "Booking is successfully confirmed!",
-    "type": "success"
+  "responseStatus": 200,
+  "responseData": {
+    "status": "success",
+    "data": {
+      "_id": "1a2b3c4d5e6f7g8h",
+      "id": "ABCDEFGHIJKL1234567890ABCDEFGHIJKLMN1234567890ABCDEFGHIJKLMN=",
+      "changeKey": "ABCDEFGHIJKL1234567890AB",
+      "booking": {
+        "location": "Humly-Room",
+        "startDate": "2019-09-01T12:00:00+00:00",
+        "endDate": "2019-09-01T12:30:00+00:00",
+        "dateForStatistics": "2019-09-01T12:00:00+00:00",
+        "subject": "Humly meeting",
+        "body": "Humly-Room",
+        "onlyDate": "2019-09-01",
+        "startTime": "12:0",
+        "endTime": "12:30",
+        "createdBy": {
+          "name": "HumlyIntegrationUser",
+          "mail": "HumlyIntegrationUser"
+        },
+        "sensitivity": "Normal",
+        "confirmed": true,
+        "showConfirm": false,
+        "numberOfExpectedReminderResponses": null,
+        "numberOfReceivedReminderResponses": null,
+        "sendReminderEmailCheck": null,
+        "sendReminderEmailCheckTime": null,
+        "numberOfExpectedCancellationResponses": null,
+        "numberOfReceivedCancellationResponses": null,
+        "sendCancellationEmailCheck": null,
+        "sendCancellationEmailCheckTime": null,
+        "reminderEmailSent": null,
+        "cancellationEmailSent": null,
+        "fetchedOrganizer": null,
+        "endType": null,
+        "freeBusyStatus": "Busy",
+        "timeOfConfirmation": "2019-09-01T11:55:00+00:00"
+      }
+    }
   }
 }
 ```
@@ -1491,22 +1787,137 @@ This endpoint is used to check-in an existing meeting.
 ```json
 // Booking is already confirmed
 {
-  "status": 200,
-  "data": {
-    "body": {
-      "_id": "55hh66ii77jj88kk "
-    },
-    "message": "Booking has already been confirmed!",
-    "type": "error"
+  "responseStatus": 500,
+  "responseData": {
+    "status": "error",
+    "message": "Booking has already been confirmed!"
   }
 }
 
 // Wrong booking id
 {
-  "status": 404,
-  "data": {
-    "message": "badRequest",
-    "status": "failure"
+  "responseStatus": 404,
+  "responseData": {
+    "status": "error",
+    "message": "Booking does not exist!: non-existing-meeting-id"
   }
 }
 ```
+
+## <a name="structures"></a> Get structures data - `GET {HCP_URL}/api/v1/structures`
+
+### Request example
+
+You can create Structures Resource file to communicate with REST API (REACT example).
+
+```js
+import Axios from "axios";
+
+export default class StructuresResource {
+    API_URL = "https://localhost:3002/api/v1";
+
+    getAllStructures(userId, authToken, queryParams) {
+        const requestOptions = {
+            headers: {
+                "X-User-Id": userId,
+                "X-Auth-Token": authToken,
+            },
+            params: {
+                pageNumber: queryParams.pageNumber,
+                pageSize: queryParams.pageSize,
+                sort: queryParams.sort,
+            },
+        };
+
+        return Axios.get(
+            `${this.API_URL}/structures`,
+            requestOptions
+        ).then(response => (
+            { responseStatus: response.status, responseData: response.data }
+        )).catch((error) => {
+            const errorResponse = {
+                responseStatus: error.response.status,
+                responseData: error.response.data,
+            };
+            throw errorResponse;
+        });
+    }
+}
+
+```
+
+### Response example
+
+```json
+{
+  "responseStatus": 200,
+  "responseData": {
+    "status": "success",
+    "data": [
+      {
+        "_id": "1234567890",
+        "name": "Humly",
+        "level": 1,
+        "parent": 0,
+        "cities": [
+          {
+            "_id": "abcdefghijkl",
+            "name": "Rest",
+            "level": 2,
+            "parent": "1234567890",
+            "buildings": [
+              {
+                "_id": "0987654321",
+                "name": "Integration",
+                "level": 3,
+                "parent": "abcdefghijkl",
+                "floors": [
+                  {
+                    "_id": "lkjihgfedcba",
+                    "name": "Level 1",
+                    "level": 4,
+                    "parent": "0987654321",
+                    "roomIds": [
+                      "abcd1234efgh5678",
+                      "1234abcd5678efgh",
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "page": {
+      "first": true,
+      "last": true,
+      "size": 10,
+      "totalElements": 1,
+      "totalPages": 1,
+      "number": 1,
+      "numberOfElements": 1
+    },
+    "sort": [
+      {
+        "property": "name",
+        "direction": "ASC"
+      }
+    ]
+  }
+}
+```
+### Type of response data
+
+| Name                | Type    | Comment |
+| ------------------- | ------- | ------- |
+| `responseStatus`    | Number  | Status of HTTP/HTTPS request. |
+| `status`            | Boolean | Status of API response. Can have values: success or error. |
+| `_id`               | String  | Structure unique identifier. |
+| `name`              | String  | Name of Country, City, Building or Floor. |
+| `level`             | String  | Values from 1 to 4 depicting Country, City, Building or Floor. Value 1 represent that object holds Country data. Value 2 is for City etc. |
+| `parent`            | String  | Unique identifier of parent. Referencing parents _id property. |
+| `cities`            | Array   | Array of Cities objects. |
+| `buildings`         | Array   | Array of Building objects. |
+| `floors`            | Array   | Array of Flor objects. |
+| `roomIds`           | Array   | Array of room unique identifiers that are assigned to floor. |

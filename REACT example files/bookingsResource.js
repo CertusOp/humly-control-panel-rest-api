@@ -3,7 +3,7 @@ import Axios from "axios";
 export default class BookingsResource {
     API_URL = "https://localhost:3002/api/v1";
 
-    getOrganizerBookings(userId, authToken, startDate, endDate) {
+    getOrganizerBookings(userId, authToken, queryParams) {
         const requestOptions = {
             headers: {
                 "X-User-Id": userId,
@@ -11,8 +11,11 @@ export default class BookingsResource {
             },
             params: {
                 organizerUser: userId,
-                startDate,
-                endDate,
+                startDate: queryParams.startDate,
+                endDate: queryParams.endDate,
+                pageNumber: queryParams.pageNumber,
+                pageSize: queryParams.pageSize,
+                sort: queryParams.sort,
             },
         };
 
@@ -20,11 +23,11 @@ export default class BookingsResource {
             `${this.API_URL}/bookings`,
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });
@@ -44,11 +47,11 @@ export default class BookingsResource {
             bookingData,
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });
@@ -68,11 +71,11 @@ export default class BookingsResource {
             bookingData,
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });
@@ -90,11 +93,11 @@ export default class BookingsResource {
             `${this.API_URL}/bookings/${bookingId}`,
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });
@@ -116,11 +119,11 @@ export default class BookingsResource {
             null,
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });

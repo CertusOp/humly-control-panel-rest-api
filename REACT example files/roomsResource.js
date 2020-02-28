@@ -16,9 +16,9 @@ export default class RoomsResource {
                 floor: queryParams.floor,
                 minNumberOfSeats: queryParams.minNumberOfSeats,
                 maxNumberOfSeats: queryParams.maxNumberOfSeats,
-                includeBookings: queryParams.includeBookings,
-                startBookings: queryParams.startBookings,
-                endBookings: queryParams.endBookings,
+                pageNumber: queryParams.pageNumber,
+                pageSize: queryParams.pageSize,
+                sort: queryParams.sort,
             },
         };
 
@@ -26,11 +26,11 @@ export default class RoomsResource {
             `${this.API_URL}/rooms`,
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });
@@ -49,11 +49,11 @@ export default class RoomsResource {
             `${this.API_URL}/rooms/${roomId}`,
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });
@@ -72,6 +72,9 @@ export default class RoomsResource {
                 location: queryParams.location,
                 equipment: queryParams.equipment,
                 customEquipment: queryParams.customEquipment,
+                pageNumber: queryParams.pageNumber,
+                pageSize: queryParams.pageSize,
+                sort: queryParams.sort,
             },
         };
 
@@ -79,11 +82,11 @@ export default class RoomsResource {
             `${this.API_URL}/rooms/available`,
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });
@@ -101,11 +104,11 @@ export default class RoomsResource {
             `${this.API_URL}/rooms/${roomId}/equipment`,
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });
@@ -125,11 +128,11 @@ export default class RoomsResource {
             equipmentData,
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });

@@ -17,21 +17,26 @@ export default class UsersResource {
             userData,
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });
     }
 
-    getUsers(userId, authToken) {
+    getUsers(userId, authToken, queryParams) {
         const requestOptions = {
             headers: {
                 "X-User-Id": userId,
                 "X-Auth-Token": authToken,
+            },
+            params: {
+                pageNumber: queryParams.pageNumber,
+                pageSize: queryParams.pageSize,
+                sort: queryParams.sort,
             },
         };
 
@@ -39,11 +44,11 @@ export default class UsersResource {
             `${this.API_URL}/users/integration`,
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });
@@ -61,11 +66,11 @@ export default class UsersResource {
             `${this.API_URL}/users/integration/${apiIntegrationUserId}`,
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });

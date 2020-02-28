@@ -15,11 +15,11 @@ export default class AuthResource {
             { username, password },
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });
@@ -37,11 +37,11 @@ export default class AuthResource {
             `${this.API_URL}/logout`,
             requestOptions
         ).then(response => (
-            { status: response.status, data: response.data }
+            { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
             const errorResponse = {
-                status: error.response.status,
-                data: error.response.data,
+                responseStatus: error.response.status,
+                responseData: error.response.data,
             };
             throw errorResponse;
         });

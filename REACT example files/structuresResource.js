@@ -1,20 +1,23 @@
 import Axios from "axios";
 
-export default class ClientGroupsResource {
+export default class StructuresResource {
     API_URL = "https://localhost:3002/api/v1";
 
-    createClientGroup(userId, authToken, clientGroupData) {
+    getAllStructures(userId, authToken, queryParams) {
         const requestOptions = {
             headers: {
-                "Content-Type": "application/json",
                 "X-User-Id": userId,
                 "X-Auth-Token": authToken,
             },
+            params: {
+                pageNumber: queryParams.pageNumber,
+                pageSize: queryParams.pageSize,
+                sort: queryParams.sort,
+            },
         };
 
-        return Axios.post(
-            `${this.API_URL}/clientGroups`,
-            clientGroupData,
+        return Axios.get(
+            `${this.API_URL}/structures`,
             requestOptions
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }

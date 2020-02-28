@@ -55,12 +55,12 @@
 							]
 						},
 						"url": {
-							"raw": "https://localhost:3002/api/v1/login",
+							"raw": "https://localhost:{{port}}/api/v1/login",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "3002",
+							"port": "{{port}}",
 							"path": [
 								"api",
 								"v1",
@@ -105,12 +105,12 @@
 							}
 						],
 						"url": {
-							"raw": "https://localhost:3002/api/v1/logout",
+							"raw": "https://localhost:{{port}}/api/v1/logout",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "3002",
+							"port": "{{port}}",
 							"path": [
 								"api",
 								"v1",
@@ -120,7 +120,8 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "Client Groups",
@@ -135,7 +136,7 @@
 								"exec": [
 									"if (pm.response.status === \"Created\") {\r",
 									"    var jsonData = JSON.parse(responseBody);\r",
-									"    postman.setEnvironmentVariable(\"newClientGroupToken\", jsonData.groupToken);\r",
+									"    postman.setEnvironmentVariable(\"newClientGroupToken\", jsonData.data.groupToken);\r",
 									"}"
 								],
 								"type": "text/javascript"
@@ -176,12 +177,12 @@
 							]
 						},
 						"url": {
-							"raw": "https://localhost:3002/api/v1/clientGroups",
+							"raw": "https://localhost:{{port}}/api/v1/clientGroups",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "3002",
+							"port": "{{port}}",
 							"path": [
 								"api",
 								"v1",
@@ -191,7 +192,8 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "Users",
@@ -237,12 +239,12 @@
 							]
 						},
 						"url": {
-							"raw": "https://localhost:3002/api/v1/users/integration",
+							"raw": "https://localhost:{{port}}/api/v1/users/integration",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "3002",
+							"port": "{{port}}",
 							"path": [
 								"api",
 								"v1",
@@ -255,9 +257,6 @@
 				},
 				{
 					"name": "API Integration Users",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
 						"auth": {
 							"type": "noauth"
@@ -275,22 +274,35 @@
 								"type": "text"
 							}
 						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": []
-						},
 						"url": {
-							"raw": "https://localhost:3002/api/v1/users/integration",
+							"raw": "https://localhost:{{port}}/api/v1/users/integration?",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "3002",
+							"port": "{{port}}",
 							"path": [
 								"api",
 								"v1",
 								"users",
 								"integration"
+							],
+							"query": [
+								{
+									"key": "pageNumber",
+									"value": "number",
+									"disabled": true
+								},
+								{
+									"key": "pageSize",
+									"value": "number",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "{ \"any.property\": \"desc/asc\", \"any.property\": \"desc/asc\" }",
+									"disabled": true
+								}
 							]
 						}
 					},
@@ -323,12 +335,12 @@
 							"urlencoded": []
 						},
 						"url": {
-							"raw": "https://localhost:3002/api/v1/users/integration/{{XUserId}}",
+							"raw": "https://localhost:{{port}}/api/v1/users/integration/{{XUserId}}",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "3002",
+							"port": "{{port}}",
 							"path": [
 								"api",
 								"v1",
@@ -340,58 +352,14 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "Bookings",
 			"item": [
 				{
-					"name": "All Bookings",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "X-User-Id",
-								"value": "{{XUserId}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Token",
-								"value": "{{XAuthToken}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": []
-						},
-						"url": {
-							"raw": "https://localhost:3002/api/v1/bookings",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "3002",
-							"path": [
-								"api",
-								"v1",
-								"bookings"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Bookings for organizer",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
 						"auth": {
 							"type": "noauth"
@@ -407,19 +375,21 @@
 								"key": "X-Auth-Token",
 								"value": "{{XAuthToken}}",
 								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
 							}
 						],
-						"body": {
-							"mode": "formdata",
-							"formdata": []
-						},
 						"url": {
-							"raw": "https://localhost:3002/api/v1/bookings?organizerUser={{XUserId}}",
+							"raw": "https://localhost:{{port}}/api/v1/bookings?organizerUser={{XUserId}}",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "3002",
+							"port": "{{port}}",
 							"path": [
 								"api",
 								"v1",
@@ -439,6 +409,21 @@
 									"key": "endDate",
 									"value": "YYYY-MM-DDTHH:MI:SS%2B00:00",
 									"disabled": true
+								},
+								{
+									"key": "pageNumber",
+									"value": "number",
+									"disabled": true
+								},
+								{
+									"key": "pageSize",
+									"value": "number",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "{ \"any.property\": \"desc/asc\", \"any.property\": \"desc/asc\" }",
+									"disabled": true
 								}
 							]
 						}
@@ -455,7 +440,7 @@
 								"exec": [
 									"if (pm.response.status === \"Created\") {\r",
 									"    var jsonData = JSON.parse(responseBody);\r",
-									"    postman.setEnvironmentVariable(\"bookingId\", jsonData.id);\r",
+									"    postman.setEnvironmentVariable(\"bookingId\", jsonData.data._id);\r",
 									"}"
 								],
 								"type": "text/javascript"
@@ -481,7 +466,7 @@
 							{
 								"key": "Content-Type",
 								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
+								"value": "text/plain",
 								"type": "text"
 							}
 						],
@@ -496,27 +481,35 @@
 								{
 									"key": "startDate",
 									"value": "YYYY-MM-DDTHH:MI:SS+00:00",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "endDate",
 									"value": "YYYY-MM-DDTHH:MI:SS+00:00",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "subject",
-									"value": "Humly Integration Test",
-									"type": "text"
+									"value": "Humly meeting",
+									"type": "text",
+									"disabled": true
 								}
-							]
+							],
+							"options": {
+								"raw": {
+									"language": "text"
+								}
+							}
 						},
 						"url": {
-							"raw": "https://localhost:3002/api/v1/bookings",
+							"raw": "https://localhost:{{port}}/api/v1/bookings",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "3002",
+							"port": "{{port}}",
 							"path": [
 								"api",
 								"v1",
@@ -570,12 +563,12 @@
 							"urlencoded": []
 						},
 						"url": {
-							"raw": "https://localhost:3002/api/v1/bookings/{{bookingId}}",
+							"raw": "https://localhost:{{port}}/api/v1/bookings/{{bookingId}}",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "3002",
+							"port": "{{port}}",
 							"path": [
 								"api",
 								"v1",
@@ -617,27 +610,30 @@
 								{
 									"key": "startDate",
 									"value": "YYYY-MM-DDTHH:MI:SS+00:00",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "endDate",
 									"value": "YYYY-MM-DDTHH:MI:SS+00:00",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "subject",
-									"value": "Humly Integration Test",
-									"type": "text"
+									"value": "string",
+									"type": "text",
+									"disabled": true
 								}
 							]
 						},
 						"url": {
-							"raw": "https://localhost:3002/api/v1/bookings/{{bookingId}}",
+							"raw": "https://localhost:{{port}}/api/v1/bookings/{{bookingId}}",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "3002",
+							"port": "{{port}}",
 							"path": [
 								"api",
 								"v1",
@@ -672,12 +668,12 @@
 							"urlencoded": []
 						},
 						"url": {
-							"raw": "https://localhost:3002/api/v1/bookings/checkedIn?bookingId={{bookingId}}",
+							"raw": "https://localhost:{{port}}/api/v1/bookings/checkedIn?bookingId={{bookingId}}",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "3002",
+							"port": "{{port}}",
 							"path": [
 								"api",
 								"v1",
@@ -694,7 +690,8 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "Rooms",
@@ -708,8 +705,8 @@
 								"id": "9be8830b-1405-4209-80d0-7d65abe3b9f0",
 								"exec": [
 									"var jsonData = JSON.parse(responseBody);\r",
-									"if (pm.response.status === \"OK\" && jsonData.length > 0) {\r",
-									"    postman.setEnvironmentVariable(\"roomId\", jsonData[0]._id);\r",
+									"if (pm.response.status === \"OK\" && jsonData.data.length > 0) {\r",
+									"    postman.setEnvironmentVariable(\"roomId\", jsonData.data[0]._id);\r",
 									"}"
 								],
 								"type": "text/javascript"
@@ -741,12 +738,12 @@
 							"formdata": []
 						},
 						"url": {
-							"raw": "https://localhost:3002/api/v1/rooms?",
+							"raw": "https://localhost:{{port}}/api/v1/rooms?",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "3002",
+							"port": "{{port}}",
 							"path": [
 								"api",
 								"v1",
@@ -784,28 +781,18 @@
 									"disabled": true
 								},
 								{
-									"key": "includeBookings",
-									"value": "boolean",
-									"disabled": true
-								},
-								{
-									"key": "startBookings",
-									"value": "YYYY-MM-DDTHH:MI:SS%2B00:00",
-									"disabled": true
-								},
-								{
-									"key": "endBookings",
-									"value": "YYYY-MM-DDTHH:MI:SS%2B00:00",
-									"disabled": true
-								},
-								{
-									"key": "start",
+									"key": "pageNumber",
 									"value": "number",
 									"disabled": true
 								},
 								{
-									"key": "limit",
+									"key": "pageSize",
 									"value": "number",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "{ \"any.property\": \"desc/asc\", \"any.property\": \"desc/asc\" }",
 									"disabled": true
 								}
 							]
@@ -840,12 +827,12 @@
 							"formdata": []
 						},
 						"url": {
-							"raw": "https://localhost:3002/api/v1/rooms/{{roomId}}",
+							"raw": "https://localhost:{{port}}/api/v1/rooms/{{roomId}}",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "3002",
+							"port": "{{port}}",
 							"path": [
 								"api",
 								"v1",
@@ -886,12 +873,12 @@
 							"urlencoded": []
 						},
 						"url": {
-							"raw": "https://localhost:3002/api/v1/rooms/available?",
+							"raw": "https://localhost:{{port}}/api/v1/rooms/available?",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "3002",
+							"port": "{{port}}",
 							"path": [
 								"api",
 								"v1",
@@ -927,6 +914,21 @@
 								{
 									"key": "customEquipment",
 									"value": "[{\n\"_id\": \"%Custom Equipment ID%\",\n\"isChecked\": boolean\n}]",
+									"disabled": true
+								},
+								{
+									"key": "pageNumber",
+									"value": "number",
+									"disabled": true
+								},
+								{
+									"key": "pageSize",
+									"value": "number",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "{ \"any.property\": \"desc/asc\", \"any.property\": \"desc/asc\" }",
 									"disabled": true
 								}
 							]
@@ -972,12 +974,12 @@
 							]
 						},
 						"url": {
-							"raw": "https://localhost:3002/api/v1/rooms/{{roomId}}/equipment",
+							"raw": "https://localhost:{{port}}/api/v1/rooms/{{roomId}}/equipment",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "3002",
+							"port": "{{port}}",
 							"path": [
 								"api",
 								"v1",
@@ -1013,12 +1015,12 @@
 							"urlencoded": []
 						},
 						"url": {
-							"raw": "https://localhost:3002/api/v1/rooms/{{roomId}}/equipment",
+							"raw": "https://localhost:{{port}}/api/v1/rooms/{{roomId}}/equipment",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "3002",
+							"port": "{{port}}",
 							"path": [
 								"api",
 								"v1",
@@ -1030,7 +1032,8 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "Structures",
@@ -1062,22 +1065,41 @@
 							"formdata": []
 						},
 						"url": {
-							"raw": "https://localhost:3002/api/v1/structures",
+							"raw": "https://localhost:{{port}}/api/v1/structures",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "3002",
+							"port": "{{port}}",
 							"path": [
 								"api",
 								"v1",
 								"structures"
+							],
+							"query": [
+								{
+									"key": "pageNumber",
+									"value": "number",
+									"disabled": true
+								},
+								{
+									"key": "pageSize",
+									"value": "number",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "{ \"any.property\": \"desc/asc\", \"any.property\": \"desc/asc\" }",
+									"disabled": true
+								}
 							]
 						}
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		}
-	]
+	],
+	"protocolProfileBehavior": {}
 }
