@@ -638,6 +638,12 @@ All query parameters are optional.
 | `pageSize`         | Number  | Limit size of rooms array (page size) that will be returned. Last page can be partially filled.
 | `sort`             | String  | “Stringified” representation of JSON object. Format: <br>`{`<br>`  "any.property": "asc/desc",`<br>`  "any.property": asc/desc`<br>`}`<br>
 
+### Querying for a single room
+
+URL to get data about specific room should look like: `{HCP_URL}/api/v1/rooms/{uniqueRoomIdentifier}`
+where {uniqueRoomIdentifier} can be `_id` property from rooms collection document, or `id` property which represent room unique identifier on the booking system.
+
+
 ### Request example
 
 Following example is provided for REACT applications.
@@ -682,7 +688,7 @@ export default class RoomsResource {
         });
     }
 
-    getRoom(userId, authToken, roomId) {
+    getRoom(userId, authToken, uniqueRoomIdentifier) {
         const requestOptions = {
             headers: {
                 "Content-Type": "application/json",
@@ -692,7 +698,7 @@ export default class RoomsResource {
         };
 
         return Axios.get(
-            `${this.API_URL}/rooms/${roomId}`,
+            `${this.API_URL}/rooms/${uniqueRoomIdentifier}`,
             requestOptions
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }

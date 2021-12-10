@@ -36,7 +36,7 @@ export default class RoomsResource {
         });
     }
 
-    getRoom(userId, authToken, roomId) {
+    getRoom(userId, authToken, uniqueRoomIdentifier) {
         const requestOptions = {
             headers: {
                 "Content-Type": "application/json",
@@ -46,7 +46,7 @@ export default class RoomsResource {
         };
 
         return Axios.get(
-            `${this.API_URL}/rooms/${roomId}`,
+            `${this.API_URL}/rooms/${uniqueRoomIdentifier}`,
             requestOptions
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }
