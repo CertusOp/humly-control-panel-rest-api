@@ -2,21 +2,20 @@ import Axios from "axios";
 
 import RequestError from "./requestError";
 
-export default class ClientGroupsResource {
+export default class ServerInfoResource {
     API_URL = "https://localhost:3002/api/v1";
 
-    createClientGroup(userId, authToken, clientGroupData) {
+    getServerInfo(userId, authToken) {
         const requestOptions = {
+            // optional
             headers: {
-                "Content-Type": "application/json",
                 "X-User-Id": userId,
                 "X-Auth-Token": authToken,
             },
         };
 
-        return Axios.post(
-            `${this.API_URL}/clientGroups`,
-            clientGroupData,
+        return Axios.get(
+            `${this.API_URL}/info`,
             requestOptions
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }

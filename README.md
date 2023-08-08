@@ -8,6 +8,7 @@ API documentation for Humly Control Panel version: `v1.0.x`
 - [Register a client group - `POST {HCP_URL}/api/v1/clientGroups`](#clientGroups)
 - [Working with “users” API - `{HCP_URL}/api/v1/users/integration`](#users)
 - [Get rooms data - `{HCP_URL}/api/v1/rooms`](#rooms)
+- [Get desks data - `{HCP_URL}/api/v1/desks`](#desks)
 - [Working with “bookings” API - `{HCP_URL}/api/v1/bookings`](#bookings)
 - [Get organizer meetings – `GET {HCP_URL}/api/v1/bookings`](#getMeetings)
 - [Create a meeting - `POST {HCP_URL}/api/v1/bookings`](#createMeeting)
@@ -82,6 +83,8 @@ You can create Auth Resource file to communicate with REST API.
 ```js
 import Axios from "axios";
 
+import RequestError from "./requestError";
+
 export default class AuthResource {
     API_URL = "https://localhost:3002/api/v1";
 
@@ -99,11 +102,11 @@ export default class AuthResource {
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
-            const errorResponse = {
-                responseStatus: error.response.status,
-                responseData: error.response.data,
-            };
-            throw errorResponse;
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
         });
     }
 
@@ -121,11 +124,11 @@ export default class AuthResource {
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
-            const errorResponse = {
-                responseStatus: error.response.status,
-                responseData: error.response.data,
-            };
-            throw errorResponse;
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
         });
     }
 }
@@ -267,6 +270,8 @@ You can create Client Group Resource file to communicate with REST API (REACT ex
 ```js
 import Axios from "axios";
 
+import RequestError from "./requestError";
+
 export default class ClientGroupsResource {
     API_URL = "https://localhost:3002/api/v1";
 
@@ -286,11 +291,11 @@ export default class ClientGroupsResource {
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
-            const errorResponse = {
-                responseStatus: error.response.status,
-                responseData: error.response.data,
-            };
-            throw errorResponse;
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
         });
     }
 }
@@ -385,6 +390,8 @@ You can create Users Resource file to use all Users related API-s. Provided exam
 ```js
 import Axios from "axios";
 
+import RequestError from "./requestError";
+
 export default class UsersResource {
     API_URL = "https://localhost:3002/api/v1";
 
@@ -404,11 +411,11 @@ export default class UsersResource {
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
-            const errorResponse = {
-                responseStatus: error.response.status,
-                responseData: error.response.data,
-            };
-            throw errorResponse;
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
         });
     }
 
@@ -431,11 +438,11 @@ export default class UsersResource {
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
-            const errorResponse = {
-                responseStatus: error.response.status,
-                responseData: error.response.data,
-            };
-            throw errorResponse;
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
         });
     }
 
@@ -453,11 +460,11 @@ export default class UsersResource {
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
-            const errorResponse = {
-                responseStatus: error.response.status,
-                responseData: error.response.data,
-            };
-            throw errorResponse;
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
         });
     }
 }
@@ -503,13 +510,16 @@ export default class UsersResource {
         "profile": {
           "clientGroup": "DevAPIIntegration",
           "description": "",
-          "groupToken": "1234567890abcdefghij",
           "name": "defaultDevIntegrationUser",
-          "originalToken": null,
+          "type": "APIIntegration"
+        },
+        "authentication": {
           "pin": "",
           "rfid": "",
-          "type": "APIIntegration"
-        }
+          "originalToken": null,
+          "groupToken": "1234567890abcdefghij"
+        },
+        "userAgentOnLastLogin": "PostmanRuntime/7.28.4"
       },
       {
         "_id": "3333bbbb4444",
@@ -518,13 +528,16 @@ export default class UsersResource {
         "profile": {
           "clientGroup": "Humly Integration Group",
           "description": "",
-          "groupToken": "1234abcd5678efgh1234ijkl",
           "name": "Humly Integration User",
-          "originalToken": null,
+          "type": "APIIntegration"
+        },
+        "authentication": {
           "pin": "",
           "rfid": "",
-          "type": "APIIntegration"
-        }
+          "originalToken": null,
+          "groupToken": "1234567890abcdefghij"
+        },
+        "userAgentOnLastLogin": "PostmanRuntime/7.28.4"
       }
     ],
     "page": {
@@ -557,13 +570,16 @@ export default class UsersResource {
       "profile": {
         "clientGroup": "DevAPIIntegration",
         "description": "",
-        "groupToken": "1234567890abcdefghij",
         "name": "defaultDevIntegrationUser",
-        "originalToken": null,
+        "type": "APIIntegration"
+      },
+      "authentication": {
         "pin": "",
         "rfid": "",
-        "type": "APIIntegration"
-      }
+        "originalToken": null,
+        "groupToken": "1234567890abcdefghij"
+      },
+      "userAgentOnLastLogin": "PostmanRuntime/7.28.4"
     }
   }
 }
@@ -632,9 +648,13 @@ All query parameters are optional.
 | `city`             | String  | Name of City that rooms belong to. If provided, then `country` parameter should be provided too.
 | `building`         | String  | Name of Building that rooms belongs to. If provided, then `country` and `city` parameters should be provided too.
 | `floor`            | String  | Name of Floor that rooms belong to. If provided, then `country`, `city` and `building` parameters should be provided too.
+| `startDate`        | String  | Date and time in YYYY-MM-DDThh:mm:ss+00:00 format. Used in combination with status to get resources with specific status in the period.
+| `endDate`          | String  | Date and time in YYYY-MM-DDThh:mm:ss+00:00 format.Used in combination with status to get resources with specific status in the period.
+| `status`           | String  | Room status. Accepts: available, busy or all. Default is all.
 | `minNumberOfSeats` | Number  | Minimum required seats in room.
 | `maxNumberOfSeats` | Number  | Maximum required seats in room.
-| `pageNumber`       | Number  | Get rooms data starting from this page. Pages are count from 1.
+| `roomIdentifier`   | String  | Unique room identifier like _id, id, or email.
+| `assignedToMe`     | Boolean | If authenticated user needs to get desks managed by her/him. Accepts: true and false. Default is false.| `pageNumber`       | Number  | Get rooms data starting from this page. Pages are count from 1.
 | `pageSize`         | Number  | Limit size of rooms array (page size) that will be returned. Last page can be partially filled.
 | `sort`             | String  | “Stringified” representation of JSON object. Format: <br>`{`<br>`  "any.property": "asc/desc",`<br>`  "any.property": asc/desc`<br>`}`<br>
 
@@ -652,6 +672,8 @@ You can create Rooms Resource file to communicate with REST API.
 ```js
 import Axios from "axios";
 
+import RequestError from "./requestError";
+
 export default class RoomsResource {
     API_URL = "https://localhost:3002/api/v1";
 
@@ -666,8 +688,13 @@ export default class RoomsResource {
                 city: queryParams.city,
                 building: queryParams.building,
                 floor: queryParams.floor,
+                startDate: queryParams.startDate,
+                endDate: queryParams.endDate,
+                status: queryParams.status,
                 minNumberOfSeats: queryParams.minNumberOfSeats,
                 maxNumberOfSeats: queryParams.maxNumberOfSeats,
+                roomIdentifier: queryParams.roomIdentifier,
+                assignedToMe: queryParams.assignedToMe,
                 pageNumber: queryParams.pageNumber,
                 pageSize: queryParams.pageSize,
                 sort: queryParams.sort,
@@ -680,11 +707,11 @@ export default class RoomsResource {
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
-            const errorResponse = {
-                responseStatus: error.response.status,
-                responseData: error.response.data,
-            };
-            throw errorResponse;
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
         });
     }
 
@@ -703,11 +730,11 @@ export default class RoomsResource {
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
-            const errorResponse = {
-                responseStatus: error.response.status,
-                responseData: error.response.data,
-            };
-            throw errorResponse;
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
         });
     }
 
@@ -736,11 +763,11 @@ export default class RoomsResource {
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
-            const errorResponse = {
-                responseStatus: error.response.status,
-                responseData: error.response.data,
-            };
-            throw errorResponse;
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
         });
     }
 
@@ -758,11 +785,11 @@ export default class RoomsResource {
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
-            const errorResponse = {
-                responseStatus: error.response.status,
-                responseData: error.response.data,
-            };
-            throw errorResponse;
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
         });
     }
 
@@ -782,11 +809,11 @@ export default class RoomsResource {
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
-            const errorResponse = {
-                responseStatus: error.response.status,
-                responseData: error.response.data,
-            };
-            throw errorResponse;
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
         });
     }
 }
@@ -811,7 +838,16 @@ export default class RoomsResource {
         "numberOfSeats": 0,
         "alias": "Room 1",
         "isActive": true,
-        "isDeleted": false,
+        "bookingSystemSyncSupported": true,
+        "resourceType": "room",
+        "bookingUri": null,
+        "settings": {
+          "displaySettings": {
+            "organizer": true,
+            "subject": true,
+            "participants": true
+          }
+        },
         "equipment": {
           "lights":  null,
           "projector":  null,
@@ -834,7 +870,8 @@ export default class RoomsResource {
         ],
         "structureId": "11223344aabbccdd",
         "userIds": [],
-        "assigned": true
+        "assigned": true,
+        "available": true
       },
       {
         "_id": "1i2j3k4l5m6n7o8p",
@@ -843,9 +880,18 @@ export default class RoomsResource {
         "address": "room2@humly.integration.com",
         "id": "room2",
         "numberOfSeats": 0,
-        "alias": "room117",
+        "alias": "Room 2",
         "isActive": true,
-        "isDeleted": false,
+        "bookingSystemSyncSupported": true,
+        "resourceType": "room",
+        "bookingUri": null,
+        "settings": {
+          "displaySettings": {
+            "organizer": true,
+            "subject": true,
+            "participants": true
+          }
+        },
         "equipment": {
           "lights": null,
           "projector": null,
@@ -868,7 +914,8 @@ export default class RoomsResource {
         ],
         "structureId": "11223344aabbccdd",
         "userIds": [],
-        "assigned": true
+        "assigned": true,
+        "available": true
       }
     ],
     "page": {
@@ -903,7 +950,149 @@ export default class RoomsResource {
       "numberOfSeats": 0,
       "alias": "Room 1",
       "isActive": true,
-      "isDeleted": false,
+      "bookingSystemSyncSupported": true,
+      "resourceType": "room",
+      "bookingUri": null,
+      "settings": {
+        "emailReminder": false,
+        "timeZone": "Europe/London",
+        "timeZoneCode": "GMT0BST,M3.5.0/1,M10.5.0",
+        "allowGuestUsers": true,
+        "displaySettings": {
+          "organizer": true,
+          "subject": true,
+          "participants": true
+        },
+        "bookMeetingSettings": {
+          "enabled": true,
+          "auth": true
+        },
+        "bookFutureMeetingSettings": {
+          "enabled": true,
+          "auth": true
+        },
+        "endOngoingMeetingSettings": {
+          "enabled": true,
+          "auth": true,
+          "allowOthersToModify": false
+        },
+        "endFutureMeetingSettings": {
+          "enabled": true,
+          "auth": true,
+          "allowOthersToModify": false
+        },
+        "extendOngoingMeetingSettings": {
+          "enabled": true,
+          "auth": true,
+          "allowOthersToModify": false
+        },
+        "extendFutureMeetingSettings": {
+          "enabled": true,
+          "auth": true,
+          "allowOthersToModify": false
+        },
+        "sleepSettings": {
+          "officeHoursStart": "17:00",
+          "officeHoursEnd": "08:00",
+          "enableWakeUp": true,
+          "workingDays": {
+            "Monday": true,
+            "Tuesday": true,
+            "Wednesday": true,
+            "Thursday": true,
+            "Friday": true,
+            "Saturday": false,
+            "Sunday": false
+          }
+        },
+        "language": "en",
+        "timeFormat": "HH:mm",
+        "structureId": "11223344aabbccdd",
+        "confirmDuration": "5",
+        "confirmMeetingSettings": {
+          "enabled": true,
+          "auth": true,
+          "access": {
+            "anyone": true,
+            "organizer": false,
+            "participants": false
+          },
+          "touchless": false
+        },
+        "rotateScreen": false,
+        "haloLedSettings": {
+          "enabled": true,
+          "freeColor": "00B40C",
+          "busyColor": "B40500",
+          "checkInColor": "A5B40F",
+          "signageColor": "000000"
+        },
+        "reportSettings": {
+          "enabled": true,
+          "auth": true,
+          "email": "",
+          "access": {
+            "anyone": true,
+            "organizer": false,
+            "participants": false
+          }
+        },
+        "dateFormat": "LL",
+        "networkSetup": "0",
+        "displayFindAnotherRoom": {
+          "findAnotherRoom": true
+        },
+        "displayPassiveScreen": true,
+        "displayTentativeMeetings": true,
+        "analytics": {
+          "sendNoShowCostEmail": false,
+          "costPerHour": null
+        },
+        "customFooter": {
+          "enabled": false,
+          "title": "",
+          "text": ""
+        },
+        "logo": {
+          "show": false,
+          "id": ""
+        },
+        "logoLedSettings": {
+          "enabled": true,
+          "freeColor": "23DC25",
+          "busyColor": "C81607",
+          "checkInColor": "C8DC14",
+          "signageColor": "C8C8C8"
+        },
+        "signageMode": {
+          "fromDate": "",
+          "toDate": "",
+          "imageMode": false,
+          "urlMode": false,
+          "logoImageId": "",
+          "title": "",
+          "subTitle": "",
+          "footer": "",
+          "image": "",
+          "imageName": "",
+          "url": ""
+        },
+        "ntpServer": "0.pool.ntp.org",
+        "authentication": {
+          "pin": false,
+          "rfid": true
+        },
+        "pinDigits": "4",
+        "logLevel": 4,
+        "auditData": [
+          {
+            "createdAt": "2023-08-08T12:00:00+00:00",
+            "createdBy": "humly.admin@humly.com",
+            "modifiedAt": "2023-08-08T12:00:00+00:00",
+            "modifiedBy": "humly.admin@humly.com"
+          }
+        ]
+      },
       "equipment": {
         "lights":  null,
         "projector":  null,
@@ -926,7 +1115,8 @@ export default class RoomsResource {
       ],
       "structureId": "11223344aabbccdd",
       "userIds": [],
-      "assigned": true
+      "assigned": true,
+      "available": true
     }
   }
 }
@@ -967,31 +1157,36 @@ export default class RoomsResource {
 | Name              | Type    | Comment |
 | ----------------- | ------- | ------- |
 | `responseStatus`  | Number  | Status of HTTP/HTTPS request. |
-| `status`          | String | Status of API response. Can have values: success or error. |
-| `_id`             | String  | Unique Room identifier. |
+| `status`          | String  | Status of API response. Can have values: success or error. |
+| `_id`             | String  | Unique room identifier. |
 | `name`            | String  | Room name. |
 | `mail`            | String  | Email that is related to this room. |
 | `address`         | String  | Room address. |
-| `id`              | String  | Unique Room identified on booking system. |
+| `id`              | String  | Unique room identified on booking system. |
 | `numberOfSeats`   | Number  | Number of seats in room. |
 | `alias`           | String  | Room alias. |
-| `isActive`        | Boolean | If disabled, Room can’t be used. |
-| `isDeleted`       | Boolean | Flag showing that Room is deleted. |
-| `lights`          | Boolean | Predefined Room equipment. Point is there lights in Room. |
-| `projector`       | Boolean | Predefined Room equipment. Point is there projector Room. |
-| `computer`        | Boolean | Predefined Room equipment. Point is there computer in Room. |
-| `teleConference`  | Boolean | Predefined Room equipment. Point is there tele conference device in Room. |
-| `wifi`            | Boolean | Predefined Room equipment. Point is there Wireless connection available for Room users. |
-| `whiteboard`      | Boolean | Predefined Room equipment. Point is there whiteboard in Room. |
-| `videoConference` | Boolean | Predefined Room equipment. Point is there video conference device in Room. |
-| `display`         | Boolean | Predefined Room equipment. Point is there display in Room. |
-| `minto`           | Boolean | Predefined Room equipment. Point is there Minto speaker in Room. |
-| `ac`              | Boolean | Predefined Room equipment. Point is there air conditioner in Room. |
-| `information`     | String  | Information about Room. |
+| `isActive`        | Boolean | If disabled, room can’t be used. |
+| `isDeleted`       | Boolean | Flag showing that room is deleted. |
+| `bookingSystemSyncSupported` | Boolean | `true` if resource is connected to resource on the booking system. |
+| `resourceType`    | String  | Type of resource.
+| `bookingUri`      | String  | Booking system URI if supported. |
+| `settings`        | Object  | Object that contains room settings. |
+| `lights`          | Boolean | Predefined room equipment. Information about whether the status of the lights can be reported and what the current status is (working or broken). |
+| `projector`       | Boolean | Predefined room equipment. Information about whether the status of the projector can be reported and what the current status is (working or broken). |
+| `computer`        | Boolean | Predefined room equipment. Information about whether the status of the computer can be reported and what the current status is (working or broken). |
+| `teleConference`  | Boolean | Predefined room equipment. Information about whether the status of the teleconference device can be reported and what the current status is (working or broken). |
+| `wifi`            | Boolean | Predefined room equipment. Information about whether the status of the WiFi network can be reported and what the current status is (working or broken). |
+| `whiteboard`      | Boolean | Predefined room equipment. Information about whether the status of the whiteboard can be reported and what the current status is (working or broken). |
+| `videoConference` | Boolean | Information about whether the status of the video conference equipment can be reported and what the current status is (working or broken). |
+| `display`         | Boolean | Predefined room equipment. Information about whether the status of the display can be reported and what the current status is (working or broken). |
+| `minto`           | Boolean | Predefined room equipment. Information about whether the status of the Minto speakerphone can be reported and what the current status is (working or broken). |
+| `ac`              | Boolean | Predefined room equipment. Information about whether the status of the air conditioning device can be reported and what the current status is (working or broken). |
+| `information`     | Boolean | Predefined room equipment. Unused. |
 | `customEquipment` | Array   | Array of Objects. Represent the name and presence of device present in Room. |
 | `structureId`     | String  | Unique structure identifier. |
 | `userIds`         | Array   | Array of Strings. Array of user ids assigned to this Room. |
 | `assigned`        | Boolean | Is this Room assigned to any Booking device? |
+| `available`       | Boolean | `true` if resource is free for booking.
 
 ### Searching for available rooms
 
@@ -1176,6 +1371,365 @@ You can report broken or fixed equipment by executing some code like this.
 }
 ```
 
+## <a name="desks"></a> Get desks data - <sub>`{HCP_URL}/api/v1/desks`</sub>
+
+By using these endpoints, you can get information about all desks or single desk.
+
+### Query Parameters for "all desks" endpoint
+
+All query parameters are optional.
+
+| Name               | Type    | Comment |
+| ------------------ | ------- | ------- |
+| `country`          | String  | Name of Country that desks belong to. |
+| `city`             | String  | Name of City that desks belong to. If provided, then `country` parameter should be provided too.
+| `building`         | String  | Name of Building that desks belongs to. If provided, then `country` and `city` parameters should be provided too.
+| `floor`            | String  | Name of Floor that desks belong to. If provided, then `country`, `city` and `building` parameters should be provided too.
+| `date`             | String  | Date in YYYY-MM-DD format used in combination with status to get free or used desks.
+| `status`           | String  | Desks status. Accepts: available, busy or all. Default is all.
+| `deskIdentifier`   | String  | Unique desk identifier like _id, id, or email.
+| `assignedToMe`     | Boolean | If authenticated user needs to get desks managed by her/him. Accepts: true and false. Default is false.
+| `pageNumber`       | Number  | Get desks data starting from this page. Pages are count from 1.
+| `pageSize`         | Number  | Limit size of desks array (page size) that will be returned. Last page can be partially filled.
+| `sort`             | String  | “Stringified” representation of JSON object. Format: <br>`{`<br>`  "any.property": "asc/desc",`<br>`  "any.property": asc/desc`<br>`}`<br>
+
+### Querying for a single desk
+
+URL to get data about specific desk should look like: `{HCP_URL}/api/v1/desks/{uniqueDeskIdentifier}`
+where the {uniqueDeskIdentifier} can be `_id` property from rooms collection document, or `id` property which represent desk unique identifier on the booking system, or use desk's email address as an unique identifier.
+
+
+### Request example
+
+Following example is provided for REACT applications.
+You can create Desks Resource file to communicate with REST API.
+
+```js
+import Axios from "axios";
+
+import RequestError from "./requestError";
+
+export default class DesksResource {
+    API_URL = "https://localhost:3002/api/v1";
+
+    getAllDesks(userId, authToken, queryParams) {
+        const requestOptions = {
+            headers: {
+                "X-User-Id": userId,
+                "X-Auth-Token": authToken,
+            },
+            params: {
+                country: queryParams.country,
+                city: queryParams.city,
+                building: queryParams.building,
+                floor: queryParams.floor,
+                date: queryParams.date,
+                status: queryParams.status,
+                deskIdentifier: queryParams.deskIdentifier,
+                assignedToMe: queryParams.assignedToMe,
+                pageNumber: queryParams.pageNumber,
+                pageSize: queryParams.pageSize,
+                sort: queryParams.sort,
+            },
+        };
+
+        return Axios.get(
+            `${this.API_URL}/desks`,
+            requestOptions
+        ).then(response => (
+            { responseStatus: response.status, responseData: response.data }
+        )).catch((error) => {
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
+        });
+    }
+
+    getDesk(userId, authToken, uniqueDeskIdentifier) {
+        const requestOptions = {
+            headers: {
+                "Content-Type": "application/json",
+                "X-User-Id": userId,
+                "X-Auth-Token": authToken,
+            },
+        };
+
+        return Axios.get(
+            `${this.API_URL}/desks/${uniqueDeskIdentifier}`,
+            requestOptions
+        ).then(response => (
+            { responseStatus: response.status, responseData: response.data }
+        )).catch((error) => {
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response                         .data
+            );
+        });
+    }
+}
+
+```
+
+### Response example
+
+```json
+// Get all desks data
+{
+  "responseStatus": 200,
+  "responseData": {
+    "status": "success",
+    "data": [
+      {
+        "_id": "1a2b3c4d5e6f7g8h",
+        "name": "Desk 1",
+        "mail": "desk1@humly.integration.com",
+        "address": "desk1@humly.integration.com",
+        "id": "desk1",
+        "numberOfSeats": 0,
+        "alias": "Desk 1",
+        "isActive": true,
+        "bookingSystemSyncSupported": true,
+        "bookingUri": null,
+        "settings": {
+          "displaySettings": {
+            "organizer": true
+          }
+        },
+        "resourceType": "desk",
+        "structureId": "11223344aabbccdd",
+        "userIds": [],
+        "assigned": true,
+        "available": false
+      },
+      {
+        "_id": "1i2j3k4l5m6n7o8p",
+        "name": "Desk 2",
+        "mail": "desk2@humly.integration.com",
+        "address": "desk2@humly.integration.com",
+        "id": "desk2",
+        "numberOfSeats": 0,
+        "alias": "Desk 2",
+        "isActive": true,
+        "bookingSystemSyncSupported": true,
+        "bookingUri": null,
+        "settings": {
+          "displaySettings": {
+            "organizer": true
+          }
+        },
+        "resourceType": "desk",
+        "structureId": "11223344aabbccdd",
+        "userIds": [],
+        "assigned": true,
+        "available": true
+      }
+    ],
+    "page": {
+      "first": true,
+      "last": true,
+      "size": 10,
+      "totalElements": 9,
+      "totalPages": 1,
+      "number": 1,
+      "numberOfElements": 9
+    },
+    "sort": [
+      {
+        "property": "name",
+        "direction": "ASC"
+      }
+    ]
+  }
+}
+
+// Get one desk data
+{
+  "responseStatus": 200,
+  "responseData": {
+    "status": "success",
+    "data": {
+      "_id": "1a2b3c4d5e6f7g8h",
+      "name": "Desk 1",
+      "mail": "desk1@humly.integration.com",
+      "address": "desk1@humly.integration.com",
+      "id": "desk1",
+      "numberOfSeats": 0,
+      "alias": "Desk 1",
+      "isActive": true,
+      "bookingSystemSyncSupported": true,
+      "bookingUri": null,
+      "settings": {
+        "emailReminder": false,
+        "timeZone": "Europe/London",
+        "timeZoneCode": "GMT0BST,M3.5.0/1,M10.5.0",
+        "allowGuestUsers": false,
+        "confirmDuration": "5",
+        "displaySettings": {
+          "organizer": true
+        },
+        "bookMeetingSettings": {
+          "enabled": true,
+          "auth": false
+        },
+        "bookFutureMeetingSettings": {
+          "enabled": false,
+          "auth": false
+        },
+        "endOngoingMeetingSettings": {
+          "enabled": true,
+          "auth": false,
+          "allowOthersToModify": false
+        },
+        "endFutureMeetingSettings": {
+          "enabled": false,
+          "auth": false,
+          "allowOthersToModify": false
+        },
+        "extendOngoingMeetingSettings": {
+          "enabled": true,
+          "auth": false,
+          "allowOthersToModify": false
+        },
+        "extendFutureMeetingSettings": {
+          "enabled": false,
+          "auth": false,
+          "allowOthersToModify": false
+        },
+        "confirmMeetingSettings": {
+          "enabled": false,
+          "auth": false,
+          "access": {
+            "anyone": true,
+            "organizer": false,
+            "participants": false
+          },
+          "touchless": false
+        },
+        "reportSettings": {
+          "enabled": true,
+          "auth": true,
+          "email": "",
+          "access": {
+            "anyone": true,
+            "organizer": false,
+            "participants": false
+          }
+        },
+        "sleepSettings": {
+          "officeHoursStart": "17:00",
+          "officeHoursEnd": "08:00",
+          "enableWakeUp": true,
+          "workingDays": {
+            "Monday": true,
+            "Tuesday": true,
+            "Wednesday": true,
+            "Thursday": true,
+            "Friday": true,
+            "Saturday": false,
+            "Sunday": false
+          }
+        },
+        "language": "en",
+        "timeFormat": "hh:mm a",
+        "dateFormat": "LL",
+        "structureId": "11223344aabbccdd",
+        "networkSetup": "0",
+        "displayFindAnotherRoom": {
+          "findAnotherRoom": true
+        },
+        "displayPassiveScreen": true,
+        "displayTentativeMeetings": true,
+        "analytics": {
+          "sendNoShowCostEmail": false,
+          "costPerHour": null
+        },
+        "customFooter": {
+          "enabled": false,
+          "title": "",
+          "text": ""
+        },
+        "logo": {
+          "show": false,
+          "id": ""
+        },
+        "haloLedSettings": {
+          "enabled": true,
+          "freeColor": "00B40C",
+          "busyColor": "B40500",
+          "checkInColor": "A5B40F",
+          "signageColor": "000000"
+        },
+        "logoLedSettings": {
+          "enabled": true,
+          "freeColor": "23DC25",
+          "busyColor": "C81607",
+          "checkInColor": "C8DC14",
+          "signageColor": "C8C8C8"
+        },
+        "signageMode": {
+          "fromDate": "",
+          "toDate": "",
+          "imageMode": false,
+          "urlMode": false,
+          "logoImageId": "",
+          "title": "",
+          "subTitle": "",
+          "footer": "",
+          "image": "",
+          "imageName": "",
+          "url": ""
+        },
+        "rotateScreen": false,
+        "ntpServer": "0.pool.ntp.org",
+        "authentication": {
+          "pin": false,
+          "rfid": true
+        },
+        "pinDigits": "4",
+        "logLevel": 4,
+        "auditData": [
+          {
+            "createdAt": "2023-08-08T12:00:00+00:00",
+            "createdBy": "humly.admin@humly.com",
+            "modifiedAt": "2023-08-08T12:00:00+00:00",
+            "modifiedBy": "humly.admin@humly.com"
+          }
+        ]
+      },
+      "resourceType": "desk",
+      "structureId": "11223344aabbccdd",
+      "userIds": [],
+      "assigned": true
+    }
+  }
+}
+```
+
+### Type of response data
+
+| Name                         | Type    | Comment |
+| ---------------------------- | ------- | ------- |
+| `responseStatus`             | Number  | Status of HTTP/HTTPS request. |
+| `status`                     | String  | Status of API response. Can have values: success or error. |
+| `_id`                        | String  | Unique Desk identifier. |
+| `name`                       | String  | Desk name. |
+| `mail`                       | String  | Email that is related to this desk. |
+| `address`                    | String  | Desk address. |
+| `id`                         | String  | Unique desk identified on the booking system. |
+| `numberOfSeats`              | Number  | Number of seats. |
+| `alias`                      | String  | Desk alias. |
+| `isActive`                   | Boolean | If disabled, desk can’t be used. |
+| `bookingSystemSyncSupported` | Boolean | `true` if resource is connected to resource on the booking system. |
+| `resourceType`               | String  | Type of resource.
+| `bookingUri`                 | String  | Booking system URI if supported. |
+| `settings`                   | Object  | Object that contains desk settings. |
+| `structureId`                | String  | Unique structure identifier. |
+| `userIds`                    | Array   | Array of Strings. Array of user ids assigned to this desk. |
+| `assigned`                   | Boolean | Is this desk assigned to any Booking device? |
+
 ## <a name="bookings"></a> Working with “bookings” API - <sub>`{HCP_URL}/api/v1/bookings`</sub>
 
 By using these endpoints, you can get information about your bookings. You can create, update, or delete booking
@@ -1187,6 +1741,8 @@ You can create Bookings Resource file to communicate with REST API.
 
 ```js
 import Axios from "axios";
+
+import RequestError from "./requestError";
 
 export default class BookingsResource {
     API_URL = "https://localhost:3002/api/v1";
@@ -1213,11 +1769,11 @@ export default class BookingsResource {
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
-            const errorResponse = {
-                responseStatus: error.response.status,
-                responseData: error.response.data,
-            };
-            throw errorResponse;
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
         });
     }
 
@@ -1237,11 +1793,11 @@ export default class BookingsResource {
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
-            const errorResponse = {
-                responseStatus: error.response.status,
-                responseData: error.response.data,
-            };
-            throw errorResponse;
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
         });
     }
 
@@ -1261,11 +1817,11 @@ export default class BookingsResource {
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
-            const errorResponse = {
-                responseStatus: error.response.status,
-                responseData: error.response.data,
-            };
-            throw errorResponse;
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
         });
     }
 
@@ -1283,11 +1839,11 @@ export default class BookingsResource {
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
-            const errorResponse = {
-                responseStatus: error.response.status,
-                responseData: error.response.data,
-            };
-            throw errorResponse;
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
         });
     }
 
@@ -1309,11 +1865,11 @@ export default class BookingsResource {
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
-            const errorResponse = {
-                responseStatus: error.response.status,
-                responseData: error.response.data,
-            };
-            throw errorResponse;
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
         });
     }
 }
@@ -1331,8 +1887,8 @@ This endpoint is used to get meetings organized by given user.
 | `organizerUser` | String | Yes       | Unique identifier of the user. `userId` string returned by login. Users can see only their own bookings. |
 | `startDate`     | String | No        | Limits returned meetings data to include meetings that have start date greater or equal to provided date. If this parameter is not provided this endpoint will return all bookings for this user from start of the ongoing day. Date must be in ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ). |
 | `endDate`       | String | No        | Limits returned meetings data to include meetings that have end date lower than provided date. If this parameter is not provided this endpoint will return all bookings for this user until end of the ongoing day. Date must be in ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ). |
-| `pageNumber`    | Number | No        | Get rooms data starting from this page. Pages are count from 1.
-| `pageSize`      | Number | No        | Limit size of rooms array (page size) that will be returned. Last page can be partially filled.
+| `pageNumber`    | Number | No        | Get bookings data starting from this page. Pages are count from 1.
+| `pageSize`      | Number | No        | Limit size of bookings array (page size) that will be returned. Last page can be partially filled.
 | `sort`          | String | No        | “Stringified” representation of JSON object. Format: <br>`{`<br>`  "any.property": "asc/desc",`<br>`  "any.property": asc/desc`<br>`}`<br>
 
 ### Request example
@@ -1360,6 +1916,9 @@ This endpoint is used to get meetings organized by given user.
 
 ### Response example
 
+> 👉 **Important note!** If the authenticated user is not a global admin, or booking owner, only a subset of booking data will be returned by the API.
+
+
 ```json
 {
   "responseStatus": 200,
@@ -1370,6 +1929,8 @@ This endpoint is used to get meetings organized by given user.
         "_id": "1a2b3c4d5e6f7g8h",
         "id": "ABCDEFGHIJKL1234567890ABCDEFGHIJKLMN1234567890ABCDEFGHIJKLMN",
         "changeKey": "ABCDEFGHIJKL1234567890AB",
+        "source": "HCP",
+        "eventIdentifier": "ABCDEFGHIJKL1234567890AB_ABCDEFGHIJKL1234567890AB",
         "booking": {
           "startDate": "2019-09-01T12:00:00+00:00",
           "endDate": "2019-09-01T12:30:00+00:00",
@@ -1380,13 +1941,16 @@ This endpoint is used to get meetings organized by given user.
           "dateForStatistics": "2019-09-01T12:00:00+00:00",
           "createdBy": {
             "name": "HumlyIntegrationUser",
-            "mail": "HumlyIntegrationUser"
+            "mail": "HumlyIntegrationUser",
+            "createdAt": "2019-09-01T11:55:05+00:00",
+            "userId": "11223344aabbccdd",
+            "isGuestUser": false
           },
-          "dateCreated": "2019-09-01T11:55:05+00:00",
+          "sensitivity": "Normal",
+          "isAllDayEvent": false,
           "endType": null,
           "confirmed": false,
           "subject": "Humly meeting",
-          "equipment": null,
           "freeBusyStatus": "Busy",
           "showConfirm": false,
           "numberOfExpectedReminderResponses": null,
@@ -1399,7 +1963,10 @@ This endpoint is used to get meetings organized by given user.
           "sendCancellationEmailCheckTime": null,
           "reminderEmailSent": null,
           "cancellationEmailSent": null,
-          "fetchedOrganizer": null
+          "fetchedOrganizer": null,
+          "fetchedParticipants": false,
+          "participants": [],
+          "attendees": []
         }
       }
     ],
@@ -1427,22 +1994,27 @@ This endpoint is used to get meetings organized by given user.
 | ------------------- | ------- | ------- |
 | `responseStatus`    | Number  | Status of HTTP/HTTPS request. |
 | `status`            | String  | Status of API response. Can have values: success or error. |
-| `_id`               | String  | Unique Room identifier. |
+| `_id`               | String  | Unique booking identifier. |
 | `id`                | String  | Booking system unique identifier. |
 | `changeKey`         | String  | Booking system change key value. |
+| `source`            | String  | Specifies where the booking is created. |
+| `eventIdentifier`   | String  | Additional unique booking identifier on the booking system if supported.
 | `startDate`         | String  | UTC meeting start date in ISO date format. |
 | `endDate`           | String  | UTC meeting end date in ISO date format. |
-| `location`          | String  | Room name on booking system. |
+| `location`          | String  | Room name on the booking system. |
 | `startTime`         | String  | Meeting start time in 24 hours format (HH24:MI). |
 | `endTime`           | String  | Meeting end time in 24 hours format (HH24:MI). |
 | `onlyDate`          | String  | Date of meeting in YYYY-MM-DD format. |
 | `dateForStatistics` | String  | Date used for statistics processing. |
 | `name`              | String  | Name of user that booked a meeting. |
 | `mail`              | String  | Email of user that booked a meeting if available, otherwise same as name. |
-| `dateCreated`       | String  | UTC date of meeting creation in ISO date format. |
+| `createdAt`         | String  | Date and time of booking creation.
+| `userId`            | String  | Unique identifier of booking creator if registered in system. |
+| `isGuestUser`       | Boolean | `true` if booking creator is a Guest user. |
 | `endType`           | String  | Description of meeting end event. |
 | `confirmed`         | Boolean | `true` if meeting is checked in. |
 | `subject`           | String  | Meeting subject. |
+| `sensitivity`       | String  | Booking sensitivity.
 | `freeBusyStatus`    | String  | Booking system specific value. |
 | `showConfirm`       | Boolean | `true` if check in functionality is enabled. |
 | `sendReminderEmailCheck` | Boolean | `true` if Send email remainder functionality is enabled. |
@@ -1451,6 +2023,8 @@ This endpoint is used to get meetings organized by given user.
 | `reminderEmailSent` | Boolean | `true` if remainder email has been sent to organizer 5 minutes before meeting start. |
 | `cancellationEmailSent` | Boolean | `true` if cancellation email has been sent to organizer after meeting is automatically deleted after check in period. |
 | `fetchedOrganizer`  | String  | Organizer fetched from booking system. |
+| `participants`      | Array   | Array of meeting participants. |
+| `attendees`         | Array   | Array of meeting attendees. |
 
 ## <a name="createMeeting"></a> Create a meeting – <sub>`POST {HCP_URL}/api/v1/bookings`</sub>
 
@@ -1501,6 +2075,8 @@ The id is unique identifier of newly created meeting. id refers to _id in bookin
       "_id": "1a2b3c4d5e6f7g8h",
       "id": "ABCDEFGHIJKL1234567890ABCDEFGHIJKLMN1234567890ABCDEFGHIJKLMN",
       "changeKey": "ABCDEFGHIJKL1234567890AB",
+      "source": "HCP",
+      "eventIdentifier": "ABCDEFGHIJKL1234567890AB_ABCDEFGHIJKL1234567890AB",
       "booking": {
         "startDate": "2019-09-01T12:00:00+00:00",
         "endDate": "2019-09-01T12:30:00+00:00",
@@ -1511,13 +2087,15 @@ The id is unique identifier of newly created meeting. id refers to _id in bookin
         "dateForStatistics": "2019-09-01T12:00:00+00:00",
         "createdBy": {
           "name": "HumlyIntegrationUser",
-          "mail": "HumlyIntegrationUser"
+          "mail": "HumlyIntegrationUser",
+          "createdAt": "2019-09-01T11:55:05+00:00",
+          "userId": "11223344aabbccdd",
+          "isGuestUser": false
         },
-        "dateCreated": "2019-09-01T11:55:05+00:00",
+        "sensitivity": "Normal",
         "endType": null,
         "confirmed": false,
         "subject": "Humly meeting",
-        "equipment": null,
         "freeBusyStatus": "Busy",
         "showConfirm": false,
         "numberOfExpectedReminderResponses": null,
@@ -1530,7 +2108,10 @@ The id is unique identifier of newly created meeting. id refers to _id in bookin
         "sendCancellationEmailCheckTime": null,
         "reminderEmailSent": null,
         "cancellationEmailSent": null,
-        "fetchedOrganizer": null
+        "fetchedOrganizer": null,
+        "fetchedParticipants": false,
+        "participants": [],
+        "attendees": []
       }
     }
   }
@@ -1820,6 +2401,8 @@ You can create Structures Resource file to communicate with REST API (REACT exam
 ```js
 import Axios from "axios";
 
+import RequestError from "./requestError";
+
 export default class StructuresResource {
     API_URL = "https://localhost:3002/api/v1";
 
@@ -1842,11 +2425,11 @@ export default class StructuresResource {
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
-            const errorResponse = {
-                responseStatus: error.response.status,
-                responseData: error.response.data,
-            };
-            throw errorResponse;
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
         });
     }
 }
@@ -1941,6 +2524,8 @@ address, or wifi MAC address.
 ```js
 import Axios from "axios";
 
+import RequestError from "./requestError";
+
 export default class DevicesResource {
     API_URL = "https://localhost:3002/api/v1";
 
@@ -1964,11 +2549,11 @@ export default class DevicesResource {
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
-            const errorResponse = {
-                responseStatus: error.response.status,
-                responseData: error.response.data,
-            };
-            throw errorResponse;
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
         });
     }
 
@@ -1986,11 +2571,11 @@ export default class DevicesResource {
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
-            const errorResponse = {
-                responseStatus: error.response.status,
-                responseData: error.response.data,
-            };
-            throw errorResponse;
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
         });
     }
 }
@@ -2008,25 +2593,25 @@ export default class DevicesResource {
     "data": [
       {
         "_id": "12345678ab",
+        "resourceId": "a1b2c3d4e5f6",
         "macAddress": "11:22:33:44:55:66",
-        "isPairingKeyApproved": true,
         "isRebootable": false,
         "wentOfflineAt": "2021-12-01T17:00:00+00:00",
-        "lastConnectionTime": "2021-12-01T06:58:27+00:00",
-        "firmwareVersion": "2021-11-01_v1.7.2.15",
-        "interfaceActive": "ethernet",
-        "ipAddress": "127.0.0.1",
-        "isHrm": true,
         "lastRebootTime": "2021-12-01T06:56:00+00:00",
+        "lastConnectionTime": "2021-12-01T06:58:27+00:00",
         "macAddressWifi": "aa:bb:cc:dd:ee:ff",
-        "roomId": "a1b2c3d4e5f6",
+        "ipAddress": "127.0.0.1",
         "secondIpAddress": "Not available",
-        "serialId": "ABC123456",
+        "interfaceActive": "ethernet",
         "serverIpAddress": "127.0.0.1:3002",
+        "firmwareVersion": "2021-11-01_v1.7.2.15",
         "vncActive": false,
+        "serialId": "ABC123456",
+        "isPairingKeyApproved": true,
+        "deviceType": "hrd1",
         "sleepFrom": "2021-12-01T17:00:00+00:00",
         "wakeAt": "2021-12-02T06:55:00+00:00",
-        "status": "Sleeping",
+        "status": "Online",
         "upgradeStatus": null,
         "vncConnectionUrl": ""
       }
@@ -2056,22 +2641,22 @@ export default class DevicesResource {
     "status": "success",
     "data": {
       "_id": "12345678ab",
+      "resourceId": "a1b2c3d4e5f6",
       "macAddress": "11:22:33:44:55:66",
-      "isPairingKeyApproved": true,
       "isRebootable": false,
       "wentOfflineAt": "2021-12-01T17:00:00+00:00",
-      "lastConnectionTime": "2021-12-01T06:58:27+00:00",
-      "firmwareVersion": "2021-11-01_v1.7.2.15",
-      "interfaceActive": "ethernet",
-      "ipAddress": "127.0.0.1",
-      "isHrm": true,
       "lastRebootTime": "2021-12-01T06:56:00+00:00",
+      "lastConnectionTime": "2021-12-01T06:58:27+00:00",
       "macAddressWifi": "aa:bb:cc:dd:ee:ff",
-      "roomId": "a1b2c3d4e5f6",
+      "ipAddress": "127.0.0.1",
       "secondIpAddress": "Not available",
-      "serialId": "ABC123456",
+      "interfaceActive": "ethernet",
       "serverIpAddress": "127.0.0.1:3002",
+      "firmwareVersion": "2021-11-01_v1.7.2.15",
       "vncActive": false,
+      "serialId": "ABC123456",
+      "isPairingKeyApproved": true,
+      "deviceType": "hrd1",
       "sleepFrom": "2021-12-01T17:00:00+00:00",
       "wakeAt": "2021-12-02T06:55:00+00:00",
       "status": "Sleeping",
@@ -2086,23 +2671,23 @@ export default class DevicesResource {
 | ---------------------- | ------- | ------- |
 | `responseStatus`       | Number  | Status of HTTP/HTTPS request. |
 | `status`               | String  | Status of API response. Can have values: success or error. |
-| `_id`                  | String  | Device unique identifier. |
+| `_id`                  | String  | Device document unique identifier. |
+| `resourceId`           | String  | Unique resource identifier device is attached to. |
 | `macAddress`           | String  | Device ethernet interface MAC address. |
-| `isPairingKeyApproved` | Boolean | true if device is authenticated using paring key. |
 | `isRebootable`         | Boolean | true if the device is rebootable for the moment. |
 | `wentOfflineAt`        | String  | Date and time when the device went offline last time. |
-| `lastConnectionTime`   | String  | Date and time of device last connection. |
-| `firmwareVersion`      | String  | Version of device firmware. |
-| `interfaceActive`      | String  | Name of the interface used to connect device to network. Can have values: ethernet of wifi. |
-| `ipAddress`            | String  | IP address assigned to ethernet interface. |
-| `isHrm`                | Boolean | true if connected device is Humly device. |
 | `lastRebootTime`       | String  | Date and time of device last reboot. |
+| `lastConnectionTime`   | String  | Date and time of device last connection. |
 | `macAddressWifi`       | String  | Device wifi interface MAC address. |
-| `roomId`               | String  | Unique room identifier. |
 | `secondIpAddress`      | String  | IP address assigned to wifi interface if available. |
-| `serialId`             | String  | Device serial number. |
+| `ipAddress`            | String  | IP address assigned to ethernet interface. |
+| `interfaceActive`      | String  | Name of the interface used to connect device to network. Can have values: ethernet of wifi. |
 | `serverIpAddress`      | String  | Address of server device is connected to. |
+| `firmwareVersion`      | String  | Version of device firmware. |
 | `vncActive`            | Boolean | true if VNC service is activated on the device. |
+| `serialId`             | String  | Device serial number. |
+| `isPairingKeyApproved` | Boolean | true if device is authenticated using paring key. |
+| `deviceType`           | String  | Device type attached to a resource like HRM or HBD. |
 | `sleepFrom`            | String  | Date and time when device should enter Sleeping status. |
 | `wakeAt`               | String  | Date and time when device should wake next time. |
 | `status`               | String  | Status of the device. Can be one of: Online, Offline, Sleeping or Unassigned. |

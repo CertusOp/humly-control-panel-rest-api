@@ -2,21 +2,20 @@ import Axios from "axios";
 
 import RequestError from "./requestError";
 
-export default class ClientGroupsResource {
+export default class GuideScreensResource {
     API_URL = "https://localhost:3002/api/v1";
 
-    createClientGroup(userId, authToken, clientGroupData) {
+    // uniqueIdentifier -wayfinding document _id or code
+    getGuideScreen(userId, authToken, uniqueIdentifier) {
         const requestOptions = {
             headers: {
-                "Content-Type": "application/json",
                 "X-User-Id": userId,
                 "X-Auth-Token": authToken,
             },
         };
 
-        return Axios.post(
-            `${this.API_URL}/clientGroups`,
-            clientGroupData,
+        return Axios.get(
+            `${this.API_URL}/wayFindings/${uniqueIdentifier}`,
             requestOptions
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }

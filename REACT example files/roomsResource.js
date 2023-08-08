@@ -1,5 +1,7 @@
 import Axios from "axios";
 
+import RequestError from "./requestError";
+
 export default class RoomsResource {
     API_URL = "https://localhost:3002/api/v1";
 
@@ -14,8 +16,13 @@ export default class RoomsResource {
                 city: queryParams.city,
                 building: queryParams.building,
                 floor: queryParams.floor,
+                startDate: queryParams.startDate,
+                endDate: queryParams.endDate,
+                status: queryParams.status,
                 minNumberOfSeats: queryParams.minNumberOfSeats,
                 maxNumberOfSeats: queryParams.maxNumberOfSeats,
+                roomIdentifier: queryParams.roomIdentifier,
+                assignedToMe: queryParams.assignedToMe,
                 pageNumber: queryParams.pageNumber,
                 pageSize: queryParams.pageSize,
                 sort: queryParams.sort,
@@ -28,11 +35,11 @@ export default class RoomsResource {
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
-            const errorResponse = {
-                responseStatus: error.response.status,
-                responseData: error.response.data,
-            };
-            throw errorResponse;
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
         });
     }
 
@@ -51,11 +58,11 @@ export default class RoomsResource {
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
-            const errorResponse = {
-                responseStatus: error.response.status,
-                responseData: error.response.data,
-            };
-            throw errorResponse;
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
         });
     }
 
@@ -84,11 +91,11 @@ export default class RoomsResource {
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
-            const errorResponse = {
-                responseStatus: error.response.status,
-                responseData: error.response.data,
-            };
-            throw errorResponse;
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
         });
     }
 
@@ -106,11 +113,11 @@ export default class RoomsResource {
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
-            const errorResponse = {
-                responseStatus: error.response.status,
-                responseData: error.response.data,
-            };
-            throw errorResponse;
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
         });
     }
 
@@ -130,11 +137,11 @@ export default class RoomsResource {
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
-            const errorResponse = {
-                responseStatus: error.response.status,
-                responseData: error.response.data,
-            };
-            throw errorResponse;
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
         });
     }
 }

@@ -1,1494 +1,2746 @@
 {
 	"info": {
-		"_postman_id": "c72cc80b-2aa0-477b-8388-9d97edb7322e",
+		"_postman_id": "c16ea793-b8ac-4f2d-989c-6e483f2b459c",
 		"name": "Humly REST integration",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "Auth",
+			"name": "V1",
 			"item": [
 				{
-					"name": "Login",
-					"event": [
+					"name": "Auth",
+					"item": [
 						{
-							"listen": "test",
-							"script": {
-								"id": "aedcbca3-4e2f-4ef1-9f8a-6ddd6717b5c7",
-								"exec": [
-									"if (pm.response.status === \"OK\") {\r",
-									"    var jsonData = JSON.parse(responseBody);\r",
-									"    postman.setEnvironmentVariable(\"XAuthToken\", jsonData.data.authToken);\r",
-									"    postman.setEnvironmentVariable(\"XUserId\", jsonData.data.userId);\r",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
+							"name": "Login",
+							"event": [
 								{
-									"key": "username",
-									"value": "{{username}}",
-									"type": "text"
-								},
-								{
-									"key": "password",
-									"value": "{{password}}",
-									"type": "text"
+									"listen": "test",
+									"script": {
+										"exec": [
+											"if (pm.response.status === \"OK\") {\r",
+											"    var jsonData = JSON.parse(responseBody);\r",
+											"    postman.setEnvironmentVariable(\"XAuthToken\", jsonData.data.authToken);\r",
+											"    postman.setEnvironmentVariable(\"XUserId\", jsonData.data.userId);\r",
+											"}"
+										],
+										"type": "text/javascript"
+									}
 								}
-							]
-						},
-						"url": {
-							"raw": "https://localhost:{{port}}/api/v1/login",
-							"protocol": "https",
-							"host": [
-								"localhost"
 							],
-							"port": "{{port}}",
-							"path": [
-								"api",
-								"v1",
-								"login"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Logout",
-					"event": [
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {}
+							},
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/x-www-form-urlencoded",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "username",
+											"value": "{{username}}",
+											"description": "(string)",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "{{password}}",
+											"description": "(string)",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/login",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
 						{
-							"listen": "test",
-							"script": {
-								"id": "fb22ed0b-8fbb-414a-b66e-3fa859f620a7",
-								"exec": [
-									"if (pm.response.status === \"OK\") {\r",
-									"  postman.setEnvironmentVariable(\"XAuthToken\", \"\");\r",
-									"  postman.setEnvironmentVariable(\"XUserId\", \"\");\r",
-									"  postman.setEnvironmentVariable(\"newClientGroupToken\", \"\");\r",
-									"  postman.setEnvironmentVariable(\"roomId\", \"\");\r",
-									"  postman.setEnvironmentVariable(\"bookingId\", \"\");\r",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "X-User-Id",
-								"value": "{{XUserId}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Token",
-								"value": "{{XAuthToken}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "https://localhost:{{port}}/api/v1/logout",
-							"protocol": "https",
-							"host": [
-								"localhost"
+							"name": "Logout",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"if (pm.response.status === \"OK\") {\r",
+											"  postman.setEnvironmentVariable(\"XAuthToken\", \"\");\r",
+											"  postman.setEnvironmentVariable(\"XUserId\", \"\");\r",
+											"  postman.setEnvironmentVariable(\"newClientGroupToken\", \"\");\r",
+											"  postman.setEnvironmentVariable(\"roomId\", \"\");\r",
+											"  postman.setEnvironmentVariable(\"bookingId\", \"\");\r",
+											"  postman.setEnvironmentVariable(\"newClientGroupToken\", \"\");\r",
+											"  postman.setEnvironmentVariable(\"deviceId\", \"\");\r",
+											"  postman.setEnvironmentVariable(\"deskId\", \"\");\r",
+											"  postman.setEnvironmentVariable(\"smplrSpaceSettingsId\", \"\");\r",
+											"  postman.setEnvironmentVariable(\"userCode\", \"\");\r",
+											"  postman.setEnvironmentVariable(\"accessToken\", \"\");\r",
+											"  postman.setEnvironmentVariable(\"refreshToken\", \"\");\r",
+											"  postman.setEnvironmentVariable(\"deviceCode\", \"\");\r",
+											"  postman.setEnvironmentVariable(\"countryId\", \"\");\r",
+											"  postman.setEnvironmentVariable(\"cityId\", \"\");\r",
+											"  postman.setEnvironmentVariable(\"visitorLogId\", \"\");\r",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
 							],
-							"port": "{{port}}",
-							"path": [
-								"api",
-								"v1",
-								"logout"
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"protocolProfileBehavior": {}
-		},
-		{
-			"name": "Client Groups",
-			"item": [
-				{
-					"name": "Create Client Group",
-					"event": [
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"description": "(string)",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"description": "(string)",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/logout",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"logout"
+									]
+								}
+							},
+							"response": []
+						},
 						{
-							"listen": "test",
-							"script": {
-								"id": "7940534c-760d-42b2-9976-a2739a000ac7",
-								"exec": [
-									"if (pm.response.status === \"Created\") {\r",
-									"    var jsonData = JSON.parse(responseBody);\r",
-									"    postman.setEnvironmentVariable(\"newClientGroupToken\", jsonData.data.groupToken);\r",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "X-User-Id",
-								"value": "{{XUserId}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Token",
-								"value": "{{XAuthToken}}",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
+							"name": "Authorization request",
+							"event": [
 								{
-									"key": "name",
-									"value": "HumlyIntegration",
-									"type": "text"
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);",
+											"if (pm.response.status === \"OK\" && !jsonData.error) {",
+											"    postman.setEnvironmentVariable(\"userCode\", jsonData.user_code);",
+											"    postman.setEnvironmentVariable(\"deviceCode\", jsonData.device_code);",
+											"}"
+										],
+										"type": "text/javascript"
+									}
 								}
-							]
-						},
-						"url": {
-							"raw": "https://localhost:{{port}}/api/v1/clientGroups",
-							"protocol": "https",
-							"host": [
-								"localhost"
 							],
-							"port": "{{port}}",
-							"path": [
-								"api",
-								"v1",
-								"clientGroups"
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"protocolProfileBehavior": {}
-		},
-		{
-			"name": "Users",
-			"item": [
-				{
-					"name": "Create User",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "X-User-Id",
-								"value": "{{XUserId}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Token",
-								"value": "{{XAuthToken}}",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "name",
-									"value": "HumlyIntegrationUser",
-									"type": "text"
+							"request": {
+								"auth": {
+									"type": "noauth"
 								},
-								{
-									"key": "groupToken",
-									"value": "{{newClientGroupToken}}",
-									"type": "text"
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "client_id",
+											"value": "{{clientId}}",
+											"description": "(string)",
+											"type": "text"
+										},
+										{
+											"key": "scope",
+											"value": "",
+											"description": "(string) accepts: hrm, hbd, liso, wayfinding, visitor, map, integration",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/device_authorization",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"device_authorization"
+									]
 								}
-							]
-						},
-						"url": {
-							"raw": "https://localhost:{{port}}/api/v1/users/integration",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "{{port}}",
-							"path": [
-								"api",
-								"v1",
-								"users",
-								"integration"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "API Integration Users",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "X-User-Id",
-								"value": "{{XUserId}}",
-								"type": "text"
 							},
-							{
-								"key": "X-Auth-Token",
-								"value": "{{XAuthToken}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "https://localhost:{{port}}/api/v1/users/integration?",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "{{port}}",
-							"path": [
-								"api",
-								"v1",
-								"users",
-								"integration"
-							],
-							"query": [
-								{
-									"key": "pageNumber",
-									"value": "number",
-									"disabled": true
-								},
-								{
-									"key": "pageSize",
-									"value": "number",
-									"disabled": true
-								},
-								{
-									"key": "sort",
-									"value": "{ \"any.property\": \"desc/asc\", \"any.property\": \"desc/asc\" }",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "One API Integration User",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "noauth"
+							"response": []
 						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "X-User-Id",
-								"value": "{{XUserId}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Token",
-								"value": "{{XAuthToken}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": []
-						},
-						"url": {
-							"raw": "https://localhost:{{port}}/api/v1/users/integration/{{XUserId}}",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "{{port}}",
-							"path": [
-								"api",
-								"v1",
-								"users",
-								"integration",
-								"{{XUserId}}"
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"protocolProfileBehavior": {}
-		},
-		{
-			"name": "Bookings",
-			"item": [
-				{
-					"name": "All Bookings",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "X-User-Id",
-								"value": "{{XUserId}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Token",
-								"value": "{{XAuthToken}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "https://localhost:{{port}}/api/v1/bookings",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "{{port}}",
-							"path": [
-								"api",
-								"v1",
-								"bookings"
-							],
-							"query": [
-								{
-									"key": "startDate",
-									"value": "YYYY-MM-DDTHH:MI:SS%2B00:00",
-									"disabled": true
-								},
-								{
-									"key": "endDate",
-									"value": "YYYY-MM-DDTHH:MI:SS%2B00:00",
-									"disabled": true
-								},
-								{
-									"key": "pageNumber",
-									"value": "number",
-									"disabled": true
-								},
-								{
-									"key": "pageSize",
-									"value": "number",
-									"disabled": true
-								},
-								{
-									"key": "sort",
-									"value": "{ \"any.property\": \"desc/asc\", \"any.property\": \"desc/asc\" }",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Bookings for organizer",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "X-User-Id",
-								"value": "{{XUserId}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Token",
-								"value": "{{XAuthToken}}",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "https://localhost:{{port}}/api/v1/bookings?organizerUser={{XUserId}}",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "{{port}}",
-							"path": [
-								"api",
-								"v1",
-								"bookings"
-							],
-							"query": [
-								{
-									"key": "organizerUser",
-									"value": "{{XUserId}}"
-								},
-								{
-									"key": "startDate",
-									"value": "YYYY-MM-DDTHH:MI:SS%2B00:00",
-									"disabled": true
-								},
-								{
-									"key": "endDate",
-									"value": "YYYY-MM-DDTHH:MI:SS%2B00:00",
-									"disabled": true
-								},
-								{
-									"key": "pageNumber",
-									"value": "number",
-									"disabled": true
-								},
-								{
-									"key": "pageSize",
-									"value": "number",
-									"disabled": true
-								},
-								{
-									"key": "sort",
-									"value": "{ \"any.property\": \"desc/asc\", \"any.property\": \"desc/asc\" }",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create Booking",
-					"event": [
 						{
-							"listen": "test",
-							"script": {
-								"id": "93d839c3-1fa6-4dc3-a14c-d693f3698963",
-								"exec": [
-									"if (pm.response.status === \"Created\") {\r",
-									"    var jsonData = JSON.parse(responseBody);\r",
-									"    postman.setEnvironmentVariable(\"bookingId\", jsonData.data._id);\r",
-									"}"
+							"name": "Authorize device",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"description": "(string)",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"description": "(string)",
+										"type": "text"
+									}
 								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "X-User-Id",
-								"value": "{{XUserId}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Token",
-								"value": "{{XAuthToken}}",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "text/plain",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "roomId",
-									"value": "{{roomId}}",
-									"type": "text"
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "client_id",
+											"value": "{{clientId}}",
+											"description": "(string)",
+											"type": "text"
+										},
+										{
+											"key": "user_code",
+											"value": "{{userCode}}",
+											"description": "(string",
+											"type": "text"
+										},
+										{
+											"key": "status",
+											"value": "",
+											"description": "(string) accepts: approved, rejected",
+											"type": "text"
+										}
+									]
 								},
-								{
-									"key": "startDate",
-									"value": "YYYY-MM-DDTHH:MI:SS+00:00",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "endDate",
-									"value": "YYYY-MM-DDTHH:MI:SS+00:00",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "subject",
-									"value": "Humly meeting",
-									"type": "text",
-									"disabled": true
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/device_authorization",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"device_authorization"
+									]
 								}
-							],
-							"options": {
-								"raw": {
-									"language": "text"
-								}
-							}
+							},
+							"response": []
 						},
-						"url": {
-							"raw": "https://localhost:{{port}}/api/v1/bookings",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "{{port}}",
-							"path": [
-								"api",
-								"v1",
-								"bookings"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Booking",
-					"event": [
 						{
-							"listen": "test",
-							"script": {
-								"id": "6ae83e3c-2087-4a88-b0b7-8bef48cf1765",
-								"exec": [
-									"if (pm.response.status === \"OK\") {\r",
-									"  postman.setEnvironmentVariable(\"bookingId\", \"\");\r",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "X-User-Id",
-								"value": "{{XUserId}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Token",
-								"value": "{{XAuthToken}}",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": []
-						},
-						"url": {
-							"raw": "https://localhost:{{port}}/api/v1/bookings/{{bookingId}}",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "{{port}}",
-							"path": [
-								"api",
-								"v1",
-								"bookings",
-								"{{bookingId}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Patch Booking",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "PATCH",
-						"header": [
-							{
-								"key": "X-User-Id",
-								"value": "{{XUserId}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Token",
-								"value": "{{XAuthToken}}",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
+							"name": "Authorization token",
+							"event": [
 								{
-									"key": "startDate",
-									"value": "YYYY-MM-DDTHH:MI:SS+00:00",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "endDate",
-									"value": "YYYY-MM-DDTHH:MI:SS+00:00",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "subject",
-									"value": "string",
-									"type": "text",
-									"disabled": true
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);",
+											"if (pm.response.status === \"OK\" && !jsonData.error) {",
+											"    postman.setEnvironmentVariable(\"accessToken\", jsonData.access_token);",
+											"    postman.setEnvironmentVariable(\"refreshToken\", jsonData.refresh_token);",
+											"}"
+										],
+										"type": "text/javascript"
+									}
 								}
-							]
-						},
-						"url": {
-							"raw": "https://localhost:{{port}}/api/v1/bookings/{{bookingId}}",
-							"protocol": "https",
-							"host": [
-								"localhost"
 							],
-							"port": "{{port}}",
-							"path": [
-								"api",
-								"v1",
-								"bookings",
-								"{{bookingId}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Check In Booking",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "PUT",
-						"header": [
-							{
-								"key": "X-User-Id",
-								"value": "{{XUserId}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Token",
-								"value": "{{XAuthToken}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": []
-						},
-						"url": {
-							"raw": "https://localhost:{{port}}/api/v1/bookings/checkedIn?bookingId={{bookingId}}",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "{{port}}",
-							"path": [
-								"api",
-								"v1",
-								"bookings",
-								"checkedIn"
-							],
-							"query": [
-								{
-									"key": "bookingId",
-									"value": "{{bookingId}}"
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "grant_type",
+											"value": "urn:ietf:params:oauth:grant-type:device_code",
+											"description": "(string) accepts: urn:ietf:params:oauth:grant-type:device_code",
+											"type": "text"
+										},
+										{
+											"key": "client_id",
+											"value": "{{clientId}}",
+											"description": "(string)",
+											"type": "text"
+										},
+										{
+											"key": "device_code",
+											"value": "{{deviceCode}}",
+											"description": "(string)",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/token",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"token"
+									]
 								}
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"protocolProfileBehavior": {}
-		},
-		{
-			"name": "Desks",
-			"item": [
-				{
-					"name": "All Desks",
-					"event": [
+							},
+							"response": []
+						},
 						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var jsonData = JSON.parse(responseBody);\r",
-									"if (pm.response.status === \"OK\" && jsonData.data.length > 0) {\r",
-									"    postman.setEnvironmentVariable(\"deskId\", jsonData.data[0]._id);\r",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "X-User-Id",
-								"value": "{{XUserId}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Token",
-								"value": "{{XAuthToken}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": []
-						},
-						"url": {
-							"raw": "https://localhost:{{port}}/api/v1/desks?country=&city=&building=&floor=&date=2021-03-19&status=available",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "{{port}}",
-							"path": [
-								"api",
-								"v1",
-								"desks"
-							],
-							"query": [
+							"name": "Refresh token (Authenticated)",
+							"event": [
 								{
-									"key": "country",
-									"value": "%Country Name%",
-									"disabled": true
-								},
-								{
-									"key": "city",
-									"value": "%City Name%",
-									"disabled": true
-								},
-								{
-									"key": "building",
-									"value": "%Building Name%",
-									"disabled": true
-								},
-								{
-									"key": "floor",
-									"value": "%Flor Name%",
-									"disabled": true
-								},
-								{
-									"key": "date",
-									"value": "YYYY-MM-DD",
-									"disabled": true
-								},
-								{
-									"key": "status",
-									"value": "available",
-									"disabled": true
-								},
-								{
-									"key": "pageNumber",
-									"value": "number",
-									"disabled": true
-								},
-								{
-									"key": "pageSize",
-									"value": "number",
-									"disabled": true
-								},
-								{
-									"key": "sort",
-									"value": "{ \"any.property\": \"desc/asc\", \"any.property\": \"desc/asc\" }",
-									"disabled": true
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);",
+											"if (pm.response.status === \"OK\" && !jsonData.error) {",
+											"    postman.setEnvironmentVariable(\"accessToken\", jsonData.access_token);",
+											"    postman.setEnvironmentVariable(\"refreshToken\", jsonData.refresh_token);",
+											"}"
+										],
+										"type": "text/javascript"
+									}
 								}
-							]
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{accessToken}}",
+										"description": "(string)",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "grant_type",
+											"value": "refresh_token",
+											"description": "(string) accepts: refresh_token",
+											"type": "text"
+										},
+										{
+											"key": "refresh_token",
+											"value": "{{refreshToken}}",
+											"description": "(string)",
+											"type": "text"
+										},
+										{
+											"key": "client_id",
+											"value": "{{clientId}}",
+											"description": "(string)",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/token",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Refresh token (Unauthenticated)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);",
+											"if (pm.response.status === \"OK\" && !jsonData.error) {",
+											"    postman.setEnvironmentVariable(\"accessToken\", jsonData.access_token);",
+											"    postman.setEnvironmentVariable(\"refreshToken\", jsonData.refresh_token);",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "grant_type",
+											"value": "refresh_token",
+											"description": "(string) accepts: refresh_token",
+											"type": "text"
+										},
+										{
+											"key": "refresh_token",
+											"value": "{{refreshToken}}",
+											"description": "(string)",
+											"type": "text"
+										},
+										{
+											"key": "client_id",
+											"value": "{{clientId}}",
+											"description": "(string)",
+											"type": "text"
+										},
+										{
+											"key": "client_secret",
+											"value": "{{refreshToken}}",
+											"description": "(string)",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/token",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Token validation",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "authorization",
+										"value": "Bearer {{XAuthToken}}",
+										"type": "text",
+										"description": "(string)"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "token",
+											"value": "{{XAuthToken}}",
+											"description": "(string)",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/introspect",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"introspect"
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
+					]
 				},
 				{
-					"name": "One Desks",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "X-User-Id",
-								"value": "{{XUserId}}",
-								"type": "text"
+					"name": "Bookings",
+					"item": [
+						{
+							"name": "All Bookings",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"description": "(string)",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"description": "(string)",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/bookings",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"bookings"
+									],
+									"query": [
+										{
+											"key": "startDate",
+											"value": "",
+											"description": "(string) Date in YYYY-MM-DDTHH:MI:SS%2B00:00 format",
+											"disabled": true
+										},
+										{
+											"key": "endDate",
+											"value": "",
+											"description": "(string) Date in YYYY-MM-DDTHH:MI:SS%2B00:00 format",
+											"disabled": true
+										},
+										{
+											"key": "organizerUser",
+											"value": "",
+											"description": "(string) User _id value",
+											"disabled": true
+										},
+										{
+											"key": "resourceType",
+											"value": "",
+											"description": "(string) accepts: all, room, desk; default: room;",
+											"disabled": true
+										},
+										{
+											"key": "pageNumber",
+											"value": "",
+											"description": "{number} default: 1",
+											"disabled": true
+										},
+										{
+											"key": "pageSize",
+											"value": "",
+											"description": "{number} default: 10",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "",
+											"description": "{object} { \"any.property\": \"desc/asc\", \"any.property\": \"desc/asc\" }; default: { \"name\": \"asc\" }",
+											"disabled": true
+										}
+									]
+								}
 							},
-							{
-								"key": "X-Auth-Token",
-								"value": "{{XAuthToken}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": []
+							"response": []
 						},
-						"url": {
-							"raw": "https://localhost:{{port}}/api/v1/desks/{{deskId}}",
-							"protocol": "https",
-							"host": [
-								"localhost"
+						{
+							"name": "Bookings for organizer",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/x-www-form-urlencoded",
+										"type": "text"
+									},
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"description": "(string)",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"description": "(string)",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/bookings?organizerUser={{XUserId}}",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"bookings"
+									],
+									"query": [
+										{
+											"key": "organizerUser",
+											"value": "{{XUserId}}",
+											"description": "(string) User _id value"
+										},
+										{
+											"key": "startDate",
+											"value": "",
+											"description": "(string) Date in YYYY-MM-DDTHH:MI:SS%2B00:00 format",
+											"disabled": true
+										},
+										{
+											"key": "endDate",
+											"value": "",
+											"description": "(string) Date in YYYY-MM-DDTHH:MI:SS%2B00:00 format",
+											"disabled": true
+										},
+										{
+											"key": "resourceType",
+											"value": "",
+											"description": "(string) accepts: all, room, desk; default: room;",
+											"disabled": true
+										},
+										{
+											"key": "pageNumber",
+											"value": "",
+											"description": "{number} default: 1",
+											"disabled": true
+										},
+										{
+											"key": "pageSize",
+											"value": "",
+											"description": "{number} default: 10",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "",
+											"description": "{object} { \"any.property\": \"desc/asc\", \"any.property\": \"desc/asc\" }; default: { \"name\": \"asc\" }",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Booking",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"if (pm.response.status === \"Created\") {\r",
+											"    var jsonData = JSON.parse(responseBody);\r",
+											"    postman.setEnvironmentVariable(\"bookingId\", jsonData.data._id);\r",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
 							],
-							"port": "{{port}}",
-							"path": [
-								"api",
-								"v1",
-								"desks",
-								"{{deskId}}"
-							]
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"description": "(string)",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"description": "(string)",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "roomId",
+											"value": "{{roomId}}",
+											"description": "(string)",
+											"type": "text"
+										},
+										{
+											"key": "startDate",
+											"value": "",
+											"description": "(string) Date in YYYY-MM-DDTHH:MI:SS+00:00 format",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "endDate",
+											"value": "",
+											"description": "(string) Date in YYYY-MM-DDTHH:MI:SS+00:00 format",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "subject",
+											"value": "",
+											"description": "(string)",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "attendees",
+											"value": "",
+											"description": "(array) [\"mail1@mail.com\", \"mail2@mail.com\"]",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/bookings",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"bookings"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Booking",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"if (pm.response.status === \"OK\") {\r",
+											"  postman.setEnvironmentVariable(\"bookingId\", \"\");\r",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"description": "(string)",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"description": "(string)",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/bookings/{{bookingId}}",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"bookings",
+										"{{bookingId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Patch Booking",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/x-www-form-urlencoded",
+										"type": "text"
+									},
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"description": "(string)",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"description": "(string)",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "startDate",
+											"value": "",
+											"description": "(string) Date in YYYY-MM-DDTHH:MI:SS+00:00 format",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "endDate",
+											"value": "",
+											"description": "(string) Date in YYYY-MM-DDTHH:MI:SS+00:00 format",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "subject",
+											"value": "",
+											"description": "(string)",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "endType",
+											"value": "",
+											"description": "(string) accepts: EndedOnScreen",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/bookings/{{bookingId}}",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"bookings",
+										"{{bookingId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Check In Booking",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"description": "(string)",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"description": "(string)",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/bookings/checkedIn?bookingId={{bookingId}}",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"bookings",
+										"checkedIn"
+									],
+									"query": [
+										{
+											"key": "bookingId",
+											"value": "{{bookingId}}",
+											"description": "(string)"
+										}
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
+					]
+				},
+				{
+					"name": "Client Groups",
+					"item": [
+						{
+							"name": "Create Client Group",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"if (pm.response.status === \"Created\") {\r",
+											"    var jsonData = JSON.parse(responseBody);\r",
+											"    postman.setEnvironmentVariable(\"newClientGroupToken\", jsonData.data.groupToken);\r",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/x-www-form-urlencoded",
+										"type": "text"
+									},
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"description": "(string)",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"description": "(string)",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "name",
+											"value": "",
+											"description": "(string)",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/clientGroups",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"clientGroups"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Desks",
+					"item": [
+						{
+							"name": "All Desks",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);\r",
+											"if (pm.response.status === \"OK\" && jsonData.data.length > 0) {\r",
+											"    postman.setEnvironmentVariable(\"deskId\", jsonData.data[0]._id);\r",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"description": "(string)",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"description": "(string)",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/desks",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"desks"
+									],
+									"query": [
+										{
+											"key": "country",
+											"value": "",
+											"description": "{string} Country name",
+											"disabled": true
+										},
+										{
+											"key": "city",
+											"value": "",
+											"description": "{string} City name",
+											"disabled": true
+										},
+										{
+											"key": "building",
+											"value": "",
+											"description": "{string} Building name",
+											"disabled": true
+										},
+										{
+											"key": "floor",
+											"value": "",
+											"description": "{string} Floor name",
+											"disabled": true
+										},
+										{
+											"key": "date",
+											"value": "",
+											"description": "{string} Date in YYYY-MM-DD format",
+											"disabled": true
+										},
+										{
+											"key": "status",
+											"value": "",
+											"description": "{string} accpted: available, busy, all; default: all",
+											"disabled": true
+										},
+										{
+											"key": "deskIdentifier",
+											"value": "",
+											"description": "{string} unique desk identifier like _id, id or email",
+											"disabled": true
+										},
+										{
+											"key": "assignedToMe",
+											"value": "",
+											"description": "{boolean} accepted: true, false; default: false",
+											"disabled": true
+										},
+										{
+											"key": "pageNumber",
+											"value": "",
+											"description": "{number} default: 1",
+											"disabled": true
+										},
+										{
+											"key": "pageSize",
+											"value": "",
+											"description": "{number} default: 10",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "",
+											"description": "{object} { \"any.property\": \"desc/asc\", \"any.property\": \"desc/asc\" }; default: { \"name\": \"asc\" }",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "One Desks",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"type": "text",
+										"description": "(string)"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"type": "text",
+										"description": "(string)"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/desks/{{deskId}}",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"desks",
+										"{{deskId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Desks Status",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"description": "(string)",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"description": "(string)",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/desks/status",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"desks",
+										"status"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Devices",
+					"item": [
+						{
+							"name": "All Devices",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);",
+											"if (pm.response.status === \"OK\" && jsonData.data.length > 0) {",
+											"    postman.setEnvironmentVariable(\"deviceId\", jsonData.data[0]._id);",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"type": "text",
+										"description": "(string)"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"type": "text",
+										"description": "(string)"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/devices",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"devices"
+									],
+									"query": [
+										{
+											"key": "status",
+											"value": "",
+											"description": "(string) accepts: Online, Offline, Sleeping, Unassigned; Leave empty to get all devices;",
+											"disabled": true
+										},
+										{
+											"key": "pageNumber",
+											"value": "",
+											"description": "{number} default: 1",
+											"disabled": true
+										},
+										{
+											"key": "pageSize",
+											"value": "",
+											"description": "{number} default: 10",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "",
+											"description": "{object} { \"any.property\": \"desc/asc\", \"any.property\": \"desc/asc\" }; default: { \"name\": \"asc\" }",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "One Device",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"type": "text",
+										"description": "(string)"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"type": "text",
+										"description": "(string)"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/devices/{{deviceId}}",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"devices",
+										"{{deviceId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Guide Screens",
+					"item": [
+						{
+							"name": "GuideScreen",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/wayFindings/{{guideScreenId}}",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"wayFindings",
+										"{{guideScreenId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GuideScreenImage",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/wayFindings/{{guideScreenId}}/file",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"wayFindings",
+										"{{guideScreenId}}",
+										"file"
+									],
+									"query": [
+										{
+											"key": "type",
+											"value": "",
+											"description": "(string) accepts: logo, qr_code",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Info",
+					"item": [
+						{
+							"name": "Server info",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"type": "text",
+										"description": "(string)"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"type": "text",
+										"description": "(string)"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/info",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"info"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Rooms",
+					"item": [
+						{
+							"name": "All Rooms",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);\r",
+											"if (pm.response.status === \"OK\" && jsonData.data.length > 0) {\r",
+											"    postman.setEnvironmentVariable(\"roomId\", jsonData.data[0]._id);\r",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"description": "(string)",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"description": "(string)",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/rooms",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"rooms"
+									],
+									"query": [
+										{
+											"key": "country",
+											"value": "",
+											"description": "{string} Country name",
+											"disabled": true
+										},
+										{
+											"key": "city",
+											"value": "",
+											"description": "{string} City name",
+											"disabled": true
+										},
+										{
+											"key": "building",
+											"value": "",
+											"description": "{string} Building name",
+											"disabled": true
+										},
+										{
+											"key": "floor",
+											"value": "",
+											"description": "{string} Floor name",
+											"disabled": true
+										},
+										{
+											"key": "startDate",
+											"value": "",
+											"description": "(string) Date in YYYY-MM-DDTHH:MI:SS%2B00:00 format; default: current time;",
+											"disabled": true
+										},
+										{
+											"key": "endDate",
+											"value": "",
+											"description": "(string) Date in YYYY-MM-DDTHH:MI:SS%2B00:00 format; default: end of the day;",
+											"disabled": true
+										},
+										{
+											"key": "status",
+											"value": "",
+											"description": "{string} accepts: available, busy, all; default: all",
+											"disabled": true
+										},
+										{
+											"key": "minNumberOfSeats",
+											"value": "",
+											"description": "{number} Minimum required number of seats",
+											"disabled": true
+										},
+										{
+											"key": "maxNumberOfSeats",
+											"value": "",
+											"description": "{number} Maximum needed number of seats",
+											"disabled": true
+										},
+										{
+											"key": "roomIdentifier",
+											"value": "",
+											"description": "{string} unique room identifier like _id, id or email",
+											"disabled": true
+										},
+										{
+											"key": "assignedToMe",
+											"value": "",
+											"description": "{boolean} accepts: true, false; default: false",
+											"disabled": true
+										},
+										{
+											"key": "pageNumber",
+											"value": "",
+											"description": "{number} default: 1",
+											"disabled": true
+										},
+										{
+											"key": "pageSize",
+											"value": "",
+											"description": "{number} default: 10",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "",
+											"description": "{object} { \"any.property\": \"desc/asc\", \"any.property\": \"desc/asc\" }; default: { \"name\": \"asc\" }",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "One Room",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"description": "(string)",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"description": "(string)",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/rooms/{{roomId}}",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"rooms",
+										"{{roomId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Available Rooms",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/x-www-form-urlencoded",
+										"type": "text"
+									},
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"type": "text",
+										"description": "(string)"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"type": "text",
+										"description": "(string)"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": []
+								},
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/rooms/available",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"rooms",
+										"available"
+									],
+									"query": [
+										{
+											"key": "seats",
+											"value": "",
+											"description": "(number)",
+											"disabled": true
+										},
+										{
+											"key": "startDate",
+											"value": "",
+											"description": "(string) Date in YYYY-MM-DDTHH:MI:SS%2B00:00 format; default: current time;",
+											"disabled": true
+										},
+										{
+											"key": "endDate",
+											"value": "",
+											"description": "(string) Date in YYYY-MM-DDTHH:MI:SS%2B00:00 format; default: current time + 1 hour;",
+											"disabled": true
+										},
+										{
+											"key": "location",
+											"value": "",
+											"description": "(object) {\n\"countryId\": \"%Country ID%\",\n\"cityId\": \"%City ID%\",\n\"buildingId\": \"%Building ID%\",\n\"floorId\": \"%Flor ID%\"\n}",
+											"disabled": true
+										},
+										{
+											"key": "equipment",
+											"value": "",
+											"description": "(object) {\n\"lights\": boolean,\n\"projector\": boolean,\n\"computer\": boolean,\n\"teleConference\": boolean,\n\"wifi\": boolean,\n\"whiteboard\": boolean,\n\"videoConference\": boolean,\n\"display\": boolean,\n\"minto\": boolean,\n\"ac\": boolean\n}",
+											"disabled": true
+										},
+										{
+											"key": "customEquipment",
+											"value": "",
+											"description": "(array) [{\n\"_id\": \"%Custom Equipment ID%\",\n\"isChecked\": boolean\n}]",
+											"disabled": true
+										},
+										{
+											"key": "pageNumber",
+											"value": "",
+											"description": "(number) default: 1",
+											"disabled": true
+										},
+										{
+											"key": "pageSize",
+											"value": "",
+											"description": "(number) default: 10",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "",
+											"description": "{ \"any.property\": \"desc/asc\", \"any.property\": \"desc/asc\" }",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Report Equipment",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/x-www-form-urlencoded",
+										"type": "text"
+									},
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"type": "text",
+										"description": "(string)"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"type": "text",
+										"description": "(string)"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "equipment",
+											"value": "",
+											"description": "(object) {\n\"lights\": boolean,\n\"projector\": boolean,\n\"computer\": boolean,\n\"teleConference\": boolean,\n\"wifi\": boolean,\n\"whiteboard\": boolean,\n\"videoConference\": boolean,\n\"display\": boolean,\n\"minto\": boolean,\n\"ac\": boolean\n}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "customEquipment",
+											"value": "",
+											"description": "(array) [{ \"name\": \"%Equipment Name%\", \"isChecked\": boolean}]",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/rooms/{{roomId}}/equipment",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"rooms",
+										"{{roomId}}",
+										"equipment"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Equipment",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"type": "text",
+										"description": "(string)"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"type": "text",
+										"description": "(string)"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/rooms/{{roomId}}/equipment",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"rooms",
+										"{{roomId}}",
+										"equipment"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Structures",
+					"item": [
+						{
+							"name": "All Structures",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);",
+											"if (pm.response.status === \"OK\" && jsonData.data.length > 0) {",
+											"    postman.setEnvironmentVariable(\"countryId\", jsonData.data[0]._id);",
+											"    postman.setEnvironmentVariable(\"cityId\", jsonData.data[0].cities[0]._id);",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"type": "text",
+										"description": "(string)"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"type": "text",
+										"description": "(string)"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/structures",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"structures"
+									],
+									"query": [
+										{
+											"key": "country",
+											"value": "",
+											"description": "(string) Country name",
+											"disabled": true
+										},
+										{
+											"key": "city",
+											"value": "",
+											"description": "(string) City name",
+											"disabled": true
+										},
+										{
+											"key": "building",
+											"value": "",
+											"description": "(string) Buliding name",
+											"disabled": true
+										},
+										{
+											"key": "floor",
+											"value": "",
+											"description": "(string) Floor name",
+											"disabled": true
+										},
+										{
+											"key": "countryId",
+											"value": "",
+											"description": "(string) Country unique identifier _id",
+											"disabled": true
+										},
+										{
+											"key": "cityId",
+											"value": "",
+											"description": "(string) City unique identifier _id",
+											"disabled": true
+										},
+										{
+											"key": "buildingId",
+											"value": "",
+											"description": "(string) Building  unique identifier _id",
+											"disabled": true
+										},
+										{
+											"key": "floorId",
+											"value": "",
+											"description": "(string) Floor  unique identifier _id",
+											"disabled": true
+										},
+										{
+											"key": "assignedToMe",
+											"value": "",
+											"description": "(boolean) accepts: true, false; default: false;",
+											"disabled": true
+										},
+										{
+											"key": "pageNumber",
+											"value": "",
+											"description": "(number) default: 1",
+											"disabled": true
+										},
+										{
+											"key": "pageSize",
+											"value": "",
+											"description": "(number) default: 10",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "",
+											"description": "(object) { \"any.property\": \"desc/asc\", \"any.property\": \"desc/asc\" }",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "City",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"type": "text",
+										"description": "(string)"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"type": "text",
+										"description": "(string)"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/countries/{{countryId}}/cities/{{cityId}}",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"countries",
+										"{{countryId}}",
+										"cities",
+										"{{cityId}}"
+									],
+									"query": [
+										{
+											"key": "startDate",
+											"value": "",
+											"description": "(string) Date in YYYY-MM-DDTHH:MI:SS%2B00:00 format",
+											"disabled": true
+										},
+										{
+											"key": "endDate",
+											"value": "",
+											"description": "(string) Date in YYYY-MM-DDTHH:MI:SS%2B00:00 format",
+											"disabled": true
+										},
+										{
+											"key": "includeDesksAvailability",
+											"value": "",
+											"description": "(boolean) accepts: true, false; default: false;",
+											"disabled": true
+										},
+										{
+											"key": "pageNumber",
+											"value": "",
+											"description": "{number} default: 1",
+											"disabled": true
+										},
+										{
+											"key": "pageSize",
+											"value": "",
+											"description": "{number} default: 10",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "",
+											"description": "{object} { \"any.property\": \"desc/asc\", \"any.property\": \"desc/asc\" }; default: { \"name\": \"asc\" }",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Countries",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);",
+											"if (pm.response.status === \"OK\" && jsonData.data.length > 0) {",
+											"    postman.setEnvironmentVariable(\"countryId\", jsonData.data[0]._id);",
+											"    postman.setEnvironmentVariable(\"cityId\", jsonData.data[0].cities[0]._id);",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"type": "text",
+										"description": "(string)"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"type": "text",
+										"description": "(string)"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/countries",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"countries"
+									],
+									"query": [
+										{
+											"key": "country",
+											"value": "",
+											"description": "(string) Country name",
+											"disabled": true
+										},
+										{
+											"key": "city",
+											"value": "",
+											"description": "(string) City name",
+											"disabled": true
+										},
+										{
+											"key": "building",
+											"value": "",
+											"description": "(string) Building name",
+											"disabled": true
+										},
+										{
+											"key": "floor",
+											"value": "",
+											"description": "(string) Floor name",
+											"disabled": true
+										},
+										{
+											"key": "countryId",
+											"value": "",
+											"description": "(string) Country unique identifier _id",
+											"disabled": true
+										},
+										{
+											"key": "cityId",
+											"value": "",
+											"description": "(string) City unique identifier _id",
+											"disabled": true
+										},
+										{
+											"key": "buildingId",
+											"value": "",
+											"description": "(string) Building unique identifier _id",
+											"disabled": true
+										},
+										{
+											"key": "floorId",
+											"value": "",
+											"description": "(string) Floor unique identifier _id",
+											"disabled": true
+										},
+										{
+											"key": "assignedToMe",
+											"value": "",
+											"description": "(boolean) accepts: true, false; default: false;",
+											"disabled": true
+										},
+										{
+											"key": "pageNumber",
+											"value": "",
+											"description": "(number) default: 1",
+											"disabled": true
+										},
+										{
+											"key": "pageSize",
+											"value": "",
+											"description": "(number) default: 10",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "",
+											"description": "(object) { \"any.property\": \"desc/asc\", \"any.property\": \"desc/asc\" }",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Users",
+					"item": [
+						{
+							"name": "Create User",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"description": "(string)",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"description": "(string)",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "groupToken",
+											"value": "{{newClientGroupToken}}",
+											"description": "(string) client group token",
+											"type": "text"
+										},
+										{
+											"key": "name",
+											"value": "",
+											"description": "(string)",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/users/integration",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"integration"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "API Integration Users",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"description": "(string)",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"description": "(string)",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/users/integration",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"integration"
+									],
+									"query": [
+										{
+											"key": "pageNumber",
+											"value": "",
+											"description": "{number} default: 1",
+											"disabled": true
+										},
+										{
+											"key": "pageSize",
+											"value": "",
+											"description": "{number} default: 10",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "",
+											"description": "{object} { \"any.property\": \"desc/asc\", \"any.property\": \"desc/asc\" }; default: { \"name\": \"asc\" }",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "One API Integration User",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"description": "(string)",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"description": "(string)",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": []
+								},
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/users/integration/{{XUserId}}",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"integration",
+										"{{XUserId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Visitors Screans",
+					"item": [
+						{
+							"name": "Visitor Screen Configuration Copy",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"description": "(string)",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"description": "(string)",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/visitor-screens/{{visitorScreenId}}",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"visitor-screens",
+										"{{visitorScreenId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Visitor Screen Image",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"description": "(string)",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"description": "(string)",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/visitor-screens/{{visitorScreenId}}/file",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"visitor-screens",
+										"{{visitorScreenId}}",
+										"file"
+									],
+									"query": [
+										{
+											"key": "type",
+											"value": "",
+											"description": "(string) accepts: nda, gdpr, badge, logo",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Visitor Screen Azure users",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"description": "(string)",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"description": "(string)",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/visitor-screens/{{visitorScreenId}}/azure-users",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"visitor-screens",
+										"{{visitorScreenId}}",
+										"azure-users"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Visitor Logs",
+					"item": [
+						{
+							"name": "Check-in visitor",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);",
+											"if (pm.response.status === \"OK\" && jsonData.data) {",
+											"    postman.setEnvironmentVariable(\"visitorLogId\", jsonData.data);",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"description": "(string)",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"description": "(string)",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "visitorScreenId",
+											"value": "{{visitorScreenId}}",
+											"type": "text"
+										},
+										{
+											"key": "name",
+											"value": "",
+											"description": "(string) visitor name",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "hostName",
+											"value": "",
+											"description": "(string) name of visited person",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "email",
+											"value": "",
+											"description": "(string) visitor email",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "mobile",
+											"value": "",
+											"description": "(string) visitor phone number",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "organization",
+											"value": "",
+											"description": "(string) visitor organization",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "carRegistrationNumber",
+											"value": "",
+											"description": "(string) visitor car registration number",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "disclaimer1",
+											"value": "",
+											"description": "(boolean) accepts: true, false; default: false;",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "disclaimer2",
+											"value": "",
+											"description": "(boolean) accepts: true, false; default: false;",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "gdpr",
+											"value": "",
+											"description": "(boolean) accepts: true, false; default: false;",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "nda",
+											"value": "",
+											"description": "(boolean) accepts: true, false; default: false;",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/visitor-logs",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"visitor-logs"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Visitor Badge",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"description": "(string)",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"description": "(string)",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/visitor-logs/{{visitorLogId}}/file?type=badge",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"visitor-logs",
+										"{{visitorLogId}}",
+										"file"
+									],
+									"query": [
+										{
+											"key": "type",
+											"value": "badge",
+											"description": "(string) accepts: badge"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "3D Maps",
+					"item": [
+						{
+							"name": "3D Maps",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);",
+											"if (pm.response.status === \"OK\" && jsonData.data.length > 0) {",
+											"    postman.setEnvironmentVariable(\"smplrSpaceMapId\", jsonData.data[0].mapId);",
+											"    postman.setEnvironmentVariable(\"smplrSpaceToken\", jsonData.data[0].clientToken);",
+											"    postman.setEnvironmentVariable(\"smplrSpaceSettingsId\", jsonData.data[0]._id);",
+											"} else {",
+											"    postman.setEnvironmentVariable(\"smplrSpaceMapId\", \"\");",
+											"    postman.setEnvironmentVariable(\"smplrSpaceToken\", \"\");",
+											"    postman.setEnvironmentVariable(\"smplrSpaceSettingsId\", \"\");",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://eldar:3002/api/v1/smplr-spaces",
+									"protocol": "https",
+									"host": [
+										"eldar"
+									],
+									"port": "3002",
+									"path": [
+										"api",
+										"v1",
+										"smplr-spaces"
+									],
+									"query": [
+										{
+											"key": "startDate",
+											"value": "",
+											"description": "(string) Date in YYYY-MM-DDTHH:MI:SS+00:00 format; default: current time;",
+											"disabled": true
+										},
+										{
+											"key": "endDate",
+											"value": "",
+											"description": "(string) Date in YYYY-MM-DDTHH:MI:SS+00:00 format; default: end of the day;",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "One 3D Map",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://eldar:3002/api/v1/smplr-spaces/{{smplrSpaceSettingsId}}",
+									"protocol": "https",
+									"host": [
+										"eldar"
+									],
+									"port": "3002",
+									"path": [
+										"api",
+										"v1",
+										"smplr-spaces",
+										"{{smplrSpaceSettingsId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				}
 			]
-		},
-		{
-			"name": "Devices",
-			"item": [
-				{
-					"name": "All Devices",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var jsonData = JSON.parse(responseBody);",
-									"if (pm.response.status === \"OK\" && jsonData.data.length > 0) {",
-									"    postman.setEnvironmentVariable(\"deviceId\", jsonData.data[0]._id);",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "X-User-Id",
-								"value": "{{XUserId}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Token",
-								"value": "{{XAuthToken}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": []
-						},
-						"url": {
-							"raw": "https://localhost:{{port}}/api/v1/devices",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "{{port}}",
-							"path": [
-								"api",
-								"v1",
-								"devices"
-							],
-							"query": [
-								{
-									"key": "status",
-									"value": "Online/Offline/Sleeping/Unassigned",
-									"disabled": true
-								},
-								{
-									"key": "pageNumber",
-									"value": "number",
-									"disabled": true
-								},
-								{
-									"key": "pageSize",
-									"value": "number",
-									"disabled": true
-								},
-								{
-									"key": "sort",
-									"value": "{ \"any.property\": \"desc/asc\", \"any.property\": \"desc/asc\" }",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "One Device",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "X-User-Id",
-								"value": "{{XUserId}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Token",
-								"value": "{{XAuthToken}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": []
-						},
-						"url": {
-							"raw": "https://localhost:{{port}}/api/v1/devices/{{deviceId}}",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "{{port}}",
-							"path": [
-								"api",
-								"v1",
-								"devices",
-								"{{deviceId}}"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Guide Screens",
-			"item": [
-				{
-					"name": "GuideScreen",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "https://localhost:{{port}}/api/v1/wayFindings/{{guideScreenId}}",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "{{port}}",
-							"path": [
-								"api",
-								"v1",
-								"wayFindings",
-								"{{guideScreenId}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "GuideScreenLogo",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "https://localhost:{{port}}/api/v1/wayFindings/{{guideScreenId}}/logo",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "{{port}}",
-							"path": [
-								"api",
-								"v1",
-								"wayFindings",
-								"{{guideScreenId}}",
-								"logo"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Rooms",
-			"item": [
-				{
-					"name": "All Rooms",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "9be8830b-1405-4209-80d0-7d65abe3b9f0",
-								"exec": [
-									"var jsonData = JSON.parse(responseBody);\r",
-									"if (pm.response.status === \"OK\" && jsonData.data.length > 0) {\r",
-									"    postman.setEnvironmentVariable(\"roomId\", jsonData.data[0]._id);\r",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "X-User-Id",
-								"value": "{{XUserId}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Token",
-								"value": "{{XAuthToken}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": []
-						},
-						"url": {
-							"raw": "https://localhost:{{port}}/api/v1/rooms?",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "{{port}}",
-							"path": [
-								"api",
-								"v1",
-								"rooms"
-							],
-							"query": [
-								{
-									"key": "country",
-									"value": "%Country Name%",
-									"disabled": true
-								},
-								{
-									"key": "city",
-									"value": "%City Name%",
-									"disabled": true
-								},
-								{
-									"key": "building",
-									"value": "%Building Name%",
-									"disabled": true
-								},
-								{
-									"key": "floor",
-									"value": "%Flor Name%",
-									"disabled": true
-								},
-								{
-									"key": "minNumberOfSeats",
-									"value": "number",
-									"disabled": true
-								},
-								{
-									"key": "maxNumberOfSeats",
-									"value": "number",
-									"disabled": true
-								},
-								{
-									"key": "pageNumber",
-									"value": "number",
-									"disabled": true
-								},
-								{
-									"key": "pageSize",
-									"value": "number",
-									"disabled": true
-								},
-								{
-									"key": "sort",
-									"value": "{ \"any.property\": \"desc/asc\", \"any.property\": \"desc/asc\" }",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "One Room",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "X-User-Id",
-								"value": "{{XUserId}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Token",
-								"value": "{{XAuthToken}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": []
-						},
-						"url": {
-							"raw": "https://localhost:{{port}}/api/v1/rooms/{{roomId}}",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "{{port}}",
-							"path": [
-								"api",
-								"v1",
-								"rooms",
-								"{{roomId}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Available Rooms",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "X-User-Id",
-								"value": "{{XUserId}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Token",
-								"value": "{{XAuthToken}}",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": []
-						},
-						"url": {
-							"raw": "https://localhost:{{port}}/api/v1/rooms/available?",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "{{port}}",
-							"path": [
-								"api",
-								"v1",
-								"rooms",
-								"available"
-							],
-							"query": [
-								{
-									"key": "seats",
-									"value": "number",
-									"disabled": true
-								},
-								{
-									"key": "startDate",
-									"value": "YYYY-MM-DDTHH:MI:SS%2B00:00",
-									"disabled": true
-								},
-								{
-									"key": "endDate",
-									"value": "YYYY-MM-DDTHH:MI:SS%2B00:00",
-									"disabled": true
-								},
-								{
-									"key": "location",
-									"value": "{\n\"countryId\": \"%Country ID%\",\n\"cityId\": \"%City ID%\",\n\"buildingId\": \"%Building ID%\",\n\"floorId\": \"%Flor ID%\"\n}",
-									"disabled": true
-								},
-								{
-									"key": "equipment",
-									"value": "{\n\"lights\": boolean,\n\"projector\": boolean,\n\"computer\": boolean,\n\"teleConference\": boolean,\n\"wifi\": boolean,\n\"whiteboard\": boolean,\n\"videoConference\": boolean,\n\"display\": boolean,\n\"minto\": boolean,\n\"ac\": boolean\n}",
-									"disabled": true
-								},
-								{
-									"key": "customEquipment",
-									"value": "[{\n\"_id\": \"%Custom Equipment ID%\",\n\"isChecked\": boolean\n}]",
-									"disabled": true
-								},
-								{
-									"key": "pageNumber",
-									"value": "number",
-									"disabled": true
-								},
-								{
-									"key": "pageSize",
-									"value": "number",
-									"disabled": true
-								},
-								{
-									"key": "sort",
-									"value": "{ \"any.property\": \"desc/asc\", \"any.property\": \"desc/asc\" }",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Report Equipment",
-					"request": {
-						"method": "PATCH",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
-							},
-							{
-								"key": "X-User-Id",
-								"value": "{{XUserId}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Token",
-								"value": "{{XAuthToken}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "equipment",
-									"value": "{\n\"lights\": boolean,\n\"projector\": boolean,\n\"computer\": boolean,\n\"teleConference\": boolean,\n\"wifi\": boolean,\n\"whiteboard\": boolean,\n\"videoConference\": boolean,\n\"display\": boolean,\n\"minto\": boolean,\n\"ac\": boolean\n}",
-									"type": "text"
-								},
-								{
-									"key": "customEquipment",
-									"value": "[{ \"name\": \"%Equipment Name%\", \"isChecked\": boolean}]",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "https://localhost:{{port}}/api/v1/rooms/{{roomId}}/equipment",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "{{port}}",
-							"path": [
-								"api",
-								"v1",
-								"rooms",
-								"{{roomId}}",
-								"equipment"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Equipment",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "X-User-Id",
-								"value": "{{XUserId}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Token",
-								"value": "{{XAuthToken}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": []
-						},
-						"url": {
-							"raw": "https://localhost:{{port}}/api/v1/rooms/{{roomId}}/equipment",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "{{port}}",
-							"path": [
-								"api",
-								"v1",
-								"rooms",
-								"{{roomId}}",
-								"equipment"
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"protocolProfileBehavior": {}
-		},
-		{
-			"name": "Structures",
-			"item": [
-				{
-					"name": "All Structures",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "X-User-Id",
-								"value": "{{XUserId}}",
-								"type": "text"
-							},
-							{
-								"key": "X-Auth-Token",
-								"value": "{{XAuthToken}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": []
-						},
-						"url": {
-							"raw": "https://localhost:{{port}}/api/v1/structures",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "{{port}}",
-							"path": [
-								"api",
-								"v1",
-								"structures"
-							],
-							"query": [
-								{
-									"key": "pageNumber",
-									"value": "number",
-									"disabled": true
-								},
-								{
-									"key": "pageSize",
-									"value": "number",
-									"disabled": true
-								},
-								{
-									"key": "sort",
-									"value": "{ \"any.property\": \"desc/asc\", \"any.property\": \"desc/asc\" }",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"protocolProfileBehavior": {}
 		}
-	],
-	"protocolProfileBehavior": {}
+	]
 }

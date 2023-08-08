@@ -2,10 +2,10 @@ import Axios from "axios";
 
 import RequestError from "./requestError";
 
-export default class ClientGroupsResource {
+export default class VisitorLogsResource {
     API_URL = "https://localhost:3002/api/v1";
-
-    createClientGroup(userId, authToken, clientGroupData) {
+    
+    checkInVisitor(userId, authToken, visitorData) {
         const requestOptions = {
             headers: {
                 "Content-Type": "application/json",
@@ -15,8 +15,8 @@ export default class ClientGroupsResource {
         };
 
         return Axios.post(
-            `${this.API_URL}/clientGroups`,
-            clientGroupData,
+            `${this.API_URL}/visitor-logs`,
+            visitorData,
             requestOptions
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }

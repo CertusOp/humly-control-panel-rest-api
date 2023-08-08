@@ -1,5 +1,7 @@
 import Axios from "axios";
 
+import RequestError from "./requestError";
+
 export default class UsersResource {
     API_URL = "https://localhost:3002/api/v1";
 
@@ -19,11 +21,11 @@ export default class UsersResource {
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
-            const errorResponse = {
-                responseStatus: error.response.status,
-                responseData: error.response.data,
-            };
-            throw errorResponse;
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
         });
     }
 
@@ -46,11 +48,11 @@ export default class UsersResource {
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
-            const errorResponse = {
-                responseStatus: error.response.status,
-                responseData: error.response.data,
-            };
-            throw errorResponse;
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
         });
     }
 
@@ -68,11 +70,11 @@ export default class UsersResource {
         ).then(response => (
             { responseStatus: response.status, responseData: response.data }
         )).catch((error) => {
-            const errorResponse = {
-                responseStatus: error.response.status,
-                responseData: error.response.data,
-            };
-            throw errorResponse;
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
         });
     }
 }
