@@ -17,20 +17,30 @@ API documentation for Humly Control Panel version: `v1.0.x`
 - [Check-in a meeting - `PUT {HCP_URL}/api/v1/bookings/checkedIn?bookingId=:bookingId`](#checkInMeeting)
 - [Get structures data - `GET {HCP_URL}/api/v1/structures`](#structures)
 - [Get devices data - `{HCP_URL}/api/v1/devices`](#devices)
+- [Working with sensors - `{HCP_URL}/api/v1/sensors`](#sensors)
+- [Managing sensor readings - `{HCP_URL}/api/v1/sensor-readings`](#sensorReadings)
 
 ## <a name="introduction"></a> Introduction
 
 Welcome and thank you for using Humly Control Panel API!
-In this document you can find description of available API endpoints for integrating with Humly Control Panel (HCP) along with parameters specification. You can also find basic examples written in React using Axios library. 
+This documentation provides a detailed overview of the available API endpoints for integrating with the Humly Control Panel (HCP), including parameter specifications and usage guidelines. You'll also find basic usage examples written in React using the Axios library.
 
-> 👉 **Disclaimer!** The code examples provided in this document are written as basic examples. You should change and adopt this code according to your production needs.
+> 👉 **Disclaimer!** The code examples provided in this documentation are intended as basic templates. You should adapt and modify them to fit your specific production requirements.
 
-Humly Control Panel is the server-side software used to manage and monitor your Humly devices. These devices provide booking functionalities for you. You can display, book, confirm etc. your booking by using them. Humly Control Panel also serves as central data repository used to synchronize all your devices. This platform is built on the full stack JavaScript framework [Meteor](https://www.meteor.com/) which uses the DDP protocol to send/receive requests. 
+The Humly Control Panel is the server-side software used to manage and monitor Humly devices. These devices offer room booking functionalities, allowing users to display, book, and confirm reservations directly through them.
+
+HCP acts as a central data repository, ensuring synchronization across all connected devices. The platform is built on the full-stack JavaScript framework [Meteor](https://www.meteor.com/), which uses the DDP (Distributed Data Protocol) to handle real-time communication between clients and the server. 
 
 ## <a name="responseContent"></a> Response content
 
-Responses from Humly Control Panel API have standardized format. There are two response types that you can expect: <b><i>success response</i></b> and <b><i>error response</i></b>.<br><br>
-Format of <b><i>success response</i></b> is:<br>
+All responses from the Humly Control Panel API follow a standardized structure. There are two main types of responses you can expect:
+
+- Success Response
+- Error Response
+
+### Success Response
+
+A typical success response follows this format:
 ```c++
 {
   "status": "success",
@@ -52,12 +62,33 @@ Format of <b><i>success response</i></b> is:<br>
   ],
 }
 ```
-In examples provided in rest of this document you can find this object as part of <i>responseData</i>.<br> If API endpoint returns array or results then you can expect to have pagination and sort options.<br>
-Data paging is done by providing two variables as request params. <b><i>pageNumber</i></b> param is used to navigate through paginated data and <b><i>pageSize</i></b> is used to limit maximum number of data returned by endpoint. Default values for pageNumber is 1 and for pageSize is 10. If endpoint supports data paging then you can always expect to have <b><i>page</i></b> object (documented above) in case of success.<br>
-Sorting is done by providing <b><i>sort</i></b> stringified object as a request param. Object should contain key value pairs where key should be name of response data property and value should be one of "asc" od "desc". If you want to sort data by some nested property inside other object then you should use dot notation to point to that property. For example sort param could look like: `{ "booking.location": "asc", "booking.startDate": "desc" }` or `{ "name": "desc" }`. Default sort property will be returned for every and point that have this functionality implemented.
+In the examples throughout this document, you will see a <i>responseData</i> object included as part of the API responses. If an endpoint returns an array of results, it typically supports pagination and sorting options.
 
-<br><br>
-Format of <b><i>error response</i></b> is:<br>
+<b>Pagination</b> is controlled using two query parameters:
+
+- `pageNumber`: Specifies which page of results to retrieve. Default is 1.
+- `pageSize`: Limits the maximum number of results returned per page. Default is 10.
+
+If the endpoint supports pagination, a `page` object (as documented above) will always be included in a successful response.
+
+<b>Sorting</b> is handled via the `sort` query parameter, which should be a stringified JSON object. Each key-value pair represents a sorting rule, where:
+
+- <i>Key</i>: The name of the property in the response data (use dot notation for nested properties)
+- <i>Value</i>: Sorting direction — either "asc" (ascending) or "desc" (descending)
+
+<b>Examples:</b>
+
+```json
+{ "booking.location": "asc", "booking.startDate": "desc" }
+```
+```json
+{ "name": "desc" }
+```
+If an endpoint supports sorting, a default sort property will be applied and returned unless explicitly overridden.
+
+### Error Response
+
+An error response from the Humly Control Panel API follows this format:
 ```c++
 {
   "status": "error",
@@ -65,15 +96,51 @@ Format of <b><i>error response</i></b> is:<br>
 }
 ```
 
+## Technical Overview & Access
+
+The Humly Control Panel is built on the full-stack JavaScript framework [Meteor](https://www.meteor.com/), which communicates using the DDP (Distributed Data Protocol). To expose REST API endpoints, it uses the [Restivus](https://github.com/kahmali/meteor-restivus) package.
+
+### API Access
+
+You can access the API using either HTTP or HTTPS, depending on your configuration:
+
+🔓 <b>Unencrypted</b> (default port: 3000):
+http://localhost:3000/api/v1
+
+🔐 <b>Encrypted over TLS v1.2</b> (default port: 3002):
+https://server.domain.tld:3002/api/v1
+
+> Make sure to use HTTPS in production environments for secure communication.
+
 ## <a name="authentication"></a> Authenticate with Humly Control Panel
 
-Humly Control Panel is built on full stack JavaScript framework [Meteor](https://www.meteor.com/) which uses the DDP protocol to communicate. [Restivus](https://github.com/kahmali/meteor-restivus) package is used to expose these REST API endpoints.
-To access API on your unencrypted application port (default 3000) you can use HTTP protocol or an encrypted HTTPS protocol on your encrypted application port (default 3002) over TLS v1.2. For example, API URL can be something like this:
+Authentication is handled using a <b>username</b> and <b>password</b> associated with a valid user account.
 
-- Unencrypted: http://localhost:3000/api/v1
-- Encrypted: https://server.domain.tld:3002/api/v1
+#### `defaultDevIntegrationUser` API integration user
 
-To authenticate, you can only use the username/password of an user of APIIntegration type. You can’t create user of APIIntegration type through Humly Control Panel. REST API is designed to be configured by pre-generated API user (defaultDevIntegrationUser) whose password (aka groupToken) can easily be found and copied under "Global Settings" in the Humly web interface. You can use this credential to create Client Group and other users that will be using this API.
+The `defaultDevIntegrationUser` is pre-configured and its password (also known as the <b>groupToken</b>) is available under <b>"Global Settings"</b> in the Humly web interface.
+
+This user is intended for integration purposes and can be used to:
+
+- Create Client Groups
+- Add additional `APIIntegration` users to those groups
+
+These users have limited permissions and they can only view and manage bookings they own.
+
+> 👉 **Note!** `APIIntegration` users can only be created via the API.
+
+#### `Admin` Global admin user
+
+The `Admin` user account provides full access to the system and is required for:
+
+- Creating bookings on behalf of other users
+- Authenticating devices
+- Managing sensors and sensor readings
+
+Recommended for advanced or system-level integrations.
+
+> 👉 **Note!** Use the `Admin` user only when elevated privileges are required.
+
 
 ### Request example
 
@@ -654,9 +721,10 @@ All query parameters are optional.
 | `minNumberOfSeats` | Number  | Minimum required seats in room.
 | `maxNumberOfSeats` | Number  | Maximum required seats in room.
 | `roomIdentifier`   | String  | Unique room identifier like _id, id, or email.
-| `assignedToMe`     | Boolean | If authenticated user needs to get desks managed by her/him. Accepts: true and false. Default is false.| `pageNumber`       | Number  | Get rooms data starting from this page. Pages are count from 1.
-| `pageSize`         | Number  | Limit size of rooms array (page size) that will be returned. Last page can be partially filled.
-| `sort`             | String  | “Stringified” representation of JSON object. Format: <br>`{`<br>`  "any.property": "asc/desc",`<br>`  "any.property": asc/desc`<br>`}`<br>
+| `assignedToMe`     | Boolean | If authenticated user needs to get desks managed by her/him. Accepts: true and false. Default is false.|
+| `pageNumber`       | Number  | The page number to return, starting from 1. Default is 1. |
+| `pageSize`         | Number  | The number of documents to return per page. The final page may contain fewer results. Default is 10. |
+| `sort`             | Object  | A stringified JSON object specifying sorting rules. Format: <br>`{`<br>`  "any.property": "asc/desc",`<br>`  "any.property": "asc/desc"`<br>`}`<br> |
 
 ### Querying for a single room
 
@@ -1204,10 +1272,9 @@ All query parameters are optional.
 | `location`        | String | This parameter should be use if you are searching for room at exact location. Parameter should be provided as “stringified” representation of JSON object. Format: <br>`{`<br>`    "countryId": "aaa111",`<br>`    "cityId": "bbb222",`<br>`    "buildingId": "ccc333",`<br>`    "floorId": "ddd444"`<br>`}`<br>You can provide part of object. If you for example looking for rooms in certain country, then you can provide: <br>`{`<br>`  "countryId": "aaa111"`<br>`}`<br>as location parameter.<br>Rooms that are located at exact location will be returned as part of exact match list. |
 | `equipment`       | String | This parameter should be use if you are searching for room with specific equipment. Rooms that have all wanted equipment will be return as exact match, other rooms will be listed in partially match. Parameter should be provided as “stringified” representation of JSON object. Format: <br>`{`<br>`  "lights": true,`<br>`  "projector": true,`<br>`  "computer": true`<br>`}`<br>List only equipment that you need. |
 | `customEquipment` | String | This parameter should be use if you are searching for room with specific custom equipment. Rooms that have all wanted custom equipment will be return as exact match, other rooms will be listed in partially match. Parameter should be provided as “stringified” representation of JSON object. Format: <br>`[{`<br>`  "_id": "eee555",`<br>`  "isChecked": true`<br>`}]`<br>List only equipment that you need. |
-| `pageNumber`      | Number | Get rooms data starting from this page. Pages are count from 1.
-| `pageSize`        | Number | Limit size of rooms array (page size) that will be returned. Last page can be partially filled.
-| `sort`            | String | “Stringified” representation of JSON object. Format: <br>`{`<br>`  "any.property": "asc/desc",`<br>`  "any.property": asc/desc`<br>`}`<br>
-
+| `pageNumber`       | Number  | The page number to return, starting from 1. Default is 1. |
+| `pageSize`         | Number  | The number of documents to return per page. The final page may contain fewer results. Default is 10. |
+| `sort`             | Object  | A stringified JSON object specifying sorting rules. Format: <br>`{`<br>`  "any.property": "asc/desc",`<br>`  "any.property": "asc/desc"`<br>`}`<br> |
 ### Request example
 
 You can use some similar code to find available room.
@@ -1382,17 +1449,16 @@ All query parameters are optional.
 | Name               | Type    | Comment |
 | ------------------ | ------- | ------- |
 | `country`          | String  | Name of Country that desks belong to. |
-| `city`             | String  | Name of City that desks belong to. If provided, then `country` parameter should be provided too.
+| `city`             | String  | Name of City that desks belong to. If provided, then `country` parameter should be provided too. |
 | `building`         | String  | Name of Building that desks belongs to. If provided, then `country` and `city` parameters should be provided too.
 | `floor`            | String  | Name of Floor that desks belong to. If provided, then `country`, `city` and `building` parameters should be provided too.
 | `date`             | String  | Date in YYYY-MM-DD format used in combination with status to get free or used desks.
 | `status`           | String  | Desks status. Accepts: available, busy or all. Default is all.
 | `deskIdentifier`   | String  | Unique desk identifier like _id, id, or email.
 | `assignedToMe`     | Boolean | If authenticated user needs to get desks managed by her/him. Accepts: true and false. Default is false.
-| `pageNumber`       | Number  | Get desks data starting from this page. Pages are count from 1.
-| `pageSize`         | Number  | Limit size of desks array (page size) that will be returned. Last page can be partially filled.
-| `sort`             | String  | “Stringified” representation of JSON object. Format: <br>`{`<br>`  "any.property": "asc/desc",`<br>`  "any.property": asc/desc`<br>`}`<br>
-
+| `pageNumber`       | Number  | The page number to return, starting from 1. Default is 1. |
+| `pageSize`         | Number  | The number of documents to return per page. The final page may contain fewer results. Default is 10. |
+| `sort`             | Object  | A stringified JSON object specifying sorting rules. Format: <br>`{`<br>`  "any.property": "asc/desc",`<br>`  "any.property": "asc/desc"`<br>`}`<br> |
 ### Querying for a single desk
 
 URL to get data about specific desk should look like: `{HCP_URL}/api/v1/desks/{uniqueDeskIdentifier}`
@@ -1887,9 +1953,9 @@ This endpoint is used to get meetings organized by given user.
 | `organizerUser` | String | Yes       | Unique identifier of the user. `userId` string returned by login. Users can see only their own bookings. |
 | `startDate`     | String | No        | Limits returned meetings data to include meetings that have start date greater or equal to provided date. If this parameter is not provided this endpoint will return all bookings for this user from start of the ongoing day. Date must be in ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ). |
 | `endDate`       | String | No        | Limits returned meetings data to include meetings that have end date lower than provided date. If this parameter is not provided this endpoint will return all bookings for this user until end of the ongoing day. Date must be in ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ). |
-| `pageNumber`    | Number | No        | Get bookings data starting from this page. Pages are count from 1.
-| `pageSize`      | Number | No        | Limit size of bookings array (page size) that will be returned. Last page can be partially filled.
-| `sort`          | String | No        | “Stringified” representation of JSON object. Format: <br>`{`<br>`  "any.property": "asc/desc",`<br>`  "any.property": asc/desc`<br>`}`<br>
+| `pageNumber`       | Number  | The page number to return, starting from 1. Default is 1. |
+| `pageSize`         | Number  | The number of documents to return per page. The final page may contain fewer results. Default is 10. |
+| `sort`             | Object  | A stringified JSON object specifying sorting rules. Format: <br>`{`<br>`  "any.property": "asc/desc",`<br>`  "any.property": "asc/desc"`<br>`}`<br> |
 
 ### Request example
 
@@ -2693,3 +2759,516 @@ export default class DevicesResource {
 | `status`               | String  | Status of the device. Can be one of: Online, Offline, Sleeping or Unassigned. |
 | `upgradeStatus`        | String  | Value representing current status of device upgrade process. |
 | `vncConnectionUrl`     | String  | URL to be used to connect to device remotely. |
+
+## <a name="sensors"></a> Working with sensors - `{HCP_URL}/api/v1/sensors`
+
+The `/sensors` route provides a collection of endpoints for managing sensor data. You can perform the following operations:
+
+- Retrieve sensor data using various query options
+- Create, update, and delete sensors
+
+> 👉 **Note!** Adding sensors is optional. You can directly use the [`PUT {HCP_URL}/api/v1/sensor-readings`](#addSensorReading) endpoint to create a new sensor and add a reading in a single request.
+
+### Retrieve sensor data
+
+You can retrieve sensor information by performing one of the following actions:
+- Fetch data for multiple sensors: [`GET {HCP_URL}/api/v1/sensors`](#getAllSensors)
+- Fetch data for a specific sensor by ID: [`GET {HCP_URL}/api/v1/sensors/:id`](#getOneSensors)
+
+### <a name="getAllSensors"></a> Fetch data for multiple sensors `GET {HCP_URL}/api/v1/sensors`
+
+This endpoint returns paginated data for multiple sensors. It supports filtering by `name`, `type`, `sensorId`, and `externalId`. When multiple filters are provided, only sensors that match all specified criteria will be included in the results. You can control pagination using the `pageNumber` and `pageSize` query parameters.
+
+To limit the response to specific fields, provide a comma-separated list of desired field names. Sorting can be applied by passing a stringified sort object as a query parameter.
+
+#### Query Parameters
+
+All query parameters are optional.
+
+| Name               | Type    | Comment |
+| ------------------ | ------- | ------- |
+| `name`             | String  | Filters sensors by an exact match of the sensor name. This parameter is case-sensitive. |
+| `type`             | String  | Filters sensors by type. Supported values: `temperature`, `relativeHumidity`, `pressure`, `co2`, `motion`, `occupancy`, `presence`, `water`. |
+| `sensorId`         | String  | Filters by the unique sensor identifier (`_id`) returned by this endpoint. |
+| `externalId`       | String  | Filters sensors by an exact match of the external ID provided by you. This parameter is case-sensitive. |
+| `pageNumber`       | Number  | The page number to return, starting from 1. Default is 1. |
+| `pageSize`         | Number  | The number of documents to return per page. The final page may contain fewer results. Default is 10. |
+| `fields`           | String  | A comma-separated list of fields to include in the response. Allowed values: `_id`, `type`, `externalId`, `name`, `description`, `resourceIds`, `status`, `distributor`, `minRange`, `maxRange`, `displayUnitCode`, `displayUnit` |
+| `sort`             | Object  | A stringified JSON object specifying sorting rules. Format: <br>`{`<br>`  "any.property": "asc/desc",`<br>`  "any.property": "asc/desc"`<br>`}`<br> |
+
+### Response example
+
+```json
+{
+  "responseStatus": 200,
+  "responseData": {
+    "status": "success",
+    "data": [
+        {
+            "_id": "a12345678b",
+            "type": "co2",
+            "externalId": "abcd1234efgh",
+            "status": "Online",
+            "distributor": "Sensor manufacturer",
+            "name": "Co2 Sensor for Room 1",
+            "minRange": 1000,
+            "maxRange": 2000,
+            "displayUnitCode": "ppm",
+            "displayUnit": "Molecules per million",
+            "resourceIds": ["a1b2c3d4e5f6"]
+        },
+    ],
+    "page": {
+        "first": true,
+        "last": true,
+        "size": 10,
+        "elements": "1 - 1",
+        "totalElements": 1,
+        "totalPages": 1,
+        "number": 1,
+        "numberOfElements": 1
+    },
+    "sort": [
+        {
+            "property": "type",
+            "direction": "ASC"
+        },
+        {
+            "property": "externalId",
+            "direction": "ASC"
+        }
+    ]
+  }
+}
+```
+### Type of response data
+
+| Name               | Type    | Comment |
+| ------------------ | ------- | ------- |
+| `responseStatus`   | Number  | Status of HTTP/HTTPS request. |
+| `status`           | String  | Status of API response. Can have values: success or error. |
+| `_id`              | String  | Sensor document unique identifier. |
+| `type`             | String  | Sensor type. `temperature`, `relativeHumidity`, `pressure`, `co2`, `motion`, `occupancy`, `presence`, or `water` |
+| `externalId`       | String  | Sensor external identifier. |
+| `status`           | String  | Sensor status. `Online`, `Offline`, or `Unavailable`. |
+| `name`             | String  | Sensor name. |
+| `description`      | String  | Sensor description. |
+| `distributor`      | String  | Sensor manufacturer name. |
+| `minRange`         | Number  | Minimum sensor reading range considered as normal. In case of a CO2 sensor this value is upper limit for the normal concentration. |
+| `maxRange`         | Number  | Maximum sensor reading range considered as normal. In case of a CO2 sensor this value is upper value for moderate concentration level. Concentration above this level is treated as critical. |
+| `displayUnitCode`  | String  | Unit code (eg. °C) to be used when showing readings. |
+| `displayUnit`      | String  | Unit (eg. Celsius) to be used when showing readings. |
+| `resourceIds`      | Array   | Array of unique resource identifiers (`_id`) that sensor is attached to. |
+
+### <a name="getOneSensors"></a> Fetch data for a specific sensor by ID `GET {HCP_URL}/api/v1/sensors/:id`
+
+Returns data for a specific sensor matching ID. 
+
+### Response example
+
+```json
+{
+  "responseStatus": 200,
+  "responseData": {
+    "status": "success",
+    "data": {
+        "_id": "a12345678b",
+        "type": "co2",
+        "externalId": "abcd1234efgh",
+        "status": "Online",
+        "distributor": "Sensor manufacturer",
+        "name": "Co2 Sensor 1",
+        "description": "Co2 Sensor for Room 1",
+        "minRange": 1000,
+        "maxRange": 2000,
+        "displayUnitCode": "ppm",
+        "displayUnit": "Molecules per million",
+        "resourceIds": ["a1b2c3d4e5f6"]
+    }
+  }
+}
+```
+
+### Create, update, and delete sensors
+
+Supported actions:
+- Create new sensor: [`POST {HCP_URL}/api/v1/sensors`](#createNewSensor)
+- Update sensor data: [`PATCH {HCP_URL}/api/v1/sensors/:id`](#patchSensor)
+- Delete sensor: [`DELETE {HCP_URL}/api/v1/sensors/:id`](#deleteSensor)
+
+### <a name="createNewSensor"></a> Create new sensor `POST {HCP_URL}/api/v1/sensors`
+
+This endpoint is used to add a new sensor.
+
+### Parameters
+
+| Name               | Type    | Mandatory | Comment |
+| ------------------ | ------- | --------- | ------- |
+| `type`             | String  | Yes       | Sensor type. `temperature`, `relativeHumidity`, `pressure`, `co2`, `motion`, `occupancy`, `presence`, or `water` |
+| `externalId`       | String  | Yes       | Sensor external identifier. |
+| `status`           | String  | No        | Sensor status. `Online`, `Offline`, or `Unavailable`. |
+| `name`             | String  | No        | Sensor name. |
+| `description`      | String  | No        | Sensor description. |
+| `distributor`      | String  | No        | Sensor manufacturer name. |
+| `minRange`         | Number  | No        | Minimum sensor reading range considered as normal. In case of a CO2 sensor this value is upper limit for the normal concentration. |
+| `maxRange`         | Number  | No        | Maximum sensor reading range considered as normal. In case of a CO2 sensor this value is upper value for moderate concentration level. Concentration above this level is treated as critical. |
+| `displayUnitCode`  | String  | No        |  Unit code (eg. °C) to be used when showing readings. |
+| `displayUnit`      | String  | No        | Unit (eg. Celsius) to be used when showing readings. |
+| `resourceIds`      | Array   | No        | Array of unique resource identifiers (`_id`) that sensor is attached to. |
+
+### Request example
+
+```js
+    createSensor() {
+        const sensorData = {
+            type: "temperature",
+            externalId: "temperature1",
+            status: "Online",
+            distributor: "Humly sensor integration",
+            name: "Temperature 1",
+            minRange: 20,
+            maxRange: 24,
+            resourceIds: "a1b2c3d4e5f6,123456abcdef",
+        };
+        this.sensorResource.createSensor(
+            "1234abcd5678efgh",
+            "abcdefghijklmnoprstuvzabcdefghijklmnoprstuvz",
+            sensorData
+        ).then((response) => {
+            console.log("CREATE SENSOR --> response", response);
+        }).catch((error) => {
+            console.log("CREATE SENSOR --> error", error);
+        });
+    }
+
+```
+
+### Response example
+
+``` json
+{
+  "responseStatus": 201,
+  "responseData": {
+    "status": "success",
+    "data": {
+        "_id": "11aa22bb33cc44dd55ee",
+        "type": "temperature",
+        "externalId": "temperature1",
+        "status": "Online",
+        "distributor": "Humly sensor integration",
+        "name": "Temperature 1",
+        "displayUnitCode": "°C",
+        "displayUnit": "Celsius",
+        "minRange": 20,
+        "maxRange": 24,
+        "resourceIds": [
+            "a1b2c3d4e5f6",
+            "123456abcdef"
+        ]
+    }
+  }
+}
+```
+
+### Error response example
+
+```json
+// Required field is not provided
+{
+  "responseStatus": 500,
+  "responseData": {
+    "status": "error",
+    "message": "External ID is required"
+  }
+}
+```
+
+### <a name="patchSensor"></a> Update sensor data `PATCH {HCP_URL}/api/v1/sensors/:id`
+
+The `:id` parameter represents the unique identifier (`_id`) of the sensor. This endpoint allows you to update any of the sensor's properties. Properties not included in the request body will remain unchanged in the database. The properties available for update are the same as those described in the [Create sensor section](#createNewSensor) section. The expected response format is also identical to that of the creation endpoint.
+
+### <a name="deleteSensor"></a> Delete sensor `DELETE {HCP_URL}/api/v1/sensors/:id`
+
+To delete a sensor from the database, send a `DELETE` request to `{HCP_URL}/api/v1/sensors/:id`, where `:id` is the unique identifier (`_id`) of the sensor.
+
+## <a name="sensorReadings"></a> Managing sensor readings - `{HCP_URL}/api/v1/sensor-readings`
+
+The `/sensor-readings` route provides a collection of endpoints for managing sensor readings data. You can perform the following operations:
+
+- Retrieve sensor reading data using various query options
+- Add, and delete sensor readings
+
+Sensor readings are grouped by sensor on a daily basis, using the UTC time zone. Each sensor reading object contains all relevant sensor information along with an array of individual `readings`. Each entry in the readings array includes the sensor reading value, an event ID, and the timestamp of the reading. The timestamp is always generated by the sensor. If an event ID is not provided, it will be automatically generated.
+
+### Retrieve sensor reading data
+
+You can retrieve sensor reading information by performing one of the following actions:
+- Fetch multiple sensor readings: [`GET {HCP_URL}/api/v1/sensor-readings`](#getAllSensorReadings)
+- Fetch a specific sensor reading by ID: [`GET {HCP_URL}/api/v1/sensors-readings/:id`](#getOneSensorReading)
+
+### <a name="getAllSensorReadings"></a> Fetch multiple sensor readings `GET {HCP_URL}/api/v1/sensor-readings`
+
+This endpoint returns paginated data for multiple sensor readings. It supports filtering by `date`, `type`, `sensorId`, `externalId`, and `status`. When multiple filters are provided, only sensor readings that match all specified criteria will be included in the results. You can control pagination using the `pageNumber` and `pageSize` query parameters.
+
+To limit the response to specific fields, provide a comma-separated list of desired field names. Sorting can be applied by passing a stringified `sort` object as a query parameter.
+
+#### Query Parameters
+
+All query parameters are optional.
+
+| Name               | Type    | Comment |
+| ------------------ | ------- | ------- |
+| `date`             | String  | Filters sensor readings grouped by `date` in the UTC time zone. |
+| `type`             | String  | Filters sensor readings by type. Supported values: `temperature`, `relativeHumidity`, `pressure`, `co2`, `motion`, `occupancy`, `presence`, `water`. |
+| `sensorId`         | String  | Filters by the unique sensor identifier (`_id`). |
+| `externalId`       | String  | Filters sensors by an exact match of the external ID provided by you. This parameter is case-sensitive. |
+| `status`           | String  | Sensor status. `Online`, `Offline`, or `Unavailable`. |
+| `pageNumber`       | Number  | The page number to return, starting from 1. Default is 1. |
+| `pageSize`         | Number  | The number of documents to return per page. The final page may contain fewer results. Default is 10. |
+| `fields`           | String  | A comma-separated list of fields to include in the response. Allowed values: `_id`, `date`, `type`, `sensorId`, `externalId`, `resourceIds`, `status`, `minRange`, `maxRange`, `displayUnitCode`, `displayUnit`, `unitCode`, `unit`, `readings` |
+| `sort`             | Object  | A stringified JSON object specifying sorting rules. Format: <br>`{`<br>`  "any.property": "asc/desc",`<br>`  "any.property": "asc/desc"`<br>`}`<br> |
+
+### Response example
+
+```json
+{
+  "responseStatus": 200,
+  "responseData": {
+    "status": "success",
+    "data": [
+        {
+            "_id": "12345abcde12",
+            "sensorId": "a12345678b",
+            "externalId": "abcd1234efgh",
+            "date": "2025-04-23T00:00:00+00:00",
+            "type": "co2",
+            "displayUnit": "Molecules per million",
+            "displayUnitCode": "ppm",
+            "maxRange": 2000,
+            "minRange": 1000,
+            "readings": [
+                {
+                    "eventId": "Hp1tWguPUmc4echN",
+                    "value": 442,
+                    "updateTime": "2025-04-23T16:11:35+00:00"
+                }
+            ],
+            "resourceIds": [
+                "a1b2c3d4e5f6"
+            ],
+            "status": "Online"
+        }
+    ],
+    "page": {
+        "first": true,
+        "last": true,
+        "size": 10,
+        "elements": "1 - 1",
+        "totalElements": 1,
+        "totalPages": 1,
+        "number": 1,
+        "numberOfElements": 1
+    },
+    "sort": [
+        {
+            "property": "date",
+            "direction": "ASC"
+        },
+        {
+            "property": "type",
+            "direction": "ASC"
+        },
+        {
+            "property": "externalId",
+            "direction": "ASC"
+        }
+    ]
+  }
+}
+```
+
+### Type of response data
+
+| Name               | Type    | Comment |
+| ------------------ | ------- | ------- |
+| `responseStatus`   | Number  | Status of HTTP/HTTPS request. |
+| `status`           | String  | Status of API response. Can have values: success or error. |
+| `_id`              | String  | Sensor reading document unique identifier. |
+| `type`             | String  | Sensor type. `temperature`, `relativeHumidity`, `pressure`, `co2`, `motion`, `occupancy`, `presence`, or `water` |
+| `date`             | String  | Readings group date in UTC time zone. |
+| `sensorId`         | String  | Sensor unique identifier. Refers to `_id` returned by the `/sensors` endpoint. |
+| `externalId`       | String  | Sensor external identifier. |
+| `status`           | String  | Sensor status. `Online`, `Offline`, or `Unavailable`. |
+| `minRange`         | Number  | Minimum sensor reading range considered as normal. In case of a CO2 sensor this value is upper limit for the normal concentration. |
+| `maxRange`         | Number  | Maximum sensor reading range considered as normal. In case of a CO2 sensor this value is upper value for moderate concentration level. Concentration above this level is treated as critical. |
+| `displayUnitCode`  | String  | Unit code (eg. °C) to be used when showing readings. |
+| `displayUnit`      | String  | Unit (eg. Celsius) to be used when showing readings. |
+| `resourceIds`      | Array   | Array of unique resource identifiers (`_id`) that sensor is attached to. |
+| `readings`         | Array   | An array of reading documents, where each reading includes an `eventId`, `value`, and `updateTime`. Readings are grouped by date in the UTC time zone. |
+
+### <a name="getOneSensorReading"></a> Fetch a specific sensor reading by ID `GET {HCP_URL}/api/v1/sensors-readings/:id`
+
+Returns data for a specific sensor reading matching ID. 
+
+### Response example
+
+```json
+{
+  "responseStatus": 200,
+  "responseData": {
+    "status": "success",
+    "data": {
+      "_id": "12345abcde12",
+      "sensorId": "a12345678b",
+      "externalId": "abcd1234efgh",
+      "date": "2025-04-23T00:00:00+00:00",
+      "type": "co2",
+      "displayUnit": "Molecules per million",
+      "displayUnitCode": "ppm",
+      "maxRange": 2000,
+      "minRange": 1000,
+      "readings": [
+          {
+              "eventId": "Hp1tWguPUmc4echN",
+              "value": 442,
+              "updateTime": "2025-04-23T16:11:35+00:00"
+          }
+      ],
+      "resourceIds": [
+          "a1b2c3d4e5f6"
+      ],
+      "status": "Online"
+    }
+  }
+}
+```
+### Add, and delete sensor readings
+
+Supported actions:
+- Add new sensor reading: [`PUT {HCP_URL}/api/v1/sensors-readings`](#addSensorReading)
+- Delete sensor reading: [`DELETE {HCP_URL}/api/v1/sensor-readings/:id`](#deleteSensorReading)
+
+### <a name="addSensorReading"></a> Add new sensor reading `PUT {HCP_URL}/api/v1/sensors-readings`
+
+This endpoint is used to add a new sensor reading. If no reading exists for the current day (based on the UTC time zone), a new document will be created. Otherwise, the reading will be appended to the existing readings array for that day.
+If the sensor does not already exist, this endpoint will automatically create it. In that case, you must provide the basic sensor information: `type`, `externalId`, `name`, `status`, and the list of resources the sensor is associated with (`resourceIds`).
+If the sensor already exists in the database, you only need to provide the `sensorId` and a reading `value` to add a new reading.
+
+### Parameters
+
+| Name               | Type    | Mandatory | Comment |
+| ------------------ | ------- | --------- | ------- |
+| `value`            | Number, Boolean, or String | Yes | Sensor reading value. |
+| `sensorId`         | String  | Conditional | Sensor unique identifier. Refers to `_id` returned by the `/sensors` endpoint. If provided `externalId` and `type` are not needed. |
+| `type`             | String  | Conditional | Sensor type. `temperature`, `relativeHumidity`, `pressure`, `co2`, `motion`, `occupancy`, `presence`, or `water`. Must be provided if `sensorId` is omitted. |
+| `externalId`       | String  | Conditional | Sensor external identifier. Must to be provided if `sensorId` is omitted. |
+| `status`           | String  | No        | Sensor status. `Online`, `Offline`, or `Unavailable`. |
+| `name`             | String  | No        | Sensor name. |
+| `distributor`      | String  | No        | Sensor manufacturer name. |
+| `minRange`         | Number  | No        | Minimum sensor reading range considered as normal. In case of a CO2 sensor this value is upper limit for the normal concentration. |
+| `maxRange`         | Number  | No        | Maximum sensor reading range considered as normal. In case of a CO2 sensor this value is upper value for moderate concentration level. Concentration above this level is treated as critical. |
+| `displayUnitCode`  | String  | No        | Unit code (eg. °C) to be used when showing readings. |
+| `displayUnit`      | String  | No        | Unit (eg. Celsius) to be used when showing readings. |
+| `unitCode`         | String  | No        | Unit code (eg. °F) used by sensor. |
+| `unit`             | String  | No        | Measurement unit (eg. Fahrenheit) used by the sensor. |
+| `resourceIds`      | Array   | No        | Array of unique resource identifiers (`_id`) that sensor is attached to. |
+
+### Request example
+
+```js
+    addSensorReading() {
+        const sensorReadingData = {
+            type: "temperature",
+            externalId: "temperature1",
+            status: "Online",
+            distributor: "Humly sensor integration",
+            name: "Temperature 1",
+            minRange: 20,
+            maxRange: 24,
+            resourceIds: "a1b2c3d4e5f6,123456abcdef",
+            value: 21.7
+        };
+        this.sensorResource.addSensorReading(
+            "1234abcd5678efgh",
+            "abcdefghijklmnoprstuvzabcdefghijklmnoprstuvz",
+            sensorReadingData
+        ).then((response) => {
+            console.log("ADD SENSOR READING--> response", response);
+        }).catch((error) => {
+            console.log("ADD SENSOR READING--> error", error);
+        });
+    }
+
+    // If the sensor already exists
+    addSensorReading() {
+        const sensorReadingData = {
+            sensorId: "a12345678b",
+            value: 21.7
+        };
+        this.sensorResource.addSensorReading(
+            "1234abcd5678efgh",
+            "abcdefghijklmnoprstuvzabcdefghijklmnoprstuvz",
+            sensorReadingData
+        ).then((response) => {
+            console.log("ADD SENSOR READING--> response", response);
+        }).catch((error) => {
+            console.log("ADD SENSOR READING--> error", error);
+        });
+    }
+
+```
+
+### Response example
+
+``` json
+{
+  "responseStatus": 201,
+  "responseData": {
+    "status": "success",
+    "data": {
+        "_id": "1a9f2b8e3c7d",
+        "sensorId": "a12345678b",
+        "externalId": "co2_sensor_1",
+        "date": "2025-04-23T00:00:00+00:00",
+        "type": "co2",
+        "displayUnit": "Molecules per million",
+        "displayUnitCode": "ppm",
+        "maxRange": 2000,
+        "minRange": 1000,
+        "readings": [
+            {
+                "eventId": "nLqBDihy7CAg5Rd8",
+                "value": 519,
+                "updateTime": "2025-04-23T20:25:09+00:00"
+            },
+            {
+                "eventId": "Hp1tWguPUmc4echN",
+                "value": 442,
+                "updateTime": "2025-04-23T16:11:35+00:00"
+            }
+        ],
+        "resourceIds": [
+            "a1b2c3d4e5f6"
+        ],
+        "status": "Online"
+    }
+  }
+}
+```
+
+### Error response example
+
+```json
+// Required fields are not provided
+{
+  "responseStatus": 500,
+  "responseData": {
+    "status": "error",
+    "message": "You must provide externalId or sensorId"
+  }
+}
+```
+
+### <a name="deleteSensorReading"></a> Delete sensor reading `DELETE {HCP_URL}/api/v1/sensor-readings/:id`
+
+To delete a sensor reading from the database, send a `DELETE` request to `{HCP_URL}/api/v1/sensor-readings/:id`, where `:id` is the unique identifier (`_id`) of the sensor reading.
