@@ -2379,10 +2379,10 @@ This endpoint is used to check-in an existing meeting.
                 "1x1x2y2y3z3z"
             )
             .then((response) => {
-                console.log("CHEK IN BOOKING --> response", response);
+                console.log("CHECK IN BOOKING --> response", response);
             })
             .catch((error) => {
-                console.log("CHEK IN BOOKING --> error", error);
+                console.log("CHECK IN BOOKING --> error", error);
             });
     }
 
