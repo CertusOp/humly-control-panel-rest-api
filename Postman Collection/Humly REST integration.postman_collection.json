@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "c16ea793-b8ac-4f2d-989c-6e483f2b459c",
+		"_postman_id": "07e6f8e7-cef2-4197-bda8-70357c449c0c",
 		"name": "Humly REST integration",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -62,10 +62,10 @@
 									]
 								},
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/login",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/login",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -87,20 +87,27 @@
 											"if (pm.response.status === \"OK\") {\r",
 											"  postman.setEnvironmentVariable(\"XAuthToken\", \"\");\r",
 											"  postman.setEnvironmentVariable(\"XUserId\", \"\");\r",
-											"  postman.setEnvironmentVariable(\"newClientGroupToken\", \"\");\r",
 											"  postman.setEnvironmentVariable(\"roomId\", \"\");\r",
 											"  postman.setEnvironmentVariable(\"bookingId\", \"\");\r",
 											"  postman.setEnvironmentVariable(\"newClientGroupToken\", \"\");\r",
+											"  postman.setEnvironmentVariable(\"guideScreenId\", \"\");\r",
 											"  postman.setEnvironmentVariable(\"deviceId\", \"\");\r",
 											"  postman.setEnvironmentVariable(\"deskId\", \"\");\r",
 											"  postman.setEnvironmentVariable(\"smplrSpaceSettingsId\", \"\");\r",
+											"  postman.setEnvironmentVariable(\"smplrSpaceMapId\", \"\");\r",
+											"  postman.setEnvironmentVariable(\"smplrSpaceToken\", \"\");\r",
+											"  postman.setEnvironmentVariable(\"clientId\", \"\");\r",
 											"  postman.setEnvironmentVariable(\"userCode\", \"\");\r",
 											"  postman.setEnvironmentVariable(\"accessToken\", \"\");\r",
 											"  postman.setEnvironmentVariable(\"refreshToken\", \"\");\r",
 											"  postman.setEnvironmentVariable(\"deviceCode\", \"\");\r",
 											"  postman.setEnvironmentVariable(\"countryId\", \"\");\r",
 											"  postman.setEnvironmentVariable(\"cityId\", \"\");\r",
+											"  postman.setEnvironmentVariable(\"visitorScreenId\", \"\");\r",
 											"  postman.setEnvironmentVariable(\"visitorLogId\", \"\");\r",
+											"  postman.setEnvironmentVariable(\"parkingSpaceId\", \"\");\r",
+											"  postman.setEnvironmentVariable(\"sensorId\", \"\");\r",
+											"  postman.setEnvironmentVariable(\"sensorReadingId\", \"\");\r",
 											"}"
 										],
 										"type": "text/javascript"
@@ -124,10 +131,10 @@
 									}
 								],
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/logout",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/logout",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -180,10 +187,10 @@
 									]
 								},
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/device_authorization",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/device_authorization",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -251,10 +258,10 @@
 									]
 								},
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/device_authorization",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/device_authorization",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -310,10 +317,10 @@
 									]
 								},
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/token",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/token",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -376,10 +383,10 @@
 									]
 								},
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/token",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/token",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -441,10 +448,10 @@
 									]
 								},
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/token",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/token",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -480,10 +487,10 @@
 									]
 								},
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/introspect",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/introspect",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -522,10 +529,10 @@
 									}
 								],
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/bookings",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/bookings",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -609,10 +616,10 @@
 									}
 								],
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/bookings?organizerUser={{XUserId}}",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/bookings?organizerUser={{XUserId}}",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -742,10 +749,10 @@
 									]
 								},
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/bookings",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/bookings",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -792,10 +799,10 @@
 									}
 								],
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/bookings/{{bookingId}}",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/bookings/{{bookingId}}",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -869,10 +876,10 @@
 									]
 								},
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/bookings/{{bookingId}}",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/bookings/{{bookingId}}",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -907,10 +914,10 @@
 									}
 								],
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/bookings/checkedIn?bookingId={{bookingId}}",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/bookings/checkedIn?bookingId={{bookingId}}",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -989,10 +996,10 @@
 									]
 								},
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/clientGroups",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/clientGroups",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -1045,10 +1052,10 @@
 									}
 								],
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/desks",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/desks",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -1161,10 +1168,10 @@
 									}
 								],
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/desks/{{deskId}}",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/desks/{{deskId}}",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -1210,10 +1217,10 @@
 									}
 								],
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/desks/status",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/desks/status",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -1267,10 +1274,10 @@
 									}
 								],
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/devices",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/devices",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -1330,10 +1337,10 @@
 									}
 								],
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/devices/{{deviceId}}",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/devices/{{deviceId}}",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -1357,10 +1364,10 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/wayFindings/{{guideScreenId}}",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/wayFindings/{{guideScreenId}}",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -1379,10 +1386,10 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/wayFindings/{{guideScreenId}}/file",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/wayFindings/{{guideScreenId}}/file",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -1428,10 +1435,10 @@
 									}
 								],
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/info",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/info",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -1484,10 +1491,10 @@
 									}
 								],
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/rooms",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/rooms",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -1607,10 +1614,10 @@
 									}
 								],
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/rooms/{{roomId}}",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/rooms/{{roomId}}",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -1655,10 +1662,10 @@
 									"urlencoded": []
 								},
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/rooms/available",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/rooms/available",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -1771,10 +1778,10 @@
 									]
 								},
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/rooms/{{roomId}}/equipment",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/rooms/{{roomId}}/equipment",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -1807,10 +1814,10 @@
 									}
 								],
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/rooms/{{roomId}}/equipment",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/rooms/{{roomId}}/equipment",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -1819,6 +1826,762 @@
 										"rooms",
 										"{{roomId}}",
 										"equipment"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Sensors",
+					"item": [
+						{
+							"name": "All Sensors",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);",
+											"if (pm.response.status === \"OK\" && jsonData.data.length > 0) {",
+											"    postman.setEnvironmentVariable(\"sensorId\", jsonData.data[0]._id);",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/sensors",
+									"protocol": "https",
+									"host": [
+										"{{serverAddress}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"sensors"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "",
+											"description": "(string) Sensor name. Full match, case sensitive.",
+											"disabled": true
+										},
+										{
+											"key": "type",
+											"value": "",
+											"description": "(string) Sensor type. Allowed values: temperature, relativeHumidity, pressure, co2, motion, occupancy, presence, water",
+											"disabled": true
+										},
+										{
+											"key": "externalId",
+											"value": "",
+											"description": "(string) Sensor external unique ID. Full match, case sensitive.",
+											"disabled": true
+										},
+										{
+											"key": "status",
+											"value": "",
+											"description": "(string) Sensor status. Allowed values: Online, Offline, Unavailable",
+											"disabled": true
+										},
+										{
+											"key": "pageNumber",
+											"value": null,
+											"description": "{number} Default: 1",
+											"disabled": true
+										},
+										{
+											"key": "pageSize",
+											"value": null,
+											"description": "{number} Default: 10",
+											"disabled": true
+										},
+										{
+											"key": "fields",
+											"value": null,
+											"description": "(string) Comma separated list of fields to be returned. Allowed values: _id, type, externalId, name, description, resourceIds, status, distributor, minRange, maxRange, displayUnitCode, displayUnit",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": null,
+											"description": "{object} { \"any.property\": \"desc/asc\", \"any.property\": \"desc/asc\" }; default: { \"name\": \"asc\" }",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "One Sensor",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/sensors/{{sensorId}}",
+									"protocol": "https",
+									"host": [
+										"{{serverAddress}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"sensors",
+										"{{sensorId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Sensor",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "type",
+											"value": "",
+											"description": "(string) Sensor type; *mandatory. Allowed values: temperature, relativeHumidity, pressure, co2, motion, occupancy, presence, water",
+											"type": "text"
+										},
+										{
+											"key": "externalId",
+											"value": "",
+											"description": "(string) Sensor external unique ID; *mandatory.",
+											"type": "text"
+										},
+										{
+											"key": "name",
+											"value": "",
+											"description": "(string) Sensor name.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "status",
+											"value": "",
+											"description": "(string) Sensor status. Allowed values: Online, Offline, Unavailable. Default Online.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "resourceIds",
+											"value": "",
+											"description": "(string) Comma separated list of unique resource identifiers (Rooms._id) that sensor is attached to.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "distributor",
+											"value": "",
+											"description": "(string) Manifacturer of the sensor.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "minRange",
+											"value": "",
+											"description": "(number) Minimum sensor reading range considered as normal.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "maxRange",
+											"value": "",
+											"description": "(number) Maximum sensor reading range considered as normal.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "displayUnitCode",
+											"value": "",
+											"description": "(string) Unit code (eg. °C). Allowed values depend on the sensor type. The default value is stored if omitted.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "displayUnit",
+											"value": "",
+											"description": "(string) Measuring unit to be displayed (eg. Celsius). Allowed values depend on the sensor type. The default value is stored if omitted.",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/sensors",
+									"protocol": "https",
+									"host": [
+										"{{serverAddress}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"sensors"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Sensor",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "type",
+											"value": "",
+											"description": "(string) Sensor type. Allowed values: temperature, relativeHumidity, pressure, co2, motion, occupancy, presence, water",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "externalId",
+											"value": "",
+											"description": "(string) Sensor external unique ID.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "name",
+											"value": "",
+											"description": "(string) Sensor name.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "status",
+											"value": "",
+											"description": "(string) Sensor status. Allowed values: Online, Offline, Unavailable. Default Online.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "resourceIds",
+											"value": "",
+											"description": "(string) Comma separated list of unique resource identifiers (Rooms._id) that sensor is attached to.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "distributor",
+											"value": "",
+											"description": "(string) Manifacturer of the sensor.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "minRange",
+											"value": "",
+											"description": "(number) Minimum sensor reading range considered as normal.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "maxRange",
+											"value": "",
+											"description": "(number) Maximum sensor reading range considered as normal.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "displayUnitCode",
+											"value": "",
+											"description": "(string) Unit code (eg. °C). Allowed values depend on the sensor type. The default value is stored if omitted.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "displayUnit",
+											"value": "",
+											"description": "(string) Measuring unit to be displayed (eg. Celsius). Allowed values depend on the sensor type. The default value is stored if omitted.",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/sensors/{{sensorId}}",
+									"protocol": "https",
+									"host": [
+										"{{serverAddress}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"sensors",
+										"{{sensorId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Sensor",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/sensors/{{sensorId}}",
+									"protocol": "https",
+									"host": [
+										"{{serverAddress}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"sensors",
+										"{{sensorId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Sensor Readings",
+					"item": [
+						{
+							"name": "All Sensor Readings",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);",
+											"if (pm.response.status === \"OK\" && jsonData.data.length > 0) {",
+											"    postman.setEnvironmentVariable(\"sensorReadingId\", jsonData.data[0]._id);",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/sensor-readings",
+									"protocol": "https",
+									"host": [
+										"{{serverAddress}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"sensor-readings"
+									],
+									"query": [
+										{
+											"key": "date",
+											"value": null,
+											"description": "(string) Date in YYYY-MM-DDTHH:MI:SS%2B00:00 format",
+											"disabled": true
+										},
+										{
+											"key": "type",
+											"value": "",
+											"description": "(string) Sensor type. Allowed values: temperature, relativeHumidity, pressure, co2, motion, occupancy, presence, water",
+											"disabled": true
+										},
+										{
+											"key": "sensorId",
+											"value": null,
+											"description": "(string) Sensor unique ID (Sensors._id). Full match, case sensitive.",
+											"disabled": true
+										},
+										{
+											"key": "externalId",
+											"value": "",
+											"description": "(string) Sensor external unique ID. Full match, case sensitive.",
+											"disabled": true
+										},
+										{
+											"key": "status",
+											"value": "",
+											"description": "(string) Sensor status. Allowed values: Online, Offline, Unavailable",
+											"disabled": true
+										},
+										{
+											"key": "pageNumber",
+											"value": null,
+											"description": "{number} Default: 1",
+											"disabled": true
+										},
+										{
+											"key": "pageSize",
+											"value": null,
+											"description": "{number} Default: 10",
+											"disabled": true
+										},
+										{
+											"key": "fields",
+											"value": null,
+											"description": "(string) Comma separated list of fields to be returned. Allowed values: _id, type, externalId, name, description, resourceIds, status, distributor, minRange, maxRange, displayUnitCode, displayUnit",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": null,
+											"description": "{object} { \"any.property\": \"desc/asc\", \"any.property\": \"desc/asc\" }; default: { \"name\": \"asc\" }",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "One Sensor Reading",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/sensor-readings/{{sensorReadingId}}",
+									"protocol": "https",
+									"host": [
+										"{{serverAddress}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"sensor-readings",
+										"{{sensorReadingId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Sensor Reading",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "value",
+											"value": "",
+											"description": "(number | boolean | string) Sensor reading value; *mandatory.",
+											"type": "text"
+										},
+										{
+											"key": "sensorId",
+											"value": "",
+											"description": "(string) Sensor unique ID (Sensors._id). *sensorId or externalId must be provided",
+											"type": "text"
+										},
+										{
+											"key": "externalId",
+											"value": "",
+											"description": "(string) Sensor external unique ID. *sensorId or externalId must be provided",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "type",
+											"value": "",
+											"description": "(string) Sensor type; *must be provided if sensorId is omitted. Allowed values: temperature, relativeHumidity, pressure, co2, motion, occupancy, presence, water",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "resourceIds",
+											"value": "",
+											"description": "(string) Comma separated list of unique resource identifiers (Rooms._id) that sensor is attached to. *must be provided if registration of the new sensor is needed.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "name",
+											"value": "",
+											"description": "(string) Sensor name.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "distributor",
+											"value": "",
+											"description": "(string) Manifacturer of the sensor.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "minRange",
+											"value": "",
+											"description": "(number) Minimum sensor reading range considered as normal.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "maxRange",
+											"value": "",
+											"description": "(number) Maximum sensor reading range considered as normal.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "displayUnitCode",
+											"value": "",
+											"description": "(string) Unit code to be be used when showing values in the system (eg. °C). Allowed values depend on the sensor type. The default value is stored if omitted.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "displayUnit",
+											"value": "",
+											"description": "(string) Unit to be used when showing values in the system (eg. Celsius). Allowed values depend on the sensor type. The default value is stored if omitted.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "unitCode",
+											"value": "",
+											"description": "(string) Measurement unit code (eg. °C). Unit used by the sensor. Allowed values depend on the sensor type. The default value is stored if omitted.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "unit",
+											"value": "",
+											"description": "(string) Measurement unit (eg. Celsius). Unit used by the sensor. Allowed values depend on the sensor type. The default value is stored if omitted.",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/sensor-readings",
+									"protocol": "https",
+									"host": [
+										"{{serverAddress}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"sensor-readings"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Sensor Reading",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/sensor-readings/{{sensorReadingId}}",
+									"protocol": "https",
+									"host": [
+										"{{serverAddress}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"sensor-readings",
+										"{{sensorReadingId}}"
 									]
 								}
 							},
@@ -1873,10 +2636,10 @@
 									"formdata": []
 								},
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/structures",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/structures",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -1990,10 +2753,10 @@
 									}
 								],
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/countries/{{countryId}}/cities/{{cityId}}",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/countries/{{countryId}}/cities/{{cityId}}",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -2090,10 +2853,10 @@
 									"formdata": []
 								},
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/countries",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/countries",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -2224,10 +2987,10 @@
 									]
 								},
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/users/integration",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/users/integration",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -2262,10 +3025,10 @@
 									}
 								],
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/users/integration",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/users/integration",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -2327,10 +3090,10 @@
 									"urlencoded": []
 								},
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/users/integration/{{XUserId}}",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/users/integration/{{XUserId}}",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -2368,10 +3131,10 @@
 									}
 								],
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/visitor-screens/{{visitorScreenId}}",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/visitor-screens/{{visitorScreenId}}",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -2403,10 +3166,10 @@
 									}
 								],
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/visitor-screens/{{visitorScreenId}}/file",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/visitor-screens/{{visitorScreenId}}/file",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -2447,10 +3210,10 @@
 									}
 								],
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/visitor-screens/{{visitorScreenId}}/azure-users",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/visitor-screens/{{visitorScreenId}}/azure-users",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -2624,10 +3387,10 @@
 									]
 								},
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/visitor-logs",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/visitor-logs",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -2669,10 +3432,10 @@
 									}
 								],
 								"url": {
-									"raw": "https://localhost:{{port}}/api/v1/visitor-logs/{{visitorLogId}}/file?type=badge",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/visitor-logs/{{visitorLogId}}/file?type=badge",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverAddress}}"
 									],
 									"port": "{{port}}",
 									"path": [
@@ -2724,12 +3487,12 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "https://eldar:3002/api/v1/smplr-spaces",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/smplr-spaces",
 									"protocol": "https",
 									"host": [
-										"eldar"
+										"{{serverAddress}}"
 									],
-									"port": "3002",
+									"port": "{{port}}",
 									"path": [
 										"api",
 										"v1",
@@ -2770,12 +3533,12 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "https://eldar:3002/api/v1/smplr-spaces/{{smplrSpaceSettingsId}}",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/smplr-spaces/{{smplrSpaceSettingsId}}",
 									"protocol": "https",
 									"host": [
-										"eldar"
+										"{{serverAddress}}"
 									],
-									"port": "3002",
+									"port": "{{port}}",
 									"path": [
 										"api",
 										"v1",
