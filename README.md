@@ -19,6 +19,7 @@ API documentation for Humly Control Panel version: `v1.0.x`
 - [Get devices data - `{HCP_URL}/api/v1/devices`](#devices)
 - [Working with sensors - `{HCP_URL}/api/v1/sensors`](#sensors)
 - [Managing sensor readings - `{HCP_URL}/api/v1/sensor-readings`](#sensorReadings)
+- [Get visitor screens - `{{HCP_URL}/api/v1/visitor-screens}`](#getVisitorScreens)
 
 ## <a name="introduction"></a> Introduction
 
@@ -2458,15 +2459,34 @@ This endpoint is used to check-in an existing meeting.
 }
 ```
 
-## <a name="structures"></a> Get structures data - `GET {HCP_URL}/api/v1/structures`
+## <a name="structures"></a> Get structures data – <sub>`GET {HCP_URL}/api/v1/structures`</sub>
+
+This endpoint returns hierarchical structure data (Country, City, Building, Floor) for the authenticated user.
+
+### Query Parameters
+
+| Name           | Type   | Mandatory | Comment                                                                             |
+| -------------- | ------ | --------- | ----------------------------------------------------------------------------------- |
+| `pageNumber`   | Number | No        | The page number to return, starting from 1. Default is 1.                           |
+| `pageSize`     | Number | No        | The number of documents to return per page. Default is 10.                          |
+| `sort`         | Object | No        | A stringified JSON object specifying sorting rules.<br>Format:<br>`{"name": "asc"}` |
+| `structureIds` | String | No        | Comma-separated list of structure IDs.<br>Example: `structureIds=122,1332,2434`     |
+
+### Headers
+
+| Name           | Type   | Mandatory | Comment                                      |
+| -------------- | ------ | --------- | -------------------------------------------- |
+| `X-User-Id`    | String | Yes       | Unique identifier of the authenticated user. |
+| `X-Auth-Token` | String | Yes       | Valid authentication token.                  |
+
+---
 
 ### Request example
 
-You can create Structures Resource file to communicate with REST API (REACT example).
+You can create a `StructuresResource` file to communicate with the REST API. (React example below)
 
 ```js
 import Axios from "axios";
-
 import RequestError from "./requestError";
 
 export default class StructuresResource {
@@ -2482,6 +2502,7 @@ export default class StructuresResource {
                 pageNumber: queryParams.pageNumber,
                 pageSize: queryParams.pageSize,
                 sort: queryParams.sort,
+                structureIds: queryParams.structureIds // Optional filter
             },
         };
 
@@ -2499,8 +2520,8 @@ export default class StructuresResource {
         });
     }
 }
-
 ```
+---
 
 ### Response example
 
@@ -2563,20 +2584,27 @@ export default class StructuresResource {
   }
 }
 ```
+---
+
 ### Type of response data
 
-| Name                | Type    | Comment |
-| ------------------- | ------- | ------- |
-| `responseStatus`    | Number  | Status of HTTP/HTTPS request. |
-| `status`            | String  | Status of API response. Can have values: success or error. |
-| `_id`               | String  | Structure unique identifier. |
-| `name`              | String  | Name of Country, City, Building or Floor. |
-| `level`             | String  | Values from 1 to 4 depicting Country, City, Building or Floor. Value 1 represent that object holds Country data. Value 2 is for City etc. |
-| `parent`            | String  | Unique identifier of parent. Referencing parents _id property. |
-| `cities`            | Array   | Array of Cities objects. |
-| `buildings`         | Array   | Array of Building objects. |
-| `floors`            | Array   | Array of Flor objects. |
-| `roomIds`           | Array   | Array of room unique identifiers that are assigned to floor. |
+| Name             | Type           | Comment                                                            |
+| ---------------- | -------------- | ------------------------------------------------------------------ |
+| `responseStatus` | Number         | Status of HTTP request                                             |
+| `status`         | String         | API response status: `success` or `error`                          |
+| `_id`            | String         | Unique identifier for structure node                               |
+| `name`           | String         | Name of Country, City, Building, or Floor                          |
+| `level`          | Number         | Hierarchical level: 1 = Country, 2 = City, 3 = Building, 4 = Floor |
+| `parent`         | String\|Number | ID of parent node (if applicable)                                  |
+| `cities`         | Array          | List of city objects under Country                                 |
+| `buildings`      | Array          | List of building objects under City                                |
+| `floors`         | Array          | List of floor objects under Building                               |
+| `roomIds`        | Array          | Room IDs assigned to the floor                                     |
+
+> ℹ️ A node can contain child arrays (`cities`, `buildings`, `floors`) depending on its level.
+
+Let me know if you'd like this endpoint added to an OpenAPI/Swagger file.
+
 
 ## <a name="devices"></a> Get devices data - `{HCP_URL}/api/v1/devices`
 
@@ -3272,3 +3300,185 @@ If the sensor already exists in the database, you only need to provide the `sens
 ### <a name="deleteSensorReading"></a> Delete sensor reading `DELETE {HCP_URL}/api/v1/sensor-readings/:id`
 
 To delete a sensor reading from the database, send a `DELETE` request to `{HCP_URL}/api/v1/sensor-readings/:id`, where `:id` is the unique identifier (`_id`) of the sensor reading.
+
+
+## <a name="getVisitorScreens"></a> Get visitor screens – <sub>`GET {API_URL}/visitor-screens`</sub>
+
+This endpoint is used to fetch a paginated list of visitor screens configured for the authenticated user.
+
+### Query Parameters
+
+| Name         | Type   | Mandatory | Comment                                                                                                     |
+| ------------ | ------ | --------- | ----------------------------------------------------------------------------------------------------------- |
+| `pageNumber` | Number | No        | Page number to retrieve. Starts from 1. Default is 1.                                                       |
+| `pageSize`   | Number | No        | Number of results per page. Default is 10.                                                                  |
+| `sort`       | Object | No        | A stringified JSON object specifying sorting rules.<br>Format:<br>`{`<br>`  "fieldName": "asc/desc"`<br>`}` |
+
+### Headers
+
+| Name           | Type   | Mandatory | Comment                                      |
+| -------------- | ------ | --------- | -------------------------------------------- |
+| `X-User-Id`    | String | Yes       | Unique identifier of the authenticated user. |
+| `X-Auth-Token` | String | Yes       | Valid authentication token.                  |
+
+---
+
+### Request example
+
+```js
+getVisitorScreens(userId, authToken, queryParams) {
+    const requestOptions = {
+        headers: {
+            "X-User-Id": userId,
+            "X-Auth-Token": authToken,
+        },
+        params: {
+            pageNumber: queryParams.pageNumber,
+            pageSize: queryParams.pageSize,
+            sort: queryParams.sort,
+        },
+    };
+
+    return Axios.get(`${this.API_URL}/visitor-screens`, requestOptions)
+        .then((response) => ({
+            responseStatus: response.status,
+            responseData: response.data,
+        }))
+        .catch((error) => {
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
+        });
+}
+```
+
+---
+
+### Response example
+
+```json
+{
+  "responseStatus": 200,
+  "responseData": {
+    "status": "success",
+    "data": [
+      {
+        "_id": "AmEBNfbZMkChHyqXd",
+        "name": "Example screen",
+        "structureId": "qq4XeZRxf5RJqwEVp",
+        "logoId": "C9iHGjo8mqt9QwvtS",
+        "printType": "No visitor badge printing",
+        "badgeLogoId": "",
+        "disclaimer1": "Custom disclousre 1",
+        "disclaimer2": "Custom disclousre w",
+        "gdprId": "ntjupKnFxMBmksg72",
+        "gdprText": "nda",
+        "ndaId": "cGbziXFH5WsSPQJvt",
+        "ndaText": "nda",
+        "language": "en",
+        "notificationLanguage": "en",
+        "fullName": { "isEnabled": true, "isRequired": true },
+        "email": { "isEnabled": true, "isRequired": true },
+        "mobile": { "isEnabled": true, "isRequired": true },
+        "organization": { "isEnabled": true, "isRequired": true },
+        "carRegistrationNumber": { "isEnabled": true, "isRequired": false },
+        "isSearchEmployeesEnabled": true,
+        "isHostSelectionRequired": true,
+        "isSmsEnabled": true,
+        "isHostEmailEnabled": true,
+        "checkOutTime": "20:00",
+        "isAutomaticCheckOutEnabled": true,
+        "isGuestWifiEnabled": false,
+        "guestWifiPassword": "",
+        "guestWifiSsid": "",
+        "isSearchM365VisitorGroupEnabled": true,
+        "m365VisitorGroup": "visitors",
+        "timeZone": "Europe/Stockholm",
+        "badgeOrientation": "portrait",
+        "removeVisitorTime": null,
+        "isAutomaticRemoveVisitorEnabled": false,
+        "receptionDesk": "reception",
+        "receptionDescription": "",
+        "isManualCheckOutEnabled": true,
+        "authenticationRequired": false,
+        "licenseTier": "pro",
+        "m365GroupSyncStatus": {
+          "syncedAt": "2025-07-08T00:12:38+00:00",
+          "error": ""
+        },
+        "address": {
+          "enabled": true,
+          "description": "Visitor screen location Torslanda\nGunnar Engellaus väg 8\n418 72 Göteborg\nSweden",
+          "mapLinks": {
+            "google": null,
+            "apple": null
+          }
+        },
+        "timeFormat": "HH:mm"
+      }
+    ],
+    "page": {
+      "first": true,
+      "last": true,
+      "size": 10,
+      "totalElements": 1,
+      "totalPages": 1,
+      "number": 1,
+      "numberOfElements": 1
+    },
+    "sort": [
+      {
+        "property": "name",
+        "direction": "ASC"
+      }
+    ]
+  }
+}
+```
+
+---
+
+### Type of screen fields
+
+| Name                                                                   | Type         | Comment                                            |
+| ---------------------------------------------------------------------- | ------------ | -------------------------------------------------- |
+| `_id`                                                                  | String       | Unique screen identifier                           |
+| `name`                                                                 | String       | Screen name                                        |
+| `structureId`                                                          | String       | Associated structure ID                            |
+| `logoId`                                                               | String       | Logo image ID                                      |
+| `printType`                                                            | String       | Badge print configuration                          |
+| `badgeLogoId`                                                          | String       | Badge logo image ID                                |
+| `disclaimer1`, `disclaimer2`                                           | String       | Custom disclaimers shown to visitors               |
+| `gdprId`, `ndaId`                                                      | String       | Document template IDs                              |
+| `gdprText`, `ndaText`                                                  | String       | Text content of GDPR/NDA                           |
+| `language`                                                             | String       | Screen display language                            |
+| `notificationLanguage`                                                 | String       | Language used in notifications                     |
+| `fullName`, `email`, `mobile`, `organization`, `carRegistrationNumber` | Object       | Field configurations (`isEnabled`, `isRequired`)   |
+| `isSearchEmployeesEnabled`                                             | Boolean      | Enable host search functionality                   |
+| `isHostSelectionRequired`                                              | Boolean      | Require host selection on check-in                 |
+| `isSmsEnabled`                                                         | Boolean      | Enable SMS notifications                           |
+| `isHostEmailEnabled`                                                   | Boolean      | Enable host email notifications                    |
+| `checkOutTime`                                                         | String       | Default auto check-out time (24h format)           |
+| `isAutomaticCheckOutEnabled`                                           | Boolean      | Enable automatic check-out                         |
+| `isGuestWifiEnabled`                                                   | Boolean      | Enable guest WiFi info                             |
+| `guestWifiSsid`, `guestWifiPassword`                                   | String       | Guest WiFi credentials                             |
+| `isSearchM365VisitorGroupEnabled`                                      | Boolean      | Enable filtering by Microsoft 365 groups           |
+| `m365VisitorGroup`                                                     | String       | M365 group name                                    |
+| `timeZone`                                                             | String       | Screen time zone                                   |
+| `badgeOrientation`                                                     | String       | Badge layout direction (`portrait` or `landscape`) |
+| `removeVisitorTime`                                                    | String\|Null | Time to auto-remove visitor (if enabled)           |
+| `isAutomaticRemoveVisitorEnabled`                                      | Boolean      | Enable automatic visitor removal                   |
+| `receptionDesk`                                                        | String       | Reception desk name                                |
+| `receptionDescription`                                                 | String       | Reception description                              |
+| `isManualCheckOutEnabled`                                              | Boolean      | Allow manual check-out                             |
+| `authenticationRequired`                                               | Boolean      | Whether authentication is needed                   |
+| `licenseTier`                                                          | String       | License tier (`pro`, `basic`, etc.)                |
+| `m365GroupSyncStatus.syncedAt`                                         | String       | Last successful M365 group sync time               |
+| `m365GroupSyncStatus.error`                                            | String       | M365 sync error message, if any                    |
+| `address.enabled`                                                      | Boolean      | Whether to show address on screen                  |
+| `address.description`                                                  | String       | Display address text                               |
+| `address.mapLinks.google`                                              | String\|Null | Google Maps link                                   |
+| `address.mapLinks.apple`                                               | String\|Null | Apple Maps link                                    |
+| `timeFormat`                                                           | String       | Time display format (e.g., `HH:mm`)                |

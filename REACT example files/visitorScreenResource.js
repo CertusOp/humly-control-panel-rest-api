@@ -21,9 +21,10 @@ export default class VisitorLogsResource {
         return Axios.get(
             `${this.API_URL}/visitor-screens`,
             requestOptions
-        ).then(response => (
-            { responseStatus: response.status, responseData: response.data }
-        )).catch((error) => {
+        ).then((response) => ({
+            responseStatus: response.status,
+            responseData: response.data
+        })).catch((error) => {
             throw new RequestError(
                 error.response.data.message,
                 error.response.status,
