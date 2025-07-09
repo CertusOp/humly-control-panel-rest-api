@@ -2697,6 +2697,12 @@
 											"disabled": true
 										},
 										{
+											"key": "structureIds",
+											"value": "",
+											"description": "structureIds : Comma-separated list of structure IDs.Example: structureIds=122,1332,2434",
+											"disabled": true
+										},
+										{
 											"key": "assignedToMe",
 											"value": "",
 											"description": "(boolean) accepts: true, false; default: false;",
@@ -3216,6 +3222,48 @@
 										"visitor-screens",
 										"{{visitorScreenId}}",
 										"azure-users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Visitor Screens",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"description": "(string)",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"description": "(string)",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:{{port}}/api/v1/visitor-screens",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"visitor-screens"									
+									],
+									"query": [
+										{
+											"key": "fields",
+											"value": "",
+											"description": "fields (optional): Comma-separated list of fields to include in the response. Example: fields=address,name,structureId,logoId",
+											"disabled": true
+										}
 									]
 								}
 							},
