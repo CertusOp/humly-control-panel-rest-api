@@ -102,82 +102,70 @@ An error response from the Humly Control Panel API follows this format:
 The Humly Control Panel is built on the full-stack JavaScript framework [Meteor](https://www.meteor.com/), which communicates using the DDP (Distributed Data Protocol).
 
 ### API Access
-You can access the API using either the HTTP or HTTPS protocol depending on your security requirements. The base URL of the API follows the format: `{PROTOCOL}://{FQDN}:{PORT}/api/v1`, where each placeholder represents:
+You can access the API using the HTTPS protocol. The base URL of the API (hereafter referred to as {API_URL}) follows the format:
+`https://{FQDN}:{PORT}/api/v1`
+where each placeholder represents:
 
-<b>{PROTOCOL}</b>:
-  - Use <b>https</b> for encrypted communication
-  - Use <b>http</b> for unencrypted communication
-
-<b>{FQDN}</b>:
+- <b>{FQDN}</b>:
   - In a <b>cloud environment</b>, this is the domain name of the HCP instance, e.g. `123456.humly.cloud`
   - In an <b>on-prem environment</b>, this is the Fully Qualified Domain Name (FQDN) of the server running HCP, e.g. `hcp.local.domain`
 
-<b>{PORT}</b>:
+- <b>{PORT}</b>:
   - In the <b>cloud environment</b>, this value is not needed and should be omitted along with the colon (`:`)
-  - In the <b>on-prem environment</b>, the port depends on the protocol used: HTTP → port `3000` , HTTPS → port `3002`
+  - In the <b>on-prem environment</b>, the port depends on the protocol used: HTTP → port `3000` , HTTPS → port `3002` (PROMJENITI, CUSTOM PORT)
 
-The base URL is referred to as {API_URL} throughout this document. 
+#### Examples of base URLs:
+- <i>Cloud instance {API_URL}</i>: `https://123456.humly.cloud/api/v1`
+- <i>On-prem instance {API_URL}</i>: `https://hcp.local.domain/api/v1`
 
-Below are examples of base URLs for HTTP and HTTPS protocols in both cloud and on-prem environments:
-
-🔓 <b>Unencrypted (HTTP)</b>:
-  - Cloud mode: `http://123456.humly.cloud/api/v1`
-  - On-prem mode: `http://hcp.local.domain:3000/api/v1`
-
-🔐 <b>Encrypted over TLS v1.2 (HTTPS)</b>:
-
-  - Cloud mode: `https://123456.humly.cloud/api/v1`
-  - On-prem mode: `https://hcp.local.domain/api/v1`
-
-In the code examples below, the base URL is stored in the API_URL constant, as in the following line:
+#### Usage in code
+In the code examples below, the base URL ({API_URL}) is stored in the `API_URL` constant, as in the following line:
 
 `const API_URL = "https://123456.humly.cloud/api/v1";`
 
-The endpoint URLs should be concatenated with the base URL to form the full endpoint path. For example:
-
-- To log in to the API, add `/login` to the base URL to get: `https://123456.humly.cloud/api/v1/login`
-- To retrieve all resources, add `/rooms` to the base URL to get: `https://123456.humly.cloud/api/v1/rooms`
-- To retrieve all bookings, add `/bookings` to the base URL to get: `https://123456.humly.cloud/api/v1/bookings`
-
-> Make sure to use HTTPS in production environments for secure communication.
+##### Constructing full endpoint URLs
+The final endpoint URLs should be constructed by concatenating the specific endpoint paths to the base url. For example:
+- To log in to the API, add `/login` to the {API_URL} to get: `https://123456.humly.cloud/api/v1/login`
+- To retrieve all resources, add `/rooms` to the {API_URL} to get: `https://123456.humly.cloud/api/v1/rooms`
+- To retrieve all bookings, add `/bookings` to the {API_URL} to get: `https://123456.humly.cloud/api/v1/bookings`
 
 ## <a name="authentication"></a> Authenticate with Humly Control Panel
 
-Authentication is handled using a <b>username</b> and <b>password</b> associated with a valid user account.
-User accounts must be created in advance through the <b>HCP User Management</b> module. Once created, the corresponding credentials can be used to authenticate against the API.
+Authentication is handled using a username and password associated with a valid user account.
+User accounts must be created in advance through the Humly Control Panel (HCP). The username must be in the format of an email address. Upon user creation, the password will be sent to the email address used as username. Since the password cannot be viewed or retrieved through HCP, the one received via email must be used for authentication.
 
+There are different levels of access to the API depending on the user’s profile type.
+
+Make sure to assign the appropriate profile type when creating a user, based on the level of access required.
+
+#### Users with Guest and User Profile Types 
 Accounts with the profile type set to <b>"User"</b> or <b>"Guest"</b> have limited access and are restricted from calling certain API endpoints.
-Full access to all available API functionalities is granted only to accounts with the profile type set to <b>"Global Admin"</b>.
+These user types are intended for basic integration scenarios, where users interact only with their own data. They are suitable for embedding basic booking functionality into third-party applications or user-specific dashboards.
 
-Make sure to assign the appropriate profile type when creating a user, depending on the level of access required.
+Such users can, for example:
+- Create and manage their own bookings
+- Retrieve a list of their own bookings
+- Retrieve a list of other users' bookings, but with limited data included, configured by administrator
+- Retrieve information about resources
 
-------
-BRISATI 
-#### `defaultDevIntegrationUser` API integration user
+They cannot modify other users’ data or perform system-level operations. Their permissions are scoped to what they personally own.
 
-The `defaultDevIntegrationUser` is pre-configured and its password (also known as the <b>groupToken</b>) is available under <b>"Global Settings"</b> in the Humly web interface.
+> 👉 **Note!** Use these users when basic integration with HCP is required.
 
-This user is intended for integration purposes and can be used to:
+#### Users with "Global Admin" profile type
+The <b>"Global Admin"</b> profile type is intended for users who require complete access to the Humly Control Panel (HCP) API.
+It enables interaction with all API endpoints, making it suitable for full-scale integrations and administrative automation. 
 
-- Create Client Groups
-- Add additional `APIIntegration` users to those groups
+An account with this profile type can, for example:
+- Retrieve information about all resources
+- Retrieve bookings created by any user
+- Create and manage bookings on behalf of other users
+- Create and manage their own bookings
+- Receive data related to devices
+- Receive data related to Visitor Screens
+- Access, configure, and monitor sensors and their readings
 
-These users have limited permissions and they can only view and manage bookings they own.
-
-> 👉 **Note!** `APIIntegration` users can only be created via the API.
-
-DODATI opis za  <b>"User"</b> or <b>"Guest"</b>
-
-----
-#### `Admin` Global admin user
-
-The `Admin` user account provides full access to the system and is required for:
-
-- Creating bookings on behalf of other users
-- Authenticating devices
-- Managing sensors and sensor readings
-
-Recommended for advanced or system-level integrations.
+Use this account type for system-level operations where broad and unrestricted access to the platform is necessary.
 
 > 👉 **Note!** Use the `Admin` user only when elevated privileges are required.
 
