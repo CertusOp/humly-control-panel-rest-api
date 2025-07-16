@@ -102,7 +102,7 @@ An error response from the Humly Control Panel API follows this format:
 The Humly Control Panel is built on the full-stack JavaScript framework [Meteor](https://www.meteor.com/), which communicates using the DDP (Distributed Data Protocol).
 
 ### API Access
-You can access the API using the HTTPS protocol. The base URL of the API (hereafter referred to as {API_URL}) follows the format:
+You can access the API using the HTTPS protocol. The base URL of the API (hereafter also referred to as {API_URL}) follows the format:
 `https://{FQDN}:{PORT}/api/v1`
 where each placeholder represents:
 
@@ -115,19 +115,23 @@ where each placeholder represents:
   - In the <b>on-prem environment</b>, the port depends on the protocol used: HTTP → port `3000` , HTTPS → port `3002` (PROMJENITI, CUSTOM PORT)
 
 #### Examples of base URLs:
-- <i>Cloud instance {API_URL}</i>: `https://123456.humly.cloud/api/v1`
-- <i>On-prem instance {API_URL}</i>: `https://hcp.local.domain/api/v1`
+- <i>Cloud HCP instance</i>: `https://123456.humly.cloud/api/v1`
+- <i>On-prem HCP instance</i>: `https://hcp.local.domain/api/v1`
 
 #### Usage in code
-In the code examples below, the base URL ({API_URL}) is stored in the `API_URL` constant, as in the following line:
+In the code examples below, the base URL is stored in the `API_URL` constant, as in the following line:
 
 `const API_URL = "https://123456.humly.cloud/api/v1";`
 
 ##### Constructing full endpoint URLs
-The final endpoint URLs should be constructed by concatenating the specific endpoint paths to the base url. For example:
-- To log in to the API, add `/login` to the {API_URL} to get: `https://123456.humly.cloud/api/v1/login`
-- To retrieve all resources, add `/rooms` to the {API_URL} to get: `https://123456.humly.cloud/api/v1/rooms`
-- To retrieve all bookings, add `/bookings` to the {API_URL} to get: `https://123456.humly.cloud/api/v1/bookings`
+The final endpoint URL is formed by adding the specific endpoint path to the base URL. Essentially, you join {API_URL} and the endpoint path with a forward slash (/) in between.
+
+For example, if your base URL ({API_URL}) is `https://123456.humly.cloud/api/v1`:
+- The login endpoint URL becomes: `https://123456.humly.cloud/api/v1/login`
+- The rooms endpoint URL becomes: `https://123456.humly.cloud/api/v1/rooms`
+- The bookings endpoint URL becomes: `https://123456.humly.cloud/api/v1/bookings`
+
+This way of constructing URLs helps ensure that your API requests always target the correct endpoints.
 
 ## <a name="authentication"></a> Authenticate with Humly Control Panel
 
@@ -170,10 +174,10 @@ Use this account type for system-level operations where broad and unrestricted a
 > 👉 **Note!** Use the `Admin` user only when elevated privileges are required.
 
 
-### Request example
+### Authentication example
 
 Following example is provided for REACT applications.
-You can create Auth Resource file to communicate with REST API.
+You can create AuthResource class to communicate with REST API.
 
 ```js
 import Axios from "axios";
