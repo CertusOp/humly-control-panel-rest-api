@@ -171,6 +171,21 @@ Use this account type for system-level operations where broad and unrestricted a
 
 > 👉 **Note!** Use the `Admin` user only when elevated privileges are required.
 
+### <a name="login"></a> Login to the API - <sub>`POST {API_URL}/LOGIN`</sub>
+To log in to the HCP API, send a POST request to the /login endpoint with the following payload:
+```json
+{
+  "username": "yourUsername",
+  "password": "yourPassword"
+}
+```
+On successful login, you will receive a response containing userId and authToken.
+These values must be included as headers in all subsequent API requests:
+
+```
+"X-User-Id": <yourUserId>
+"X-Auth-Token": <yourAuthToken>
+```
 
 ### Authentication example
 
