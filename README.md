@@ -105,29 +105,32 @@ You can access the API using the HTTPS protocol. The base URL of the API (hereaf
 where each placeholder represents:
 
 - <b>{FQDN}</b>:
-  - In a <b>cloud environment</b>, this is the domain name of the HCP instance, e.g. `123456.humly.cloud`
-  - In an <b>on-prem environment</b>, this is the Fully Qualified Domain Name (FQDN) of the server running HCP, e.g. `hcp.local.domain`
+  - In a <b>cloud environment</b>, this is the domain name of the HCP instance. Here, XXXXX is the unique HCP instance identifier assigned by the Humly team during provisioning. It typically consists of five digits ranging from 1 to 9 (e.g., 12345). Note that the full cloud ID (CLOUD_ID) includes both the numeric part and the domain, i.e., XXXXX.humly.cloud. Throughout the documentation, the term {CLOUD_ID} will refer to the complete value, including the .humly.cloud suffix (e.g., 12345.humly.cloud).
+  - In an on-prem environment, this is the Fully Qualified Domain Name (FQDN) of the server where the HCP application is hosted, e.g. `hcp.local.domain`
 
 - <b>{PORT}</b>:
   - In the <b>cloud environment</b>, this value is not needed and should be omitted along with the colon (`:`)
-  - In the <b>on-prem environment</b>, the port depends on the protocol used: HTTP → port `3000` , HTTPS → port `3002` (PROMJENITI, CUSTOM PORT)
+  – In the <b>on-prem environment</b>, the port is configured during HCP setup. The default value is 3002, but the user can change it.
 
 #### Examples of base URLs:
-- <i>Cloud HCP instance</i>: `https://123456.humly.cloud/api/v1`
+- <i>Cloud HCP instance</i>: `https://XXXXX.humly.cloud/api/v1`
 - <i>On-prem HCP instance</i>: `https://hcp.local.domain/api/v1`
 
 #### Usage in code
 In the code examples below, the base URL is stored in the `API_URL` constant, as in the following line:
 
-`const API_URL = "https://123456.humly.cloud/api/v1";`
+```c++
+    const COULD_ID = "XXXXX.humly.cloud"
+    const API_URL = `https://${COULD_ID}/api/v1`;
+```
 
 ##### Constructing full endpoint URLs
 The final endpoint URL is formed by adding the specific endpoint path to the base URL. Essentially, you join {API_URL} and the endpoint path with a forward slash (/) in between.
 
-For example, if your base URL ({API_URL}) is `https://123456.humly.cloud/api/v1`:
-- The login endpoint URL becomes: `https://123456.humly.cloud/api/v1/login`
-- The rooms endpoint URL becomes: `https://123456.humly.cloud/api/v1/rooms`
-- The bookings endpoint URL becomes: `https://123456.humly.cloud/api/v1/bookings`
+For example, if your base URL ({API_URL}) is `https://XXXXX.humly.cloud/api/v1`:
+- The login endpoint URL becomes: `https://XXXXX.humly.cloud/api/v1/login`
+- The rooms endpoint URL becomes: `https://XXXXX.humly.cloud/api/v1/rooms`
+- The bookings endpoint URL becomes: `https://XXXXX.humly.cloud/api/v1/bookings`
 
 This way of constructing URLs helps ensure that your API requests always target the correct endpoints.
 
@@ -179,13 +182,13 @@ To log in to the HCP API, send a POST request to the /login endpoint with the fo
   "password": "yourPassword"
 }
 ```
-On successful login, you will receive a response containing userId and authToken.
-These values must be included as headers in all subsequent API requests:
+Upon successful login, the server will respond with two key values: userId and authToken. These are required for authenticating all subsequent API requests and must be included as HTTP headers in every call to the HCP API:
 
 ```
 "X-User-Id": <yourUserId>
 "X-Auth-Token": <yourAuthToken>
 ```
+Make sure to store these values securely and attach them to each request to maintain an authenticated session. Without these headers, the API will reject the request with an authentication error (e.g., 401).
 
 ### Authentication example
 
@@ -198,7 +201,8 @@ import Axios from "axios";
 import RequestError from "./requestError";
 
 export default class AuthResource {
-    const API_URL = "https://123456.humly.cloud/api/v1";
+    const COULD_ID = "XXXXX.humly.cloud"
+    const API_URL = `https://${COULD_ID}/api/v1`;
 
     login(username, password) {
         const requestOptions = {
@@ -416,7 +420,9 @@ import Axios from "axios";
 import RequestError from "./requestError";
 
 export default class RoomsResource {
-    const API_URL = "https://123456.humly.cloud/api/v1";
+    const COULD_ID = "XXXXX.humly.cloud"
+    const API_URL = `https://${COULD_ID}/api/v1`;
+
 
     getAllRooms(userId, authToken, queryParams) {
         const requestOptions = {
@@ -1149,7 +1155,9 @@ import Axios from "axios";
 import RequestError from "./requestError";
 
 export default class DesksResource {
-    const API_URL = "https://123456.humly.cloud/api/v1";
+    const COULD_ID = "XXXXX.humly.cloud"
+    const API_URL = `https://${COULD_ID}/api/v1`;
+
 
     getAllDesks(userId, authToken, queryParams) {
         const requestOptions = {
@@ -1484,7 +1492,9 @@ import Axios from "axios";
 import RequestError from "./requestError";
 
 export default class BookingsResource {
-    const API_URL = "https://123456.humly.cloud/api/v1";
+    const COULD_ID = "XXXXX.humly.cloud"
+    const API_URL = `https://${COULD_ID}/api/v1`;
+
 
     getOrganizerBookings(userId, authToken, queryParams) {
         const requestOptions = {
