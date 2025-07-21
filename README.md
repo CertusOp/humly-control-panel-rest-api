@@ -110,7 +110,7 @@ where each placeholder represents:
 
 - <b>{PORT}</b>:
   - In the <b>cloud environment</b>, this value is not needed and should be omitted along with the colon (`:`)
-  – In the <b>on-prem environment</b>, the port is configured during HCP setup. The default value is 3002, but the user can change it.
+  - In the <b>on-prem environment</b>, the port is configured during HCP setup. The default value is 3002, but the user can change it.
 
 #### Examples of base URLs:
 - <i>Cloud HCP instance</i>: `https://XXXXX.humly.cloud/api/v1`
