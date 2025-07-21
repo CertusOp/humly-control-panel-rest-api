@@ -89,7 +89,6 @@
 											"  postman.setEnvironmentVariable(\"XUserId\", \"\");\r",
 											"  postman.setEnvironmentVariable(\"roomId\", \"\");\r",
 											"  postman.setEnvironmentVariable(\"bookingId\", \"\");\r",
-											"  postman.setEnvironmentVariable(\"newClientGroupToken\", \"\");\r",
 											"  postman.setEnvironmentVariable(\"guideScreenId\", \"\");\r",
 											"  postman.setEnvironmentVariable(\"deviceId\", \"\");\r",
 											"  postman.setEnvironmentVariable(\"deskId\", \"\");\r",
