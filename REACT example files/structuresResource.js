@@ -3,7 +3,8 @@ import Axios from "axios";
 import RequestError from "./requestError";
 
 export default class StructuresResource {
-    API_URL = "https://localhost:3002/api/v1";
+    const COULD_ID = "XXXXX.humly.cloud"
+    const API_URL = `https://${COULD_ID}/api/v1`;
 
     getAllStructures(userId, authToken, queryParams) {
         const requestOptions = {
