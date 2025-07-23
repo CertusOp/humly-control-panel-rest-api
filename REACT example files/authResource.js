@@ -3,7 +3,7 @@ import Axios from "axios";
 import RequestError from "./requestError";
 
 export default class AuthResource {
-    const CLOUD_ID = "00000" // Your 5 digit Humly cloud ID.
+    const CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
     const API_URL = `https://${CLOUD_ID}.humly.cloud/api/v1`;
 
     login(username, password) {
