@@ -4,7 +4,7 @@ import RequestError from "./requestError";
 
 export default class RoomsResource {
     const CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
-    const API_URL = `https://${COULD_ID}/api/v1`;
+    const API_URL = `https://${CLOUD_ID}/api/v1`;
 
     getAllRooms(userId, authToken, queryParams) {
         const requestOptions = {
