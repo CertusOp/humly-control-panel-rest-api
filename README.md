@@ -201,8 +201,8 @@ import Axios from "axios";
 import RequestError from "./requestError";
 
 export default class AuthResource {
-    const CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
-    const API_URL = `https://${COULD_ID}/api/v1`;
+    const CLOUD_ID = "00000.humly.cloud" // Your 5 digit Humly cloud ID.
+    const API_URL = `https://${CLOUD_ID}/api/v1`;
 
     login(username, password) {
         const requestOptions = {
@@ -420,8 +420,8 @@ import Axios from "axios";
 import RequestError from "./requestError";
 
 export default class RoomsResource {
-    const CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
-    const API_URL = `https://${COULD_ID}/api/v1`;
+    const CLOUD_ID = "00000.humly.cloud" // Your 5 digit Humly cloud ID.
+    const API_URL = `https://${CLOUD_ID}/api/v1`;
 
 
     getAllRooms(userId, authToken, queryParams) {
