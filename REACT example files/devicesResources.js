@@ -3,7 +3,7 @@ import Axios from "axios";
 import RequestError from "./requestError";
 
 export default class DevicesResource {
-    const COULD_ID = "XXXXX.humly.cloud"
+    const CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
     const API_URL = `https://${COULD_ID}/api/v1`;
 
     getAllDevices(userId, authToken, queryParams) {
