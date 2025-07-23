@@ -120,8 +120,8 @@ where each placeholder represents:
 In the code examples below, the base URL is stored in the `API_URL` constant, as in the following line:
 
 ```c++
-    const COULD_ID = "00000.humly.cloud" // Your 5 digit Humly cloud ID.
-    const API_URL = `https://${COULD_ID}/api/v1`;
+    const CLOUD_ID = "00000.humly.cloud" // Your 5 digit Humly cloud ID.
+    const API_URL = `https://${CLOUD_ID}/api/v1`;
 ```
 
 ##### Constructing full endpoint URLs
