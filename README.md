@@ -105,7 +105,7 @@ You can access the API using the HTTPS protocol. The base URL of the API (hereaf
 where each placeholder represents:
 
 - <b>{FQDN}</b>:
-  - In a <b>cloud environment</b>, this is the domain name of the HCP instance (e.g., 00000.humly.cloud). Here, 00000 is the unique HCP instance identifier assigned by the Humly team during provisioning. It typically consists of five digits ranging from 0 to 9. Throughout the documentation, the term {CLOUD_ID} refers to this numeric identifier. The web address of the HCP is formed by appending the numeric ID to the .humly.cloud domain (e.g., 00000.humly.cloud).
+  - In a <b>cloud environment</b>, this is the domain name of the HCP instance (e.g., 00000.humly.cloud). Here, 00000 is the unique HCP instance identifier assigned by the Humly team during provisioning. It typically consists of five digits ranging from 0 to 9. Throughout the documentation, the term {CLOUD_ID} refers to this numeric identifier. The web address of the HCP is formed by appending this numeric identifier (CLOUD_ID) to the .humly.cloud domain (e.g., 00000.humly.cloud).
   - In an on-prem environment, this is the Fully Qualified Domain Name (FQDN) of the server where the HCP application is hosted, e.g. `hcp.local.domain`
 
 - <b>{PORT}</b>:
@@ -120,7 +120,7 @@ where each placeholder represents:
 In the code examples below, the base URL is stored in the `API_URL` constant, as in the following line:
 
 ```c++
-    const CLOUD_ID = "00000" // Your 5 digit Humly cloud ID.
+    const CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
     const API_URL = `https://${CLOUD_ID}.humly.cloud/api/v1`;
 ```
 
@@ -201,7 +201,7 @@ import Axios from "axios";
 import RequestError from "./requestError";
 
 export default class AuthResource {
-    const CLOUD_ID = "00000" // Your 5 digit Humly cloud ID.
+    const CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
     const API_URL = `https://${CLOUD_ID}.humly.cloud/api/v1`;
 
     login(username, password) {
@@ -420,7 +420,7 @@ import Axios from "axios";
 import RequestError from "./requestError";
 
 export default class RoomsResource {
-    const CLOUD_ID = "00000" // Your 5 digit Humly cloud ID.
+    const CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
     const API_URL = `https://${CLOUD_ID}.humly.cloud/api/v1`;
 
 
