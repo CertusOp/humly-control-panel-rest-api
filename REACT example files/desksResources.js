@@ -3,8 +3,8 @@ import Axios from "axios";
 import RequestError from "./requestError";
 
 export default class DesksResource {
-    const CLOUD_ID = "00000.humly.cloud" // Your 5 digit Humly cloud ID.
-    const API_URL = `https://${CLOUD_ID}/api/v1`;
+    const CLOUD_ID = "00000" // Your 5 digit Humly cloud ID.
+    const API_URL = `https://${CLOUD_ID}.humly.cloud/api/v1`;
 
     getAllDesks(userId, authToken, queryParams) {
         const requestOptions = {
