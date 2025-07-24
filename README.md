@@ -4,22 +4,20 @@ API documentation for Humly Control Panel version: `v1.0.x`
 
 - [Introduction](#introduction)
 - [Response content](#responseContent)
-- [Authenticate with Humly Control Panel](#authentication)
-- [Register a client group - `POST {HCP_URL}/api/v1/clientGroups`](#clientGroups)
-- [Working with “users” API - `{HCP_URL}/api/v1/users/integration`](#users)
-- [Get rooms data - `{HCP_URL}/api/v1/rooms`](#rooms)
-- [Get desks data - `{HCP_URL}/api/v1/desks`](#desks)
-- [Working with “bookings” API - `{HCP_URL}/api/v1/bookings`](#bookings)
-- [Get organizer meetings – `GET {HCP_URL}/api/v1/bookings`](#getMeetings)
-- [Create a meeting - `POST {HCP_URL}/api/v1/bookings`](#createMeeting)
-- [Update a meeting - `PATCH {HCP_URL}/api/v1/bookings/:bookingId`](#updateMeeting)
-- [Delete a meeting - `DELETE {HCP_URL}/api/v1/bookings/:bookingId`](#deleteMeeting)
-- [Check-in a meeting - `PUT {HCP_URL}/api/v1/bookings/checkedIn?bookingId=:bookingId`](#checkInMeeting)
-- [Get structures data - `GET {HCP_URL}/api/v1/structures`](#structures)
-- [Get devices data - `{HCP_URL}/api/v1/devices`](#devices)
-- [Working with sensors - `{HCP_URL}/api/v1/sensors`](#sensors)
-- [Managing sensor readings - `{HCP_URL}/api/v1/sensor-readings`](#sensorReadings)
-- [Get visitor screens - `{{HCP_URL}/api/v1/visitor-screens}`](#getVisitorScreens)
+- [Authenticate with Humly Control Panel (HCP) API](#authentication)
+- [Get rooms data - `{API_URL}/rooms`](#rooms)
+- [Get desks data - `{API_URL}/desks`](#desks)
+- [Working with “bookings” API - `{API_URL}/bookings`](#bookings)
+- [Get organizer meetings – `GET {API_URL}/bookings`](#getMeetings)
+- [Create a meeting - `POST {API_URL}/bookings`](#createMeeting)
+- [Update a meeting - `PATCH {API_URL}/bookings/:bookingId`](#updateMeeting)
+- [Delete a meeting - `DELETE {API_URL}/bookings/:bookingId`](#deleteMeeting)
+- [Check-in a meeting - `PUT {API_URL}/bookings/checkedIn?bookingId=:bookingId`](#checkInMeeting)
+- [Get structures data - `GET {API_URL}/structures`](#structures)
+- [Get devices data - `{API_URL}/devices`](#devices)
+- [Working with sensors - `{API_URL}/sensors`](#sensors)
+- [Managing sensor readings - `{API_URL}/sensor-readings`](#sensorReadings)
+- [Get visitor screens - `{{API_URL}/visitor-screens}`](#getVisitorScreens)
 
 ## <a name="introduction"></a> Introduction
 
@@ -99,54 +97,103 @@ An error response from the Humly Control Panel API follows this format:
 
 ## Technical Overview & Access
 
-The Humly Control Panel is built on the full-stack JavaScript framework [Meteor](https://www.meteor.com/), which communicates using the DDP (Distributed Data Protocol). To expose REST API endpoints, it uses the [Restivus](https://github.com/kahmali/meteor-restivus) package.
+The Humly Control Panel is built on the full-stack JavaScript framework [Meteor](https://www.meteor.com/), which communicates using the DDP (Distributed Data Protocol).
 
 ### API Access
+You can access the API using the HTTPS protocol. The base URL of the API (hereafter also referred to as {API_URL}) follows the format:
+`https://{FQDN}:{PORT}/api/v1`
+where each placeholder represents:
 
-You can access the API using either HTTP or HTTPS, depending on your configuration:
+- <b>{FQDN}</b>:
+  - In a <b>cloud environment</b>, this is the domain name of the HCP instance (e.g., 00000.humly.cloud). Here, 00000 is the unique HCP instance identifier assigned by the Humly team during provisioning. It typically consists of five digits ranging from 0 to 9. Throughout the documentation, the term {CLOUD_ID} refers to this numeric identifier. The web address of the HCP is formed by appending this numeric identifier (CLOUD_ID) to the .humly.cloud domain (e.g., 00000.humly.cloud).
+  - In an on-prem environment, this is the Fully Qualified Domain Name (FQDN) of the server where the HCP application is hosted, e.g. `hcp.local.domain`
 
-🔓 <b>Unencrypted</b> (default port: 3000):
-http://localhost:3000/api/v1
+- <b>{PORT}</b>:
+  - In the <b>cloud environment</b>, this value is not needed and should be omitted along with the colon (`:`)
+  - In the <b>on-prem environment</b>, the port is configured during HCP setup. The default value is 3002.
 
-🔐 <b>Encrypted over TLS v1.2</b> (default port: 3002):
-https://server.domain.tld:3002/api/v1
+#### Examples of base URLs:
+- <i>Cloud HCP instance</i>: `https://00000.humly.cloud/api/v1`
+- <i>On-prem HCP instance</i>: `https://hcp.local.domain:3002/api/v1`
 
-> Make sure to use HTTPS in production environments for secure communication.
+#### Usage in code
+In the code examples below, the base URL is stored in the `API_URL` constant, as in the following line:
 
-## <a name="authentication"></a> Authenticate with Humly Control Panel
+```c++
+    const CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
+    const API_URL = `https://${CLOUD_ID}.humly.cloud/api/v1`;
+```
 
-Authentication is handled using a <b>username</b> and <b>password</b> associated with a valid user account.
+##### Constructing full endpoint URLs
+The final endpoint URL is formed by adding the specific endpoint path to the base URL. Essentially, you join {API_URL} and the endpoint path with a forward slash (/) in between.
 
-#### `defaultDevIntegrationUser` API integration user
+For example, if your base URL ({API_URL}) is `https://00000.humly.cloud/api/v1`:
+- The login endpoint URL becomes: `https://00000.humly.cloud/api/v1/login`
+- The rooms endpoint URL becomes: `https://00000.humly.cloud/api/v1/rooms`
+- The bookings endpoint URL becomes: `https://00000.humly.cloud/api/v1/bookings`
 
-The `defaultDevIntegrationUser` is pre-configured and its password (also known as the <b>groupToken</b>) is available under <b>"Global Settings"</b> in the Humly web interface.
+This way of constructing URLs helps ensure that your API requests always target the correct endpoints.
 
-This user is intended for integration purposes and can be used to:
+## <a name="authentication"></a> Authenticate with Humly Control Panel (HCP) API
 
-- Create Client Groups
-- Add additional `APIIntegration` users to those groups
+Authentication is handled using a username and password associated with a valid user account.
+User accounts must be created in advance through the Humly Control Panel (HCP). The username must be in the format of an email address. Upon user creation, the password will be sent to the email address used as username. Since the password cannot be viewed or retrieved through HCP, the one received via email must be used for authentication.
 
-These users have limited permissions and they can only view and manage bookings they own.
+There are different levels of access to the API depending on the user’s profile type.
 
-> 👉 **Note!** `APIIntegration` users can only be created via the API.
+Make sure to assign the appropriate profile type when creating a user, based on the level of access required.
 
-#### `Admin` Global admin user
+#### Users with Guest and User Profile Types 
+Accounts with the profile type set to <b>"User"</b> or <b>"Guest"</b> have limited access and are restricted from calling certain API endpoints.
+These user types are intended for basic integration scenarios, where users interact only with their own data. They are suitable for embedding basic booking functionality into third-party applications or user-specific dashboards.
 
-The `Admin` user account provides full access to the system and is required for:
+Such users can, for example:
+- Create and manage their own bookings
+- Retrieve a list of their own bookings
+- Retrieve a list of other users' bookings, but with limited data included, configured by administrator
+- Retrieve information about resources
 
-- Creating bookings on behalf of other users
-- Authenticating devices
-- Managing sensors and sensor readings
+They cannot modify other users’ data or perform system-level operations. Their permissions are scoped to what they personally own.
 
-Recommended for advanced or system-level integrations.
+> 👉 **Note!** Use these users when basic integration with HCP is required.
+
+#### Users with "Global Admin" profile type
+The <b>"Global Admin"</b> profile type is intended for users who require complete access to the Humly Control Panel (HCP) API.
+It enables interaction with all API endpoints, making it suitable for full-scale integrations and administrative automation. 
+
+An account with this profile type can, for example:
+- Retrieve information about all resources
+- Retrieve bookings created by any user
+- Create and manage bookings on behalf of other users
+- Create and manage their own bookings
+- Receive data related to devices
+- Receive data related to Visitor Screens
+- Access, configure, and monitor sensors and their readings
+
+Use this account type for system-level operations where broad and unrestricted access to the platform is necessary.
 
 > 👉 **Note!** Use the `Admin` user only when elevated privileges are required.
 
+### <a name="login"></a> Login to the API - <sub>`POST {API_URL}/LOGIN`</sub>
+To log in to the HCP API, send a POST request to the /login endpoint with the following payload:
+```json
+{
+  "username": "yourUsername",
+  "password": "yourPassword"
+}
+```
+Upon successful login, the server will respond with two key values: userId and authToken. These are required for authenticating all subsequent API requests and must be included as HTTP headers in every call to the HCP API:
 
-### Request example
+```
+"X-User-Id": <yourUserId>
+"X-Auth-Token": <yourAuthToken>
+```
+Make sure to store these values securely and attach them to each request to maintain an authenticated session. Without these headers, the API will reject the request with an authentication error (e.g., 401).
+
+### Authentication example
 
 Following example is provided for REACT applications.
-You can create Auth Resource file to communicate with REST API.
+You can create AuthResource class to communicate with REST API.
 
 ```js
 import Axios from "axios";
@@ -154,7 +201,8 @@ import Axios from "axios";
 import RequestError from "./requestError";
 
 export default class AuthResource {
-    API_URL = "https://localhost:3002/api/v1";
+    const CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
+    const API_URL = `https://${CLOUD_ID}.humly.cloud/api/v1`;
 
     login(username, password) {
         const requestOptions = {
@@ -219,10 +267,14 @@ import AuthResource from "./authResource";
 
     login() {
         this.authResource.login(
-            "defaultDevIntegrationUser",
+            "some.user@some.email.com",
             "abcdefghijklmnoprstuvzabcdefghijklmnoprstuvz"
         ).then((response) => {
             // Store your "userId" and "authToken" to use it for future API calls.
+            // The received userId and authToken must be included as headers in all future API requests that require authentication
+            // "X-User-Id": {receivedUserId}
+            // "X-Auth-Token": {receivedToken}
+            
             console.log("LOGIN --> response", response);
         }).catch((error) => {
             console.log("LOGIN --> error", error);
@@ -232,8 +284,8 @@ import AuthResource from "./authResource";
     logout() {
         this.authResource
             .logout(
-                "1234abcd5678efgh",
-                "abcdefghijklmnoprstuvzabcdefghijklmnoprstuvz"
+                "1234abcd5678efgh", //userId is returned upon a successful login
+                "abcdefghijklmnoprstuvzabcdefghijklmnoprstuvz" //token 
             )
             .then((response) => {
                 // Clear your "userId" and "authToken" values
@@ -251,7 +303,7 @@ import AuthResource from "./authResource";
 
 ### Response example
 
-The userId is unique identifier of your user (in example above it is defaultDevIntegrationUser). The authToken is token for authenticating API requests. Both values are string.<br>
+The userId is unique identifier of your user. The authToken is token for authenticating API requests. Both values are string.<br>
 Response example for /login.
 
 ```json
@@ -326,383 +378,7 @@ Error response for /logout
   }
 }
 ```
-
-## <a name="clientGroups"></a> Register a client group - <sub>`POST {HCP_URL}/api/v1/clientGroups`</sub>
-
-This endpoint is available only for defaultDevIntegrationUser user. You can use it to register a new client group. Endpoint receives only one parameter name -name of client group (e.g. Humly Integration Group). Type of this parameter is string and it is mandatory to provide it. 
-
-### Request example
-
-You can create Client Group Resource file to communicate with REST API (REACT example).
-
-```js
-import Axios from "axios";
-
-import RequestError from "./requestError";
-
-export default class ClientGroupsResource {
-    API_URL = "https://localhost:3002/api/v1";
-
-    createClientGroup(userId, authToken, clientGroupData) {
-        const requestOptions = {
-            headers: {
-                "Content-Type": "application/json",
-                "X-User-Id": userId,
-                "X-Auth-Token": authToken,
-            },
-        };
-
-        return Axios.post(
-            `${this.API_URL}/clientGroups`,
-            clientGroupData,
-            requestOptions
-        ).then(response => (
-            { responseStatus: response.status, responseData: response.data }
-        )).catch((error) => {
-            throw new RequestError(
-                error.response.data.message,
-                error.response.status,
-                error.response.data
-            );
-        });
-    }
-}
-
-```
-
-And then, you can put your requests in this way, for example.
-
-```js
-import ClientGroupsResource from "./clientGroupsResource";
-// Other imports.
-
-    constructor(clientGroupsResource = new ClientGroupsResource()) {
-        this.clientGroupsResource = clientGroupsResource;
-    }
-
-    // Your template code.
-
-    createClientGroup() {
-        const clientGroupData = {
-            name: "Humly Integration Group",
-        };
-        this.clientGroupsResource
-            .createClientGroup(
-                "1234abcd5678efgh",
-                "abcdefghijklmnoprstuvzabcdefghijklmnoprstuvz",
-                clientGroupData
-            ).then((response) => {
-                console.log("CREATE CLIENT GROUP --> response", response);
-            }).catch((error) => {
-                console.log("CREATE CLIENT GROUP --> error", error);
-            });
-    }
-}
-
-```
-
-### Response example
-
-Type of the `groupToken` is string.
-
-```json
-{
-  "responseStatus": 201,
-  "responseData": {
-    "status": "success",
-    "data": {
-      "_id": "1234zvu9876",
-      "groupName": "Humly Integration Group",
-      "groupToken": "1234abcd5678efgh1234ijkl"
-    }
-  }
-}
-```
-
-### Error response example
-
-```json
-// User group already exists
-{
-  "responseStatus": 500,
-  "responseData": {
-     "status": "error",
-     "message": "Unable to register client group with that name. Client group already exists."
-  }
-}
-
-// Not authorized
-{
-  "responseStatus": 401,
-  "responseData": {
-    "status": "error",
-    "message": "You must be logged in to do this."
-  }
-}
-```
-
-## <a name="users"></a> Working with “users” API - <sub>`{HCP_URL}/api/v1/users/integration`</sub>
-
-“Users” API is created for `defaultDevIntegrationUser`. All other users of `APIIntegration` type (users created through this API) can only see their profile. `defaultDevIntegrationUser` users, through this endpoint can create new users and see data of existing ones. 
-
-### Parameters for `POST {HCP_URL}/api/v1/users/integration` endpoint
-| Name         | Type   | Mandatory | Comment |
-| ------------ | ------ | --------- | ------- |
-| `name`       | String | Yes       | Name and username of `APIIntegration` user. |
-| `groupToken` | String | Yes       | Group token of users group. You can use one created through “Register Client Group” endpoint. This string will serve as user’s password. |
-
-### Requests example
-
-You can create Users Resource file to use all Users related API-s. Provided example is for REACT applications.
-
-```js
-import Axios from "axios";
-
-import RequestError from "./requestError";
-
-export default class UsersResource {
-    API_URL = "https://localhost:3002/api/v1";
-
-    createUser(userId, authToken, userData) {
-        const requestOptions = {
-            headers: {
-                "Content-Type": "application/json",
-                "X-User-Id": userId,
-                "X-Auth-Token": authToken,
-            },
-        };
-
-        return Axios.post(
-            `${this.API_URL}/users/integration`,
-            userData,
-            requestOptions
-        ).then(response => (
-            { responseStatus: response.status, responseData: response.data }
-        )).catch((error) => {
-            throw new RequestError(
-                error.response.data.message,
-                error.response.status,
-                error.response.data
-            );
-        });
-    }
-
-    getUsers(userId, authToken, queryParams) {
-        const requestOptions = {
-            headers: {
-                "X-User-Id": userId,
-                "X-Auth-Token": authToken,
-            },
-            params: {
-                pageNumber: queryParams.pageNumber,
-                pageSize: queryParams.pageSize,
-                sort: queryParams.sort,
-            },
-        };
-
-        return Axios.get(
-            `${this.API_URL}/users/integration`,
-            requestOptions
-        ).then(response => (
-            { responseStatus: response.status, responseData: response.data }
-        )).catch((error) => {
-            throw new RequestError(
-                error.response.data.message,
-                error.response.status,
-                error.response.data
-            );
-        });
-    }
-
-    getUser(userId, authToken, apiIntegrationUserId) {
-        const requestOptions = {
-            headers: {
-                "X-User-Id": userId,
-                "X-Auth-Token": authToken,
-            },
-        };
-
-        return Axios.get(
-            `${this.API_URL}/users/integration/${apiIntegrationUserId}`,
-            requestOptions
-        ).then(response => (
-            { responseStatus: response.status, responseData: response.data }
-        )).catch((error) => {
-            throw new RequestError(
-                error.response.data.message,
-                error.response.status,
-                error.response.data
-            );
-        });
-    }
-}
-
-```
-
-### Response example
-
-```json
-// Create user response
-{
-  "responseStatus": 201,
-  "responseData": {
-    "status": "success",
-    "data": {
-      "_id": "3333bbbb4444",
-      "username": "Humly Integration User",
-      "createdAt": "2019-08-01T14:01:18.626Z",
-      "profile": {
-        "clientGroup": "Humly Integration Group",
-        "description": "",
-        "groupToken": "1234abcd5678efgh1234ijkl",
-        "name": "Humly Integration User",
-        "originalToken": null,
-        "pin": "",
-        "rfid": "",
-        "type": "APIIntegration",
-      }
-    }
-  }
-}
-
-// Get all users response
-{
-  "responseStatus": 200,
-  "responseData": {
-    "status": "success",
-    "data": [
-      {
-        "_id": "1111aaaa2222",
-        "username": "defaultDevIntegrationUser",
-        "createdAt": "2019-07-24T14:02:16.723Z",
-        "profile": {
-          "clientGroup": "DevAPIIntegration",
-          "description": "",
-          "name": "defaultDevIntegrationUser",
-          "type": "APIIntegration"
-        },
-        "authentication": {
-          "pin": "",
-          "rfid": "",
-          "originalToken": null,
-          "groupToken": "1234567890abcdefghij"
-        },
-        "userAgentOnLastLogin": "PostmanRuntime/7.28.4"
-      },
-      {
-        "_id": "3333bbbb4444",
-        "username": "Humly Integration User",
-        "createdAt": "2019-07-25T13:57:07.934Z",
-        "profile": {
-          "clientGroup": "Humly Integration Group",
-          "description": "",
-          "name": "Humly Integration User",
-          "type": "APIIntegration"
-        },
-        "authentication": {
-          "pin": "",
-          "rfid": "",
-          "originalToken": null,
-          "groupToken": "1234567890abcdefghij"
-        },
-        "userAgentOnLastLogin": "PostmanRuntime/7.28.4"
-      }
-    ],
-    "page": {
-      "first": true,
-      "last": true,
-      "size": 10,
-      "totalElements": 2,
-      "totalPages": 1,
-      "number": 1,
-      "numberOfElements": 2
-    },
-    "sort": [
-      {
-        "property": "username",
-        "direction": "ASC"
-      }
-    ]
-  }
-}
-
-// Get one user response
-{
-  "responseStatus": 200,
-  "responseData": {
-    "status": "success",
-    "data": {
-      "_id": "1111aaaa2222",
-      "username": "defaultDevIntegrationUser",
-      "createdAt": "2019-07-24T14:02:16.723Z",
-      "profile": {
-        "clientGroup": "DevAPIIntegration",
-        "description": "",
-        "name": "defaultDevIntegrationUser",
-        "type": "APIIntegration"
-      },
-      "authentication": {
-        "pin": "",
-        "rfid": "",
-        "originalToken": null,
-        "groupToken": "1234567890abcdefghij"
-      },
-      "userAgentOnLastLogin": "PostmanRuntime/7.28.4"
-    }
-  }
-}
-```
-
-### Type of response data
-
-| Name            | Type   | Comment |
-| --------------- | ------ | ------- |
-| `responseStatus`| Number | Status of HTTP/HTTPS request. |
-| `status`        | String | Status of API response. Can have values: success or error. |
-| `_id`           | String | Unique user’s identifier generated by system. |
-| `username`      | String | User’s username. |
-| `createdAt`     | String | Date when user is created. Date is provided in ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ). |
-| `clientGroup`   | String | Name of User’s Client Group. |
-| `description`   | String | Optional. |
-| `groupToken`    | String | Group token of user’s group. This string can be used as user’s password. |
-| `name`          | String | User’s name. |
-| `originalToken` | String | User’s token. |
-| `pin`           | String | User’s PIN for verifying and authentication actions. |
-| `rfid`          | String | Value used for verifying and authentication actions when validation via RFID card is used. |
-| `type`          | String | Type of a user. It defines user’s privileges. |
-
-### Error response example
-
-```json
-// User already exists
-{
-  "responseStatus": 500,
-  "responseData": {
-     "status": "error",
-     "message": " Username already exists."
-  }
-}
-
-// Not authorized to create or to get users
-{
-  "responseStatus": 403,
-  "responseData": {
-    "status": "error",
-    "message": "You are not authorized to access this resource!"
-  }
-}
-
-// Not logged in
-{
-  "responseStatus": 401,
-  "responseData": {
-    "status": "error",
-    "message": "You must be logged in to do this."
-  }
-}
-```
-
-## <a name="rooms"></a> Get rooms data - <sub>`{HCP_URL}/api/v1/rooms`</sub>
+## <a name="rooms"></a> Get rooms data - <sub>`{API_URL}/rooms`</sub>
 
 By using these endpoints, you can get information about all rooms, and single room. You can also check for available rooms, get room equipment, and report broken equipment.
 
@@ -729,7 +405,7 @@ All query parameters are optional.
 
 ### Querying for a single room
 
-URL to get data about specific room should look like: `{HCP_URL}/api/v1/rooms/{uniqueRoomIdentifier}`
+URL to get data about specific room should look like: `{API_URL}/rooms/{uniqueRoomIdentifier}`
 where {uniqueRoomIdentifier} can be `_id` property from rooms collection document, or `id` property which represent room unique identifier on the booking system.
 
 
@@ -744,7 +420,9 @@ import Axios from "axios";
 import RequestError from "./requestError";
 
 export default class RoomsResource {
-    API_URL = "https://localhost:3002/api/v1";
+    const CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
+    const API_URL = `https://${CLOUD_ID}.humly.cloud/api/v1`;
+
 
     getAllRooms(userId, authToken, queryParams) {
         const requestOptions = {
@@ -1439,7 +1117,7 @@ You can report broken or fixed equipment by executing some code like this.
 }
 ```
 
-## <a name="desks"></a> Get desks data - <sub>`{HCP_URL}/api/v1/desks`</sub>
+## <a name="desks"></a> Get desks data - <sub>`{API_URL}/desks`</sub>
 
 By using these endpoints, you can get information about all desks or single desk.
 
@@ -1462,7 +1140,7 @@ All query parameters are optional.
 | `sort`             | Object  | A stringified JSON object specifying sorting rules. Format: <br>`{`<br>`  "any.property": "asc/desc",`<br>`  "any.property": "asc/desc"`<br>`}`<br> |
 ### Querying for a single desk
 
-URL to get data about specific desk should look like: `{HCP_URL}/api/v1/desks/{uniqueDeskIdentifier}`
+URL to get data about specific desk should look like: `{API_URL}/desks/{uniqueDeskIdentifier}`
 where the {uniqueDeskIdentifier} can be `_id` property from rooms collection document, or `id` property which represent desk unique identifier on the booking system, or use desk's email address as an unique identifier.
 
 
@@ -1477,7 +1155,9 @@ import Axios from "axios";
 import RequestError from "./requestError";
 
 export default class DesksResource {
-    API_URL = "https://localhost:3002/api/v1";
+    const COULD_ID = "00000.humly.cloud"
+    const API_URL = `https://${COULD_ID}/api/v1`;
+
 
     getAllDesks(userId, authToken, queryParams) {
         const requestOptions = {
@@ -1797,7 +1477,7 @@ export default class DesksResource {
 | `userIds`                    | Array   | Array of Strings. Array of user ids assigned to this desk. |
 | `assigned`                   | Boolean | Is this desk assigned to any Booking device? |
 
-## <a name="bookings"></a> Working with “bookings” API - <sub>`{HCP_URL}/api/v1/bookings`</sub>
+## <a name="bookings"></a> Working with “bookings” API - <sub>`{API_URL}/bookings`</sub>
 
 By using these endpoints, you can get information about your bookings. You can create, update, or delete booking
 
@@ -1812,7 +1492,9 @@ import Axios from "axios";
 import RequestError from "./requestError";
 
 export default class BookingsResource {
-    API_URL = "https://localhost:3002/api/v1";
+    const COULD_ID = "00000.humly.cloud"
+    const API_URL = `https://${COULD_ID}/api/v1`;
+
 
     getOrganizerBookings(userId, authToken, queryParams) {
         const requestOptions = {
@@ -1943,7 +1625,7 @@ export default class BookingsResource {
 
 ```
 
-## <a name="getMeetings"></a> Get organizer meetings – <sub>`GET {HCP_URL}/api/v1/bookings`</sub>
+## <a name="getMeetings"></a> Get organizer meetings – <sub>`GET {API_URL}/bookings`</sub>
 
 This endpoint is used to get meetings organized by given user.
 
@@ -2007,8 +1689,8 @@ This endpoint is used to get meetings organized by given user.
           "onlyDate": "2019-09-01",
           "dateForStatistics": "2019-09-01T12:00:00+00:00",
           "createdBy": {
-            "name": "HumlyIntegrationUser",
-            "mail": "HumlyIntegrationUser",
+            "name": "HumlyUser",
+            "mail": "HumlyUser@humly.com",
             "createdAt": "2019-09-01T11:55:05+00:00",
             "userId": "11223344aabbccdd",
             "isGuestUser": false
@@ -2093,7 +1775,7 @@ This endpoint is used to get meetings organized by given user.
 | `participants`      | Array   | Array of meeting participants. |
 | `attendees`         | Array   | Array of meeting attendees. |
 
-## <a name="createMeeting"></a> Create a meeting – <sub>`POST {HCP_URL}/api/v1/bookings`</sub>
+## <a name="createMeeting"></a> Create a meeting – <sub>`POST {API_URL}/bookings`</sub>
 
 This endpoint is used to create a new meeting.
 
@@ -2153,8 +1835,8 @@ The id is unique identifier of newly created meeting. id refers to _id in bookin
         "onlyDate": "2019-09-01",
         "dateForStatistics": "2019-09-01T12:00:00+00:00",
         "createdBy": {
-          "name": "HumlyIntegrationUser",
-          "mail": "HumlyIntegrationUser",
+          "name": "HumlyUser",
+          "mail": "HumlyUser@humly.com",
           "createdAt": "2019-09-01T11:55:05+00:00",
           "userId": "11223344aabbccdd",
           "isGuestUser": false
@@ -2198,7 +1880,7 @@ The id is unique identifier of newly created meeting. id refers to _id in bookin
 }
 ```
 
-## <a name="updateMeeting"></a> Update a meeting - <sub>`PATCH {HCP_URL}/api/v1/bookings/:bookingId`</sub>
+## <a name="updateMeeting"></a> Update a meeting - <sub>`PATCH {API_URL}/bookings/:bookingId`</sub>
 
 This endpoint is used to update existing meetings. Through it you can update meeting start time, end time and subject.
 
@@ -2253,8 +1935,8 @@ This endpoint is used to update existing meetings. Through it you can update mee
         "onlyDate": "2019-09-01",
         "dateForStatistics": "2019-09-01T12:00:00+00:00",
         "createdBy": {
-          "name": "HumlyIntegrationUser",
-          "mail": "HumlyIntegrationUser"
+          "name": "HumlyUser",
+          "mail": "HumlyUser@humly.com"
         },
         "dateCreated": "2019-09-01T11:55:05+00:00",
         "endType": null,
@@ -2293,7 +1975,7 @@ This endpoint is used to update existing meetings. Through it you can update mee
 }
 ```
 
-## <a name="deleteMeeting"></a> Delete a meeting - <sub>`DELETE {HCP_URL}/api/v1/bookings/:bookingId`</sub>
+## <a name="deleteMeeting"></a> Delete a meeting - <sub>`DELETE {API_URL}/bookings/:bookingId`</sub>
 
 Through this endpoint you can delete existing meetings.
 
@@ -2339,8 +2021,8 @@ Through this endpoint you can delete existing meetings.
         "startTime": "12:0",
         "endTime": "12:30",
         "createdBy": {
-          "name": "HumlyIntegrationUser",
-          "mail": "HumlyIntegrationUser"
+          "name": "HumlyUser",
+          "mail": "HumlyUser@humly.com"
         },
         "sensitivity": "Normal",
         "confirmed": false,
@@ -2365,7 +2047,7 @@ Through this endpoint you can delete existing meetings.
 }
 ```
 
-## <a name="checkInMeeting"></a> Check-in a meeting - `PUT {HCP_URL}/api/v1/bookings/checkedIn?bookingId=:bookingId`
+## <a name="checkInMeeting"></a> Check-in a meeting - `PUT {API_URL}/bookings/checkedIn?bookingId=:bookingId`
 
 This endpoint is used to check-in an existing meeting.
 
@@ -2411,8 +2093,8 @@ This endpoint is used to check-in an existing meeting.
         "startTime": "12:0",
         "endTime": "12:30",
         "createdBy": {
-          "name": "HumlyIntegrationUser",
-          "mail": "HumlyIntegrationUser"
+          "name": "HumlyUser",
+          "mail": "HumlyUser@humly.com"
         },
         "sensitivity": "Normal",
         "confirmed": true,
@@ -2459,7 +2141,7 @@ This endpoint is used to check-in an existing meeting.
 }
 ```
 
-## <a name="structures"></a> Get structures data – <sub>`GET {HCP_URL}/api/v1/structures`</sub>
+## <a name="structures"></a> Get structures data – <sub>`GET {API_URL}/structures`</sub>
 
 This endpoint returns hierarchical structure data (Country, City, Building, Floor) for the authenticated user.
 
@@ -2490,7 +2172,8 @@ import Axios from "axios";
 import RequestError from "./requestError";
 
 export default class StructuresResource {
-    API_URL = "https://localhost:3002/api/v1";
+    const CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
+    const API_URL = `https://${CLOUD_ID}.humly.cloud/api/v1`;
 
     getAllStructures(userId, authToken, queryParams) {
         const requestOptions = {
@@ -2606,7 +2289,7 @@ export default class StructuresResource {
 Let me know if you'd like this endpoint added to an OpenAPI/Swagger file.
 
 
-## <a name="devices"></a> Get devices data - `{HCP_URL}/api/v1/devices`
+## <a name="devices"></a> Get devices data - `{API_URL}/devices`
 
 ### Request example
 
@@ -2621,7 +2304,8 @@ import Axios from "axios";
 import RequestError from "./requestError";
 
 export default class DevicesResource {
-    API_URL = "https://localhost:3002/api/v1";
+    const CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
+    const API_URL = `https://${CLOUD_ID}.humly.cloud/api/v1`;
 
     getAllDevices(userId, authToken, queryParams) {
         const requestOptions = {
@@ -2697,7 +2381,7 @@ export default class DevicesResource {
         "ipAddress": "127.0.0.1",
         "secondIpAddress": "Not available",
         "interfaceActive": "ethernet",
-        "serverIpAddress": "127.0.0.1:3002",
+        "serverIpAddress": "192.168.100.100",
         "firmwareVersion": "2021-11-01_v1.7.2.15",
         "vncActive": false,
         "serialId": "ABC123456",
@@ -2745,7 +2429,7 @@ export default class DevicesResource {
       "ipAddress": "127.0.0.1",
       "secondIpAddress": "Not available",
       "interfaceActive": "ethernet",
-      "serverIpAddress": "127.0.0.1:3002",
+      "serverIpAddress": "192.168.100.100",
       "firmwareVersion": "2021-11-01_v1.7.2.15",
       "vncActive": false,
       "serialId": "ABC123456",
@@ -2788,22 +2472,22 @@ export default class DevicesResource {
 | `upgradeStatus`        | String  | Value representing current status of device upgrade process. |
 | `vncConnectionUrl`     | String  | URL to be used to connect to device remotely. |
 
-## <a name="sensors"></a> Working with sensors - `{HCP_URL}/api/v1/sensors`
+## <a name="sensors"></a> Working with sensors - `{API_URL}/sensors`
 
 The `/sensors` route provides a collection of endpoints for managing sensor data. You can perform the following operations:
 
 - Retrieve sensor data using various query options
 - Create, update, and delete sensors
 
-> 👉 **Note!** Adding sensors is optional. You can directly use the [`PUT {HCP_URL}/api/v1/sensor-readings`](#addSensorReading) endpoint to create a new sensor and add a reading in a single request.
+> 👉 **Note!** Adding sensors is optional. You can directly use the [`PUT {API_URL}/sensor-readings`](#addSensorReading) endpoint to create a new sensor and add a reading in a single request.
 
 ### Retrieve sensor data
 
 You can retrieve sensor information by performing one of the following actions:
-- Fetch data for multiple sensors: [`GET {HCP_URL}/api/v1/sensors`](#getAllSensors)
-- Fetch data for a specific sensor by ID: [`GET {HCP_URL}/api/v1/sensors/:id`](#getOneSensors)
+- Fetch data for multiple sensors: [`GET {API_URL}/sensors`](#getAllSensors)
+- Fetch data for a specific sensor by ID: [`GET {API_URL}/sensors/:id`](#getOneSensors)
 
-### <a name="getAllSensors"></a> Fetch data for multiple sensors `GET {HCP_URL}/api/v1/sensors`
+### <a name="getAllSensors"></a> Fetch data for multiple sensors `GET {API_URL}/sensors`
 
 This endpoint returns paginated data for multiple sensors. It supports filtering by `name`, `type`, `sensorId`, and `externalId`. When multiple filters are provided, only sensors that match all specified criteria will be included in the results. You can control pagination using the `pageNumber` and `pageSize` query parameters.
 
@@ -2888,7 +2572,7 @@ All query parameters are optional.
 | `displayUnit`      | String  | Unit (eg. Celsius) to be used when showing readings. |
 | `resourceIds`      | Array   | Array of unique resource identifiers (`_id`) that sensor is attached to. |
 
-### <a name="getOneSensors"></a> Fetch data for a specific sensor by ID `GET {HCP_URL}/api/v1/sensors/:id`
+### <a name="getOneSensors"></a> Fetch data for a specific sensor by ID `GET {API_URL}/sensors/:id`
 
 Returns data for a specific sensor matching ID. 
 
@@ -2920,11 +2604,11 @@ Returns data for a specific sensor matching ID.
 ### Create, update, and delete sensors
 
 Supported actions:
-- Create new sensor: [`POST {HCP_URL}/api/v1/sensors`](#createNewSensor)
-- Update sensor data: [`PATCH {HCP_URL}/api/v1/sensors/:id`](#patchSensor)
-- Delete sensor: [`DELETE {HCP_URL}/api/v1/sensors/:id`](#deleteSensor)
+- Create new sensor: [`POST {API_URL}/sensors`](#createNewSensor)
+- Update sensor data: [`PATCH {API_URL}/sensors/:id`](#patchSensor)
+- Delete sensor: [`DELETE {API_URL}/sensors/:id`](#deleteSensor)
 
-### <a name="createNewSensor"></a> Create new sensor `POST {HCP_URL}/api/v1/sensors`
+### <a name="createNewSensor"></a> Create new sensor `POST {API_URL}/sensors`
 
 This endpoint is used to add a new sensor.
 
@@ -3011,15 +2695,15 @@ This endpoint is used to add a new sensor.
 }
 ```
 
-### <a name="patchSensor"></a> Update sensor data `PATCH {HCP_URL}/api/v1/sensors/:id`
+### <a name="patchSensor"></a> Update sensor data `PATCH {API_URL}/sensors/:id`
 
 The `:id` parameter represents the unique identifier (`_id`) of the sensor. This endpoint allows you to update any of the sensor's properties. Properties not included in the request body will remain unchanged in the database. The properties available for update are the same as those described in the [Create sensor section](#createNewSensor) section. The expected response format is also identical to that of the creation endpoint.
 
-### <a name="deleteSensor"></a> Delete sensor `DELETE {HCP_URL}/api/v1/sensors/:id`
+### <a name="deleteSensor"></a> Delete sensor `DELETE {API_URL}/sensors/:id`
 
-To delete a sensor from the database, send a `DELETE` request to `{HCP_URL}/api/v1/sensors/:id`, where `:id` is the unique identifier (`_id`) of the sensor.
+To delete a sensor from the database, send a `DELETE` request to `{API_URL}/sensors/:id`, where `:id` is the unique identifier (`_id`) of the sensor.
 
-## <a name="sensorReadings"></a> Managing sensor readings - `{HCP_URL}/api/v1/sensor-readings`
+## <a name="sensorReadings"></a> Managing sensor readings - `{API_URL}/sensor-readings`
 
 The `/sensor-readings` route provides a collection of endpoints for managing sensor readings data. You can perform the following operations:
 
@@ -3031,10 +2715,10 @@ Sensor readings are grouped by sensor on a daily basis, using the UTC time zone.
 ### Retrieve sensor reading data
 
 You can retrieve sensor reading information by performing one of the following actions:
-- Fetch multiple sensor readings: [`GET {HCP_URL}/api/v1/sensor-readings`](#getAllSensorReadings)
-- Fetch a specific sensor reading by ID: [`GET {HCP_URL}/api/v1/sensors-readings/:id`](#getOneSensorReading)
+- Fetch multiple sensor readings: [`GET {API_URL}/sensor-readings`](#getAllSensorReadings)
+- Fetch a specific sensor reading by ID: [`GET {API_URL}/sensors-readings/:id`](#getOneSensorReading)
 
-### <a name="getAllSensorReadings"></a> Fetch multiple sensor readings `GET {HCP_URL}/api/v1/sensor-readings`
+### <a name="getAllSensorReadings"></a> Fetch multiple sensor readings `GET {API_URL}/sensor-readings`
 
 This endpoint returns paginated data for multiple sensor readings. It supports filtering by `date`, `type`, `sensorId`, `externalId`, and `status`. When multiple filters are provided, only sensor readings that match all specified criteria will be included in the results. You can control pagination using the `pageNumber` and `pageSize` query parameters.
 
@@ -3134,7 +2818,7 @@ All query parameters are optional.
 | `resourceIds`      | Array   | Array of unique resource identifiers (`_id`) that sensor is attached to. |
 | `readings`         | Array   | An array of reading documents, where each reading includes an `eventId`, `value`, and `updateTime`. Readings are grouped by date in the UTC time zone. |
 
-### <a name="getOneSensorReading"></a> Fetch a specific sensor reading by ID `GET {HCP_URL}/api/v1/sensors-readings/:id`
+### <a name="getOneSensorReading"></a> Fetch a specific sensor reading by ID `GET {API_URL}/sensors-readings/:id`
 
 Returns data for a specific sensor reading matching ID. 
 
@@ -3173,10 +2857,10 @@ Returns data for a specific sensor reading matching ID.
 ### Add, and delete sensor readings
 
 Supported actions:
-- Add new sensor reading: [`PUT {HCP_URL}/api/v1/sensors-readings`](#addSensorReading)
-- Delete sensor reading: [`DELETE {HCP_URL}/api/v1/sensor-readings/:id`](#deleteSensorReading)
+- Add new sensor reading: [`PUT {API_URL}/sensors-readings`](#addSensorReading)
+- Delete sensor reading: [`DELETE {API_URL}/sensor-readings/:id`](#deleteSensorReading)
 
-### <a name="addSensorReading"></a> Add new sensor reading `PUT {HCP_URL}/api/v1/sensors-readings`
+### <a name="addSensorReading"></a> Add new sensor reading `PUT {API_URL}/sensors-readings`
 
 This endpoint is used to add a new sensor reading. If no reading exists for the current day (based on the UTC time zone), a new document will be created. Otherwise, the reading will be appended to the existing readings array for that day.
 If the sensor does not already exist, this endpoint will automatically create it. In that case, you must provide the basic sensor information: `type`, `externalId`, `name`, `status`, and the list of resources the sensor is associated with (`resourceIds`).
@@ -3297,9 +2981,9 @@ If the sensor already exists in the database, you only need to provide the `sens
 }
 ```
 
-### <a name="deleteSensorReading"></a> Delete sensor reading `DELETE {HCP_URL}/api/v1/sensor-readings/:id`
+### <a name="deleteSensorReading"></a> Delete sensor reading `DELETE {API_URL}/sensor-readings/:id`
 
-To delete a sensor reading from the database, send a `DELETE` request to `{HCP_URL}/api/v1/sensor-readings/:id`, where `:id` is the unique identifier (`_id`) of the sensor reading.
+To delete a sensor reading from the database, send a `DELETE` request to `{API_URL}/sensor-readings/:id`, where `:id` is the unique identifier (`_id`) of the sensor reading.
 
 
 ## <a name="getVisitorScreens"></a> Get visitor screens – <sub>`GET {API_URL}/visitor-screens`</sub>
