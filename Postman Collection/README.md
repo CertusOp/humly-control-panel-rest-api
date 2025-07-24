@@ -24,5 +24,6 @@ After completing these settings, you can start using the Humly Postman collectio
 Execute “Login” API call located under Auth folder in Humly REST integration collection. By executing this call, you will store `X-User-Id` and `X-User-Token` headers, necessary to authenticate other REST calls. 
 
 You can also execute All Rooms API call located under Rooms folder in order to store `roomId` of first room returned by this call.
+If you want to use other `roomId` you can provide it as CURRENT VALUE for `roomId` Humly Environment variable any time you like. 
 
-If you want to use other `roomId` you can provide it as CURRENT VALUE for `roomId` Humly Environment variable any time you like. You can do the same for all other variables.
+You can do the same for all other variables.
