@@ -15,7 +15,7 @@ The Postman collection is designed to store some values for you. Before using it
 In addition to the username and password, you also need to set values for the serverAddress and port environment variables.
 
 - If you are using HCP hosted in the Humly Cloud, enter your specific Cloud ID (a five-digit number assigned by Humly during provisioning) followed by .humly.cloud as the value for serverAddress — for example: 00000.humly.cloud and use the default SSL port 443 for the port.
-- If you are using an on-premises HCP instance, enter the web address of your HCP server, such as hcpserver.local.domain, as the serverAddress. The API runs on port 3002 by default, but this can be changed by the system administrator.
+- If you are using an on-premises HCP instance, enter the web address of your HCP server, such as hcpserver.local.domain, as the serverAddress. The API runs on port 3002 by default, but this can be changed by the HCP administrator.
 
 For more information related to authentication, please refer to the "Technical Overview & Access" and "Authenticate with Humly Control Panel (HCP) API" sections in the README.md file located in the root of the documentation folder.
 
