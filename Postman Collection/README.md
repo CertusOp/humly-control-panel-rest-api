@@ -10,7 +10,7 @@ From menu select File --> Import. In “Import File” tab provide click on “C
 
 ## Working with Humly Postman Collection
 
-This Postman collection is created in that way that it will store some values for you. First step that you have to do is to store password (user token) for your `defaultDevIntegrationUser` user. You can find it in <i>Humly Control Panel</i> under Global Settings section. Copy “Default API Token” and store it to Humly environment. To store it you have to click on cogwheel, then click on Humly Environment and paste “Default API Token” under CURRENT VALUE of `password` variable.
+This Postman collection is designed to store some values for you. The first step is to save the username and password of the user connecting to the API. To do this, click the cogwheel icon, select the Humly Environment, and paste the username and password under the CURRENT VALUE column. For more information, please refer to the Authentication section in the README.md file.
 Execute “Login” API call located under Auth folder in Humly REST integration collection. By executing this call, you will store `X-User-Id` and `X-User-Token` necessary to authenticate other REST calls. You can also execute All Rooms API call located under Rooms folder in order to store `roomId` of first room returned by this call.
 
 If you want to use other `roomId` you can provide it as CURRENT VALUE for `roomId` Humly Environment variable any time you like. You can do the same for all other variables.
