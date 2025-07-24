@@ -2172,7 +2172,8 @@ import Axios from "axios";
 import RequestError from "./requestError";
 
 export default class StructuresResource {
-    const API_URL = "https://123456.humly.cloud/api/v1";
+    const CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
+    const API_URL = `https://${CLOUD_ID}.humly.cloud/api/v1`;
 
     getAllStructures(userId, authToken, queryParams) {
         const requestOptions = {
@@ -2303,7 +2304,8 @@ import Axios from "axios";
 import RequestError from "./requestError";
 
 export default class DevicesResource {
-    const API_URL = "https://123456.humly.cloud/api/v1";
+    const CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
+    const API_URL = `https://${CLOUD_ID}.humly.cloud/api/v1`;
 
     getAllDevices(userId, authToken, queryParams) {
         const requestOptions = {
