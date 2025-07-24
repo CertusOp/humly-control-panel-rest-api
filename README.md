@@ -303,7 +303,7 @@ import AuthResource from "./authResource";
 
 ### Response example
 
-The userId is unique identifier of your user (in example above it is defaultDevIntegrationUser). The authToken is token for authenticating API requests. Both values are string.<br>
+The userId is unique identifier of your user. The authToken is token for authenticating API requests. Both values are string.<br>
 Response example for /login.
 
 ```json
@@ -1689,8 +1689,8 @@ This endpoint is used to get meetings organized by given user.
           "onlyDate": "2019-09-01",
           "dateForStatistics": "2019-09-01T12:00:00+00:00",
           "createdBy": {
-            "name": "HumlyIntegrationUser",
-            "mail": "HumlyIntegrationUser",
+            "name": "HumlyUser",
+            "mail": "HumlyUser@humly.com",
             "createdAt": "2019-09-01T11:55:05+00:00",
             "userId": "11223344aabbccdd",
             "isGuestUser": false
@@ -1835,8 +1835,8 @@ The id is unique identifier of newly created meeting. id refers to _id in bookin
         "onlyDate": "2019-09-01",
         "dateForStatistics": "2019-09-01T12:00:00+00:00",
         "createdBy": {
-          "name": "HumlyIntegrationUser",
-          "mail": "HumlyIntegrationUser",
+          "name": "HumlyUser",
+          "mail": "HumlyUser@humly.com",
           "createdAt": "2019-09-01T11:55:05+00:00",
           "userId": "11223344aabbccdd",
           "isGuestUser": false
@@ -1935,8 +1935,8 @@ This endpoint is used to update existing meetings. Through it you can update mee
         "onlyDate": "2019-09-01",
         "dateForStatistics": "2019-09-01T12:00:00+00:00",
         "createdBy": {
-          "name": "HumlyIntegrationUser",
-          "mail": "HumlyIntegrationUser"
+          "name": "HumlyUser",
+          "mail": "HumlyUser@humly.com"
         },
         "dateCreated": "2019-09-01T11:55:05+00:00",
         "endType": null,
@@ -2021,8 +2021,8 @@ Through this endpoint you can delete existing meetings.
         "startTime": "12:0",
         "endTime": "12:30",
         "createdBy": {
-          "name": "HumlyIntegrationUser",
-          "mail": "HumlyIntegrationUser"
+          "name": "HumlyUser",
+          "mail": "HumlyUser@humly.com"
         },
         "sensitivity": "Normal",
         "confirmed": false,
@@ -2093,8 +2093,8 @@ This endpoint is used to check-in an existing meeting.
         "startTime": "12:0",
         "endTime": "12:30",
         "createdBy": {
-          "name": "HumlyIntegrationUser",
-          "mail": "HumlyIntegrationUser"
+          "name": "HumlyUser",
+          "mail": "HumlyUser@humly.com"
         },
         "sensitivity": "Normal",
         "confirmed": true,
