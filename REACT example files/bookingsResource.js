@@ -3,19 +3,27 @@ import Axios from "axios";
 import RequestError from "./requestError";
 
 export default class BookingsResource {
-    const CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
-    const API_URL = `https://${CLOUD_ID}.humly.cloud/api/v1`;
+    constructor() {
+        this.CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
+        this.API_URL = `https://${this.CLOUD_ID}.humly.cloud/api/v1`;
+    }
 
-    getOrganizerBookings(userId, authToken, queryParams) {
+    getBookings(userId, authToken, queryParams) {
         const requestOptions = {
             headers: {
                 "X-User-Id": userId,
                 "X-Auth-Token": authToken,
             },
             params: {
-                organizerUser: userId,
+                organizerUser: queryParams.organizerUser,
                 startDate: queryParams.startDate,
                 endDate: queryParams.endDate,
+                resourceType: queryParams.resourceType,
+                resourceIdentifier: queryParams.resourceIdentifier,
+                country: queryParams.country,
+                city: queryParams.city,
+                building: queryParams.building,
+                floor: queryParams.floor,
                 pageNumber: queryParams.pageNumber,
                 pageSize: queryParams.pageSize,
                 sort: queryParams.sort,

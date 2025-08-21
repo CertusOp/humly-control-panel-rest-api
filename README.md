@@ -40,7 +40,7 @@ All responses from the Humly Control Panel API follow a standardized structure. 
 ### Success Response
 
 A typical success response follows this format:
-```c++
+```json
 {
   "status": "success",
   "data": %any%,                 // Mandatory part of response. Type of data can be null, string, number, boolean, object {} or array []. It represents data returned from endpoint.
@@ -88,7 +88,7 @@ If an endpoint supports sorting, a default sort property will be applied and ret
 ### Error Response
 
 An error response from the Humly Control Panel API follows this format:
-```c++
+```json
 {
   "status": "error",
   "message": %string%,  // Mandatory part of response. Description of error that have occurred.
@@ -119,9 +119,9 @@ where each placeholder represents:
 #### Usage in code
 In the code examples below, the base URL is stored in the `API_URL` constant, as in the following line:
 
-```c++
-    const CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
-    const API_URL = `https://${CLOUD_ID}.humly.cloud/api/v1`;
+```js
+  this.CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
+  this.API_URL = `https://${this.CLOUD_ID}.humly.cloud/api/v1`;
 ```
 
 ##### Constructing full endpoint URLs
@@ -201,8 +201,10 @@ import Axios from "axios";
 import RequestError from "./requestError";
 
 export default class AuthResource {
-    const CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
-    const API_URL = `https://${CLOUD_ID}.humly.cloud/api/v1`;
+    constructor() {
+        this.CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
+        this.API_URL = `https://${this.CLOUD_ID}.humly.cloud/api/v1`;
+    }
 
     login(username, password) {
         const requestOptions = {
@@ -420,9 +422,10 @@ import Axios from "axios";
 import RequestError from "./requestError";
 
 export default class RoomsResource {
-    const CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
-    const API_URL = `https://${CLOUD_ID}.humly.cloud/api/v1`;
-
+    constructor() {
+        this.CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
+        this.API_URL = `https://${this.CLOUD_ID}.humly.cloud/api/v1`;
+    }
 
     getAllRooms(userId, authToken, queryParams) {
         const requestOptions = {
@@ -1492,20 +1495,27 @@ import Axios from "axios";
 import RequestError from "./requestError";
 
 export default class BookingsResource {
-    const COULD_ID = "00000.humly.cloud"
-    const API_URL = `https://${COULD_ID}/api/v1`;
+    constructor() {
+        this.CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
+        this.API_URL = `https://${this.CLOUD_ID}.humly.cloud/api/v1`;
+    }
 
-
-    getOrganizerBookings(userId, authToken, queryParams) {
+    getBookings(userId, authToken, queryParams) {
         const requestOptions = {
             headers: {
                 "X-User-Id": userId,
                 "X-Auth-Token": authToken,
             },
             params: {
-                organizerUser: userId,
+                organizerUser: queryParams.organizerUser,
                 startDate: queryParams.startDate,
                 endDate: queryParams.endDate,
+                resourceType: queryParams.resourceType,
+                resourceIdentifier: queryParams.resourceIdentifier,
+                country: queryParams.country,
+                city: queryParams.city,
+                building: queryParams.building,
+                floor: queryParams.floor,
                 pageNumber: queryParams.pageNumber,
                 pageSize: queryParams.pageSize,
                 sort: queryParams.sort,
@@ -1625,31 +1635,41 @@ export default class BookingsResource {
 
 ```
 
-## <a name="getMeetings"></a> Get organizer meetings – <sub>`GET {API_URL}/bookings`</sub>
+## <a name="getMeetings"></a> Get bookings – <sub>`GET {API_URL}/bookings`</sub>
 
-This endpoint is used to get meetings organized by given user.
+This endpoint is used to get all bookings.
 
 ### Query Parameters
 
-| Name            | Type   | Mandatory | Comment |
-| --------------- | ------ | --------- | ------- |
-| `organizerUser` | String | Yes       | Unique identifier of the user. `userId` string returned by login. Users can see only their own bookings. |
-| `startDate`     | String | No        | Limits returned meetings data to include meetings that have start date greater or equal to provided date. If this parameter is not provided this endpoint will return all bookings for this user from start of the ongoing day. Date must be in ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ). |
-| `endDate`       | String | No        | Limits returned meetings data to include meetings that have end date lower than provided date. If this parameter is not provided this endpoint will return all bookings for this user until end of the ongoing day. Date must be in ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ). |
-| `pageNumber`       | Number  | The page number to return, starting from 1. Default is 1. |
-| `pageSize`         | Number  | The number of documents to return per page. The final page may contain fewer results. Default is 10. |
-| `sort`             | Object  | A stringified JSON object specifying sorting rules. Format: <br>`{`<br>`  "any.property": "asc/desc",`<br>`  "any.property": "asc/desc"`<br>`}`<br> |
+| Name                 | Type    | Comment |
+| -------------------- | ------- | ------- |
+| `organizerUser`      | String  | Unique identifier of the user. `userId` string returned by login. Users can see only their own bookings. |
+| `startDate`          | String  | Limits returned meetings data to include meetings that have start date greater or equal to provided date. If this parameter is not provided this endpoint will return all bookings for this user from start of the ongoing day. Date must be in ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ). |
+| `endDate`            | String  | Limits returned meetings data to include meetings that have end date lower than provided date. If this parameter is not provided this endpoint will return all bookings for this user until end of the ongoing day. Date must be in ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ). |
+| `resourceType`       | String  | Type of the resource to get bookings for. Allowed values: `room`, `desk`, `parking_space`; <br>👉 **Important note!** `DEFAULT: room;` |
+| `resourceIdentifier` | String  | Unique resource identifier. API will accept resource _id, id, name or email. |
+| `country`            | String  | Country name. All four: country, city, building, floor must be provided to query bookings by the floor, otherwise query parameter will be ignored. |
+| `city`               | String  | City name. All four: country, city, building, floor must be provided to query bookings by the floor, otherwise query parameter will be ignored. |
+| `building`           | String  | Building name. All four: country, city, building, floor must be provided to query bookings by the floor, otherwise query parameter will be ignored. |
+| `floor`              | String  | Floor name. All four: country, city, building, floor must be provided to query bookings by the floor, otherwise query parameter will be ignored. |
+| `pageNumber`         | Number  | The page number to return, starting from 1. Default is 1. |
+| `pageSize`           | Number  | The number of documents to return per page. The final page may contain fewer results. Default is 10. |
+| `sort`               | Object  | A stringified JSON object specifying sorting rules. Format: <br>`{`<br>`  "any.property": "asc/desc",`<br>`  "any.property": "asc/desc"`<br>`}`<br> |
 
 ### Request example
 
 ```js
-    getOrganizerBookings() {
+    getBookings() {
+        // All query parameters are optional.
         const queryData = {
           startDate: "2019-09-01T12:00:00+00:00",
           endDate: null,
+          organizerUser: "abcd1234dcba4321",
+          resourceIdentifier: "abcdefgh12345678"
         };
+
         this.bookingsResource
-            .getOrganizerBookings(
+            .getBookings(
                 "1234abcd5678efgh",
                 "abcdefghijklmnoprstuvzabcdefghijklmnoprstuvz",
                 queryData
@@ -1815,7 +1835,7 @@ This endpoint is used to create a new meeting.
 
 The id is unique identifier of newly created meeting. id refers to _id in bookings endpoint.
 
-``` json
+```json
 {
   "responseStatus": 201,
   "responseData": {
@@ -2172,8 +2192,10 @@ import Axios from "axios";
 import RequestError from "./requestError";
 
 export default class StructuresResource {
-    const CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
-    const API_URL = `https://${CLOUD_ID}.humly.cloud/api/v1`;
+    constructor() {
+        this.CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
+        this.API_URL = `https://${this.CLOUD_ID}.humly.cloud/api/v1`;
+    }
 
     getAllStructures(userId, authToken, queryParams) {
         const requestOptions = {
@@ -2304,8 +2326,10 @@ import Axios from "axios";
 import RequestError from "./requestError";
 
 export default class DevicesResource {
-    const CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
-    const API_URL = `https://${CLOUD_ID}.humly.cloud/api/v1`;
+    constructor() {
+        this.CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
+        this.API_URL = `https://${this.CLOUD_ID}.humly.cloud/api/v1`;
+    }
 
     getAllDevices(userId, authToken, queryParams) {
         const requestOptions = {
@@ -2657,7 +2681,7 @@ This endpoint is used to add a new sensor.
 
 ### Response example
 
-``` json
+```json
 {
   "responseStatus": 201,
   "responseData": {
@@ -2932,7 +2956,7 @@ If the sensor already exists in the database, you only need to provide the `sens
 
 ### Response example
 
-``` json
+```json
 {
   "responseStatus": 201,
   "responseData": {

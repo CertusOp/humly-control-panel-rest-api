@@ -3,8 +3,10 @@ import Axios from "axios";
 import RequestError from "./requestError";
 
 export default class ServerInfoResource {
-    const CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
-    const API_URL = `https://${CLOUD_ID}.humly.cloud/api/v1`;
+    constructor() {
+        this.CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
+        this.API_URL = `https://${this.CLOUD_ID}.humly.cloud/api/v1`;
+    }
 
     getServerInfo(userId, authToken) {
         const requestOptions = {
