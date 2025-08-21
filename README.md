@@ -8,7 +8,7 @@ API documentation for Humly Control Panel version: `v1.0.x`
 - [Get rooms data - `{API_URL}/rooms`](#rooms)
 - [Get desks data - `{API_URL}/desks`](#desks)
 - [Working with “bookings” API - `{API_URL}/bookings`](#bookings)
-- [Get organizer meetings – `GET {API_URL}/bookings`](#getMeetings)
+- [Get all bookings – `GET {API_URL}/bookings`](#getMeetings)
 - [Create a meeting - `POST {API_URL}/bookings`](#createMeeting)
 - [Update a meeting - `PATCH {API_URL}/bookings/:bookingId`](#updateMeeting)
 - [Delete a meeting - `DELETE {API_URL}/bookings/:bookingId`](#deleteMeeting)
