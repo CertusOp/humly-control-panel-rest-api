@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "07e6f8e7-cef2-4197-bda8-70357c449c0c",
+		"_postman_id": "c379302b-004c-4770-bf75-3a19cf6315f9",
 		"name": "Humly REST integration",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -561,7 +561,37 @@
 										{
 											"key": "resourceType",
 											"value": "",
-											"description": "(string) accepts: all, room, desk; default: room;",
+											"description": "(string) accepts: room, desk, parking_space; default: room;",
+											"disabled": true
+										},
+										{
+											"key": "resourceIdentifier",
+											"value": "",
+											"description": "(string) Resource _id, id, name or email",
+											"disabled": true
+										},
+										{
+											"key": "country",
+											"value": null,
+											"description": "(string) Country name; must provide country, city, building and floor",
+											"disabled": true
+										},
+										{
+											"key": "city",
+											"value": null,
+											"description": "(string) City name; must provide country, city, building and floor",
+											"disabled": true
+										},
+										{
+											"key": "building",
+											"value": null,
+											"description": "(string) Building name; must provide country, city, building and floor",
+											"disabled": true
+										},
+										{
+											"key": "floor",
+											"value": null,
+											"description": "(string) Floor name; must provide country, city, building and floor",
 											"disabled": true
 										},
 										{
@@ -3015,7 +3045,7 @@
 									"path": [
 										"api",
 										"v1",
-										"visitor-screens"									
+										"visitor-screens"
 									],
 									"query": [
 										{
