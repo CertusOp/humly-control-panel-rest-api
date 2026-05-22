@@ -401,6 +401,7 @@ All query parameters are optional.
 | `maxNumberOfSeats` | Number  | Maximum required seats in room.
 | `roomIdentifier`   | String  | Unique room identifier like _id, id, or email.
 | `assignedToMe`     | Boolean | If authenticated user needs to get desks managed by her/him. Accepts: true and false. Default is false.|
+| `fields`           | String  | Comma separated list of fields to be returned. Allows any field name. Example: name, mail, settings.timeZone, settings.sleepSettings.workingDays
 | `pageNumber`       | Number  | The page number to return, starting from 1. Default is 1. |
 | `pageSize`         | Number  | The number of documents to return per page. The final page may contain fewer results. Default is 10. |
 | `sort`             | Object  | A stringified JSON object specifying sorting rules. Format: <br>`{`<br>`  "any.property": "asc/desc",`<br>`  "any.property": "asc/desc"`<br>`}`<br> |

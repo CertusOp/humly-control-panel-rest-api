@@ -561,7 +561,7 @@
 										{
 											"key": "resourceType",
 											"value": "",
-											"description": "(string) accepts: room, desk, parking_space; default: room;",
+											"description": "(string) accepts: all, room, desk; default: room;",
 											"disabled": true
 										},
 										{
@@ -1525,6 +1525,12 @@
 											"disabled": true
 										},
 										{
+											"key": "fields",
+											"value": "",
+											"description": "(string) Comma separated list of fields to be returned. Allows any field name. Example: name, mail, settings.timeZone, settings.sleepSettings.workingDays",
+											"disabled": true
+										},
+										{
 											"key": "pageNumber",
 											"value": "",
 											"description": "{number} default: 1",
@@ -1860,25 +1866,25 @@
 										},
 										{
 											"key": "pageNumber",
-											"value": null,
+											"value": "",
 											"description": "{number} Default: 1",
 											"disabled": true
 										},
 										{
 											"key": "pageSize",
-											"value": null,
+											"value": "",
 											"description": "{number} Default: 10",
 											"disabled": true
 										},
 										{
 											"key": "fields",
-											"value": null,
+											"value": "",
 											"description": "(string) Comma separated list of fields to be returned. Allowed values: _id, type, externalId, name, description, resourceIds, status, distributor, minRange, maxRange, displayUnitCode, displayUnit",
 											"disabled": true
 										},
 										{
 											"key": "sort",
-											"value": null,
+											"value": "",
 											"description": "{object} { \"any.property\": \"desc/asc\", \"any.property\": \"desc/asc\" }; default: { \"name\": \"asc\" }",
 											"disabled": true
 										}
@@ -2260,7 +2266,7 @@
 									"query": [
 										{
 											"key": "date",
-											"value": null,
+											"value": "",
 											"description": "(string) Date in YYYY-MM-DDTHH:MI:SS%2B00:00 format",
 											"disabled": true
 										},
@@ -2272,7 +2278,7 @@
 										},
 										{
 											"key": "sensorId",
-											"value": null,
+											"value": "",
 											"description": "(string) Sensor unique ID (Sensors._id). Full match, case sensitive.",
 											"disabled": true
 										},
@@ -2290,25 +2296,25 @@
 										},
 										{
 											"key": "pageNumber",
-											"value": null,
+											"value": "",
 											"description": "{number} Default: 1",
 											"disabled": true
 										},
 										{
 											"key": "pageSize",
-											"value": null,
+											"value": "",
 											"description": "{number} Default: 10",
 											"disabled": true
 										},
 										{
 											"key": "fields",
-											"value": null,
+											"value": "",
 											"description": "(string) Comma separated list of fields to be returned. Allowed values: _id, type, externalId, name, description, resourceIds, status, distributor, minRange, maxRange, displayUnitCode, displayUnit",
 											"disabled": true
 										},
 										{
 											"key": "sort",
-											"value": null,
+											"value": "",
 											"description": "{object} { \"any.property\": \"desc/asc\", \"any.property\": \"desc/asc\" }; default: { \"name\": \"asc\" }",
 											"disabled": true
 										}
@@ -3275,7 +3281,18 @@
 							],
 							"request": {
 								"method": "GET",
-								"header": [],
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"type": "text"
+									}
+								],
 								"url": {
 									"raw": "https://{{serverAddress}}:{{port}}/api/v1/smplr-spaces",
 									"protocol": "https",
@@ -3290,15 +3307,69 @@
 									],
 									"query": [
 										{
-											"key": "startDate",
-											"value": "",
-											"description": "(string) Date in YYYY-MM-DDTHH:MI:SS+00:00 format; default: current time;",
+											"key": "_id",
+											"value": null,
+											"description": "{string} Unique floor plan identifier",
 											"disabled": true
 										},
 										{
-											"key": "endDate",
-											"value": "",
-											"description": "(string) Date in YYYY-MM-DDTHH:MI:SS+00:00 format; default: end of the day;",
+											"key": "code",
+											"value": null,
+											"description": "{string} Unique floor plan short identifier",
+											"disabled": true
+										},
+										{
+											"key": "name",
+											"value": null,
+											"description": "{string} Floor plan name",
+											"disabled": true
+										},
+										{
+											"key": "mapId",
+											"value": null,
+											"description": "{string} Map ID",
+											"disabled": true
+										},
+										{
+											"key": "clientToken",
+											"value": null,
+											"description": "{string} Client token",
+											"disabled": true
+										},
+										{
+											"key": "title",
+											"value": null,
+											"description": "{string} Floor plan title",
+											"disabled": true
+										},
+										{
+											"key": "structureId",
+											"value": null,
+											"description": "{string} Unique floor structure identifier",
+											"disabled": true
+										},
+										{
+											"key": "language",
+											"value": null,
+											"description": "{string} Floor plan configured language",
+											"disabled": true
+										},
+										{
+											"key": "pageNumber",
+											"value": null,
+											"description": "{number} default: 1",
+											"disabled": true
+										},
+										{
+											"key": "pageSize",
+											"value": null,
+											"description": "{number} default: 10",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": null,
+											"description": "{object} { \"any.property\": \"desc/asc\", \"any.property\": \"desc/asc\" }; default: { \"name\": \"asc\" }",
 											"disabled": true
 										}
 									]
@@ -3317,13 +3388,34 @@
 										],
 										"type": "text/javascript"
 									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.variables.set(\"startDate\", encodeURIComponent(new Date(Date.now()).toISOString().split(\".\")[0] + \"+00:00\"));",
+											"pm.variables.set(\"endDate\", encodeURIComponent(new Date(Date.now() + 3600000).toISOString().split(\".\")[0] + \"+00:00\"));"
+										],
+										"type": "text/javascript"
+									}
 								}
 							],
 							"request": {
 								"method": "GET",
-								"header": [],
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"type": "text"
+									}
+								],
 								"url": {
-									"raw": "https://{{serverAddress}}:{{port}}/api/v1/smplr-spaces/{{smplrSpaceSettingsId}}",
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/smplr-spaces/{{smplrSpaceSettingsId}}?startDate={{startDate}}&endDate={{endDate}}&includeResourceData&includePhoneBoothResources",
 									"protocol": "https",
 									"host": [
 										"{{serverAddress}}"
@@ -3334,6 +3426,26 @@
 										"v1",
 										"smplr-spaces",
 										"{{smplrSpaceSettingsId}}"
+									],
+									"query": [
+										{
+											"key": "startDate",
+											"value": "{{startDate}}"
+										},
+										{
+											"key": "endDate",
+											"value": "{{endDate}}"
+										},
+										{
+											"key": "includeResourceData",
+											"value": null,
+											"description": "{boolena} should include resources data; allowed values [true, false]; default false"
+										},
+										{
+											"key": "includePhoneBoothResources",
+											"value": null,
+											"description": "{boolean} should include phone booth resources; allowed values [true, false]"
+										}
 									]
 								}
 							},

@@ -26,6 +26,7 @@ export default class RoomsResource {
                 maxNumberOfSeats: queryParams.maxNumberOfSeats,
                 roomIdentifier: queryParams.roomIdentifier,
                 assignedToMe: queryParams.assignedToMe,
+                fields: queryParams.fields,
                 pageNumber: queryParams.pageNumber,
                 pageSize: queryParams.pageSize,
                 sort: queryParams.sort,
