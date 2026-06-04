@@ -2546,7 +2546,7 @@ All query parameters are optional.
             "type": "co2",
             "externalId": "abcd1234efgh",
             "status": "Online",
-            "distributor": "Sensor manufacturer",
+            "distributor": "sensorApiIntegration",
             "name": "Co2 Sensor for Room 1",
             "minRange": 1000,
             "maxRange": 2000,
@@ -2590,7 +2590,7 @@ All query parameters are optional.
 | `status`           | String  | Sensor status. `Online`, `Offline`, or `Unavailable`. |
 | `name`             | String  | Sensor name. |
 | `description`      | String  | Sensor description. |
-| `distributor`      | String  | Sensor manufacturer name. |
+| `distributor`      | String  | Distributor the sensor belongs to. One of `sensorApiIntegration`, `qSys`, or `haltian`. |
 | `minRange`         | Number  | Minimum sensor reading range considered as normal. In case of a CO2 sensor this value is upper limit for the normal concentration. |
 | `maxRange`         | Number  | Maximum sensor reading range considered as normal. In case of a CO2 sensor this value is upper value for moderate concentration level. Concentration above this level is treated as critical. |
 | `displayUnitCode`  | String  | Unit code (eg. °C) to be used when showing readings. |
@@ -2613,7 +2613,7 @@ Returns data for a specific sensor matching ID.
         "type": "co2",
         "externalId": "abcd1234efgh",
         "status": "Online",
-        "distributor": "Sensor manufacturer",
+        "distributor": "sensorApiIntegration",
         "name": "Co2 Sensor 1",
         "description": "Co2 Sensor for Room 1",
         "minRange": 1000,
@@ -2646,7 +2646,7 @@ This endpoint is used to add a new sensor.
 | `status`           | String  | No        | Sensor status. `Online`, `Offline`, or `Unavailable`. |
 | `name`             | String  | No        | Sensor name. |
 | `description`      | String  | No        | Sensor description. |
-| `distributor`      | String  | No        | Sensor manufacturer name. |
+| `distributor`      | String  | No        | Distributor the sensor belongs to. Must be one of `sensorApiIntegration`, `qSys`, or `haltian`. If omitted, or set to a value other than these, it defaults to `sensorApiIntegration`. |
 | `minRange`         | Number  | No        | Minimum sensor reading range considered as normal. In case of a CO2 sensor this value is upper limit for the normal concentration. |
 | `maxRange`         | Number  | No        | Maximum sensor reading range considered as normal. In case of a CO2 sensor this value is upper value for moderate concentration level. Concentration above this level is treated as critical. |
 | `displayUnitCode`  | String  | No        |  Unit code (eg. °C) to be used when showing readings. |
@@ -2661,7 +2661,7 @@ This endpoint is used to add a new sensor.
             type: "temperature",
             externalId: "temperature1",
             status: "Online",
-            distributor: "Humly sensor integration",
+            distributor: "sensorApiIntegration",
             name: "Temperature 1",
             minRange: 20,
             maxRange: 24,
@@ -2692,7 +2692,7 @@ This endpoint is used to add a new sensor.
         "type": "temperature",
         "externalId": "temperature1",
         "status": "Online",
-        "distributor": "Humly sensor integration",
+        "distributor": "sensorApiIntegration",
         "name": "Temperature 1",
         "displayUnitCode": "°C",
         "displayUnit": "Celsius",
@@ -2723,6 +2723,8 @@ This endpoint is used to add a new sensor.
 ### <a name="patchSensor"></a> Update sensor data `PATCH {API_URL}/sensors/:id`
 
 The `:id` parameter represents the unique identifier (`_id`) of the sensor. This endpoint allows you to update any of the sensor's properties. Properties not included in the request body will remain unchanged in the database. The properties available for update are the same as those described in the [Create sensor section](#createNewSensor) section. The expected response format is also identical to that of the creation endpoint.
+
+This includes the `distributor` property: you can reassign a sensor to a different distributor by sending a new `distributor` value. It follows the same rules as on creation — it must be one of `sensorApiIntegration`, `qSys`, or `haltian`, and any other value defaults to `sensorApiIntegration`. Reassigning a sensor enables the target distributor's integration. Omitting `distributor` from the request leaves the sensor's current distributor unchanged.
 
 ### <a name="deleteSensor"></a> Delete sensor `DELETE {API_URL}/sensors/:id`
 
@@ -2901,7 +2903,7 @@ If the sensor already exists in the database, you only need to provide the `sens
 | `externalId`       | String  | Conditional | Sensor external identifier. Must to be provided if `sensorId` is omitted. |
 | `status`           | String  | No        | Sensor status. `Online`, `Offline`, or `Unavailable`. |
 | `name`             | String  | No        | Sensor name. |
-| `distributor`      | String  | No        | Sensor manufacturer name. |
+| `distributor`      | String  | No        | Distributor the sensor belongs to. Must be one of `sensorApiIntegration`, `qSys`, or `haltian`. If omitted, or set to a value other than these, it defaults to `sensorApiIntegration`. |
 | `minRange`         | Number  | No        | Minimum sensor reading range considered as normal. In case of a CO2 sensor this value is upper limit for the normal concentration. |
 | `maxRange`         | Number  | No        | Maximum sensor reading range considered as normal. In case of a CO2 sensor this value is upper value for moderate concentration level. Concentration above this level is treated as critical. |
 | `displayUnitCode`  | String  | No        | Unit code (eg. °C) to be used when showing readings. |
@@ -2918,7 +2920,7 @@ If the sensor already exists in the database, you only need to provide the `sens
             type: "temperature",
             externalId: "temperature1",
             status: "Online",
-            distributor: "Humly sensor integration",
+            distributor: "sensorApiIntegration",
             name: "Temperature 1",
             minRange: 20,
             maxRange: 24,
