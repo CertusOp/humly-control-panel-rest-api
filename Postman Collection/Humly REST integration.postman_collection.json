@@ -107,6 +107,7 @@
 											"  postman.setEnvironmentVariable(\"parkingSpaceId\", \"\");\r",
 											"  postman.setEnvironmentVariable(\"sensorId\", \"\");\r",
 											"  postman.setEnvironmentVariable(\"sensorReadingId\", \"\");\r",
+											"  postman.setEnvironmentVariable(\"userId\", \"\");\r",
 											"}"
 										],
 										"type": "text/javascript"
@@ -1052,7 +1053,7 @@
 										{
 											"key": "status",
 											"value": "",
-											"description": "{string} accpted: available, busy, all; default: all",
+											"description": "{string} accepted: available, busy, all; default: all",
 											"disabled": true
 										},
 										{
@@ -2003,7 +2004,7 @@
 										{
 											"key": "distributor",
 											"value": "",
-											"description": "(string) Manifacturer of the sensor.",
+											"description": "(string) Manufacturer of the sensor.",
 											"type": "text",
 											"disabled": true
 										},
@@ -2121,7 +2122,7 @@
 										{
 											"key": "distributor",
 											"value": "",
-											"description": "(string) Manifacturer of the sensor.",
+											"description": "(string) Manufacturer of the sensor.",
 											"type": "text",
 											"disabled": true
 										},
@@ -2440,7 +2441,7 @@
 										{
 											"key": "distributor",
 											"value": "",
-											"description": "(string) Manifacturer of the sensor.",
+											"description": "(string) Manufacturer of the sensor.",
 											"type": "text",
 											"disabled": true
 										},
@@ -2624,7 +2625,7 @@
 										{
 											"key": "building",
 											"value": "",
-											"description": "(string) Buliding name",
+											"description": "(string) Building name",
 											"disabled": true
 										},
 										{
@@ -2906,7 +2907,415 @@
 					]
 				},
 				{
-					"name": "Visitors Screans",
+					"name": "Users",
+					"item": [
+						{
+							"name": "All Users",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"description": "(string)",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"description": "(string)",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/users",
+									"protocol": "https",
+									"host": [
+										"{{serverAddress}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"users"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "",
+											"description": "(string) Search for any part of the user's name. Case insensitive. Diacritics insensitive.",
+											"disabled": true
+										},
+										{
+											"key": "pageNumber",
+											"value": "",
+											"description": "{number} default: 1",
+											"disabled": true
+										},
+										{
+											"key": "pageSize",
+											"value": "",
+											"description": "{number} default: 10",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "",
+											"description": "{object} { \"any.property\": \"desc/asc\", \"any.property\": \"desc/asc\" }; default: { \"name\": \"asc\" }",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get User",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"if (pm.response.status === \"Created\") {",
+											"    var jsonData = JSON.parse(responseBody);",
+											"    postman.setEnvironmentVariable(\"userId\", jsonData.data._id);",
+											"}",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"description": "(string)",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"description": "(string)",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/users/{{userId}}",
+									"protocol": "https",
+									"host": [
+										"{{serverAddress}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"{{userId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create User",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"if (pm.response.status === \"Created\") {",
+											"    var jsonData = JSON.parse(responseBody);",
+											"    postman.setEnvironmentVariable(\"userId\", jsonData.data._id);",
+											"}",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"description": "(string)",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"description": "(string)",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "name",
+											"value": "",
+											"description": "(string) Full name; *mandatory",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "email",
+											"value": "",
+											"description": "(string) User's email address; *mandatory. Case insensitive. Must be unique.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "type",
+											"value": "",
+											"description": "(string) User type; *mandatory. Allowed values: User, Guest.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "rfid",
+											"value": "",
+											"description": "(string) RFID code of user's card.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "pin",
+											"value": "",
+											"description": "(string) User's PIN code. Only numbers are allowed. Length is defined in the global settings. Default PIN code will be generated if omitted.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "description",
+											"value": "",
+											"description": "(string) Additional description.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "organization",
+											"value": "",
+											"description": "(string) Organization name.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "phoneNumber",
+											"value": "",
+											"description": "(string) User's phone number. Allowed characters: numbers 0-9, space, and .()+-.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "language",
+											"value": "",
+											"description": "(string) User's preferred language. ISO 639-1 or ISO 3166-1 alpha-2 language code.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "licensePlates",
+											"value": "",
+											"description": "(string) User's vehicle license plates. List of comma separated values.",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/users",
+									"protocol": "https",
+									"host": [
+										"{{serverAddress}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update User",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"if (pm.response.status === \"Created\") {",
+											"    var jsonData = JSON.parse(responseBody);",
+											"    postman.setEnvironmentVariable(\"userId\", jsonData.data._id);",
+											"}",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"description": "(string)",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"description": "(string)",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "name",
+											"value": "",
+											"description": "(string) Full name; *mandatory",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "rfid",
+											"value": "",
+											"description": "(string) RFID code of user's card.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "pin",
+											"value": "",
+											"description": "(string) User's PIN code. Only numbers are allowed. Length is defined in the global settings. Default PIN code will be generated if omitted.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "description",
+											"value": "",
+											"description": "(string) Additional description.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "organization",
+											"value": "",
+											"description": "(string) Organization name.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "phoneNumber",
+											"value": "",
+											"description": "(string) User's phone number. Allowed characters: numbers 0-9, space, and .()+-.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "language",
+											"value": "",
+											"description": "(string) User's preferred language. ISO 639-1 or ISO 3166-1 alpha-2 language code.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "licensePlates",
+											"value": "",
+											"description": "(string) User's vehicle license plates. List of comma separated values.",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/users/{{userId}}",
+									"protocol": "https",
+									"host": [
+										"{{serverAddress}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"{{userId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete User",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"if (pm.response.status === \"OK\") {",
+											"    postman.setEnvironmentVariable(\"userId\", \"\");",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "X-User-Id",
+										"value": "{{XUserId}}",
+										"type": "text"
+									},
+									{
+										"key": "X-Auth-Token",
+										"value": "{{XAuthToken}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://{{serverAddress}}:{{port}}/api/v1/users/{{userId}}",
+									"protocol": "https",
+									"host": [
+										"{{serverAddress}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"{{userId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Visitors Screens",
 					"item": [
 						{
 							"name": "Visitor Screen Configuration Copy",
@@ -3439,7 +3848,7 @@
 										{
 											"key": "includeResourceData",
 											"value": null,
-											"description": "{boolena} should include resources data; allowed values [true, false]; default false"
+											"description": "{boolean} should include resources data; allowed values [true, false]; default false"
 										},
 										{
 											"key": "includePhoneBoothResources",
