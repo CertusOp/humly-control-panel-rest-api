@@ -2004,7 +2004,7 @@
 										{
 											"key": "distributor",
 											"value": "",
-											"description": "(string) Manufacturer of the sensor.",
+											"description": "(string) Distributor the sensor belongs to. Must be one of sensorApiIntegration, qSys, or haltian. If omitted, or set to a value other than these, it defaults to sensorApiIntegration.",
 											"type": "text",
 											"disabled": true
 										},
@@ -2122,7 +2122,7 @@
 										{
 											"key": "distributor",
 											"value": "",
-											"description": "(string) Manufacturer of the sensor.",
+											"description": "(string) Distributor the sensor belongs to. Must be one of sensorApiIntegration, qSys, or haltian. If omitted, or set to a value other than these, it defaults to sensorApiIntegration.",
 											"type": "text",
 											"disabled": true
 										},
@@ -2441,7 +2441,7 @@
 										{
 											"key": "distributor",
 											"value": "",
-											"description": "(string) Manufacturer of the sensor.",
+											"description": "(string) Distributor the sensor belongs to. Must be one of sensorApiIntegration, qSys, or haltian. If omitted, or set to a value other than these, it defaults to sensorApiIntegration.",
 											"type": "text",
 											"disabled": true
 										},
