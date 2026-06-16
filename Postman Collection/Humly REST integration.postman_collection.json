@@ -3095,7 +3095,7 @@
 										{
 											"key": "pin",
 											"value": "",
-											"description": "(string) User's PIN code. Only numbers are allowed. Length is defined in the global settings. Default PIN code will be generated if omitted.",
+											"description": "(string) User's PIN code. Only numbers are allowed. Length is defined in the global settings. Must be unique across users. Default PIN code will be generated if omitted.",
 											"type": "text",
 											"disabled": true
 										},
@@ -3131,6 +3131,13 @@
 											"key": "licensePlates",
 											"value": "",
 											"description": "(string) User's vehicle license plates. List of comma separated values.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "groupSsoEnabled",
+											"value": "",
+											"description": "(boolean) When true, creates an SSO-only user: no password is generated and no welcome email is sent. The user signs in exclusively via SSO and the login binds to this account by email. Defaults to false. Cannot be set on update.",
 											"type": "text",
 											"disabled": true
 										}
@@ -3208,7 +3215,7 @@
 										{
 											"key": "pin",
 											"value": "",
-											"description": "(string) User's PIN code. Only numbers are allowed. Length is defined in the global settings. Default PIN code will be generated if omitted.",
+											"description": "(string) User's PIN code. Only numbers are allowed. Length is defined in the global settings. Must be unique across users.",
 											"type": "text",
 											"disabled": true
 										},

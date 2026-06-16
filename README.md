@@ -3485,22 +3485,23 @@ Supported actions:
 
 ### <a name="createUser"></a> Create new user `POST {API_URL}/users`
 
-This endpoint is used to add a new user. Upon creation, the generated password is sent to the user's email address.
+This endpoint is used to add a new user. Upon creation, the generated password is sent to the user's email address, unless the user is created as an SSO-only user (see `groupSsoEnabled` below).
 
 ### Parameters
 
-| Name             | Type    | Mandatory | Comment |
-| ---------------- | ------- | --------- | ------- |
-| `name`           | String  | Yes       | User's full name. |
-| `email`          | String  | Yes       | User's email address. Case insensitive. Must be unique. Also used as the username. |
-| `type`           | String  | Yes       | User type. Allowed values: `User`, `Guest`. |
-| `rfid`           | String  | No        | RFID code of the user's card. |
-| `pin`            | String  | No        | User's PIN code. Only numbers are allowed. Length is defined in the global settings. A default PIN code will be generated if omitted. |
-| `description`    | String  | No        | Additional description. |
-| `organization`   | String  | No        | Organization name. |
-| `phoneNumber`    | String  | No        | User's phone number. Allowed characters: numbers 0-9, space, and `.()+-`. |
-| `language`       | String  | No        | User's preferred language. ISO 639-1 or ISO 3166-1 alpha-2 language code. |
-| `licensePlates`  | String  | No        | User's vehicle license plates. List of comma separated values. |
+| Name              | Type    | Mandatory | Comment |
+| ----------------- | ------- | --------- | ------- |
+| `name`            | String  | Yes       | User's full name. |
+| `email`           | String  | Yes       | User's email address. Case insensitive. Must be unique. Also used as the username. |
+| `type`            | String  | Yes       | User type. Allowed values: `User`, `Guest`. |
+| `rfid`            | String  | No        | RFID code of the user's card. |
+| `pin`             | String  | No        | User's PIN code. Only numbers are allowed. Length is defined in the global settings. Must be unique across users. A default PIN code will be generated if omitted. |
+| `description`     | String  | No        | Additional description. |
+| `organization`    | String  | No        | Organization name. |
+| `phoneNumber`     | String  | No        | User's phone number. Allowed characters: numbers 0-9, space, and `.()+-`. |
+| `language`        | String  | No        | User's preferred language. ISO 639-1 or ISO 3166-1 alpha-2 language code. |
+| `licensePlates`   | String  | No        | User's vehicle license plates. List of comma separated values. |
+| `groupSsoEnabled` | Boolean | No        | When `true`, creates an SSO-only user: no password is generated and no welcome email is sent. The user signs in exclusively via SSO, and the SSO login binds to this account by email instead of creating a duplicate. Defaults to `false`. Cannot be set through the update endpoint. |
 
 ### Request example
 
@@ -3578,7 +3579,16 @@ This endpoint is used to add a new user. Upon creation, the generated password i
   "responseStatus": 400,
   "responseData": {
     "status": "error",
-    "message": "A user with the provided email already exists"
+    "message": "Email already exist in the database"
+  }
+}
+
+// PIN already assigned to another user
+{
+  "responseStatus": 400,
+  "responseData": {
+    "status": "error",
+    "message": "The PIN you entered is already assigned to another user."
   }
 }
 ```
