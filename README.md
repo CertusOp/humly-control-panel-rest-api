@@ -3433,7 +3433,7 @@ export default class UsersResource {
 | `profile`                     | Object  | Object that contains the user profile data. |
 | `profile.name`               | String  | User's full name. |
 | `profile.normalizedName`     | String  | Normalized (lowercase, diacritics removed) version of the name used for searching. |
-| `profile.type`               | String  | User type. `User`, `Guest`, or `Global Admin`. |
+| `profile.type`               | String  | User type. One of `User`, `Guest`, `Admin`, `LocalAdmin`, `StatisticsUser`, `VisitorAdmin`, `HospitalityManager`. |
 | `profile.description`        | String  | Additional description. |
 | `profile.organization`       | String  | Organization name. |
 | `profile.phoneNumber`        | String  | User's phone number. |
@@ -3495,14 +3495,14 @@ This endpoint is used to add a new user. Upon creation, the generated password i
 | ----------------- | ------- | --------- | ------- |
 | `name`            | String  | Yes       | User's full name. |
 | `email`           | String  | Yes       | User's email address. Case insensitive. Must be unique. Also used as the username. |
-| `type`            | String  | Yes       | User type. Allowed values: `User`, `Guest`. |
+| `type`            | String  | Yes       | User type. Allowed values: `User`, `Guest`, `Admin`, `LocalAdmin`, `StatisticsUser`, `VisitorAdmin`, `HospitalityManager`. |
 | `rfid`            | String  | No        | RFID code of the user's card. |
 | `pin`             | String  | No        | User's PIN code. Only numbers are allowed. Length is defined in the global settings. Must be unique across users. A default PIN code will be generated if omitted. |
 | `description`     | String  | No        | Additional description. |
 | `organization`    | String  | No        | Organization name. |
 | `phoneNumber`     | String  | No        | User's phone number. Allowed characters: numbers 0-9, space, and `.()+-`. |
 | `language`        | String  | No        | User's preferred language. ISO 639-1 or ISO 3166-1 alpha-2 language code. |
-| `licensePlates`   | String  | No        | User's vehicle license plates. List of comma separated values. |
+| `licensePlates`   | Array or String | No | User's vehicle license plates. Accepts an array of strings, or a string of comma- or semicolon-separated values. |
 | `groupSsoEnabled` | Boolean | No        | When `true`, creates an SSO-only user: no password is generated and no welcome email is sent. The user signs in exclusively via SSO, and the SSO login binds to this account by email instead of creating a duplicate. Defaults to `false`. Cannot be set through the update endpoint. |
 
 ### Request example
