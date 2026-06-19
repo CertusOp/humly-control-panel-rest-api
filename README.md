@@ -3599,7 +3599,13 @@ This endpoint is used to add a new user. Upon creation, the generated password i
 
 The `:id` parameter represents the unique identifier (`_id`) of the user. This endpoint allows you to update the user's properties. Properties not included in the request body will remain unchanged in the database.
 
-> 👉 **Note!** The `email` and `type` properties cannot be changed through this endpoint. The properties available for update are `name`, `rfid`, `pin`, `description`, `organization`, `phoneNumber`, `language`, and `licensePlates`, as described in the [Create user section](#createUser). The expected response format is also identical to that of the creation endpoint.
+> 👉 **Note!** The `email` property cannot be changed through this endpoint. If an `email` value is sent, it is ignored and the existing email is kept. The properties available for update are `name`, `type`, `rfid`, `pin`, `description`, `organization`, `phoneNumber`, `language`, and `licensePlates`, as described in the [Create user section](#createUser). The `groupSsoEnabled` flag cannot be changed through this endpoint. The expected response format is also identical to that of the creation endpoint.
+
+> 👉 **Note!** Changing the `type` property is subject to the following restrictions. A `400`, `401`, or `403` error is returned when the restriction is not met:
+> - Only a `Global Admin` can change another user's type.
+> - You cannot change your own user type.
+> - The type of an SSO user (created with `groupSsoEnabled: true`) cannot be changed.
+> - The type cannot be changed to or from `Guest`.
 
 ### Request example
 
@@ -3622,6 +3628,37 @@ The `:id` parameter represents the unique identifier (`_id`) of the user. This e
         });
     }
 
+```
+
+### Error response example
+
+```json
+// Attempting to change the type of an SSO user
+{
+  "responseStatus": 400,
+  "responseData": {
+    "status": "error",
+    "message": "You cannot change the user type of an SSO user!"
+  }
+}
+
+// Attempting to change your own user type
+{
+  "responseStatus": 401,
+  "responseData": {
+    "status": "error",
+    "message": "You cannot change your user type!"
+  }
+}
+
+// Attempting to change a type to or from Guest
+{
+  "responseStatus": 400,
+  "responseData": {
+    "status": "error",
+    "message": "You cannot change user type to/from Guest!"
+  }
+}
 ```
 
 ### <a name="deleteUser"></a> Delete user `DELETE {API_URL}/users/:id`
