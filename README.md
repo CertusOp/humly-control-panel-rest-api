@@ -18,6 +18,12 @@ API documentation for Humly Control Panel version: `v1.0.x`
 - [Working with sensors - `{API_URL}/sensors`](#sensors)
 - [Managing sensor readings - `{API_URL}/sensor-readings`](#sensorReadings)
 - [Get visitor screens - `{{API_URL}/visitor-screens}`](#getVisitorScreens)
+- [Working with users - `{API_URL}/users`](#users)
+  - [Fetch data for multiple users – `GET {API_URL}/users`](#getAllUsers)
+  - [Fetch a specific user by ID – `GET {API_URL}/users/:id`](#getOneUser)
+  - [Create new user – `POST {API_URL}/users`](#createUser)
+  - [Update user data – `PATCH {API_URL}/users/:id`](#updateUser)
+  - [Delete user – `DELETE {API_URL}/users/:id`](#deleteUser)
 
 ## <a name="introduction"></a> Introduction
 
@@ -3193,3 +3199,502 @@ getVisitorScreens(userId, authToken, queryParams) {
 | `address.mapLinks.google`                                              | String\|Null | Google Maps link                                   |
 | `address.mapLinks.apple`                                               | String\|Null | Apple Maps link                                    |
 | `timeFormat`                                                           | String       | Time display format (e.g., `HH:mm`)                |
+
+## <a name="users"></a> Working with users - <sub>`{API_URL}/users`</sub>
+
+The `/users` route provides a collection of endpoints for managing user accounts. You can perform the following operations:
+
+- Retrieve user data using various query options
+- Create, update, and delete users
+
+> 👉 **Note!** These endpoints manage user accounts and require elevated privileges. Use an account with the `Global Admin` profile type, as described in the [authentication section](#authentication).
+
+### Retrieve user data
+
+You can retrieve user information by performing one of the following actions:
+- Fetch data for multiple users: [`GET {API_URL}/users`](#getAllUsers)
+- Fetch data for a specific user by ID: [`GET {API_URL}/users/:id`](#getOneUser)
+
+### <a name="getAllUsers"></a> Fetch data for multiple users `GET {API_URL}/users`
+
+This endpoint returns paginated data for multiple users. It supports filtering by `name`. You can control pagination using the `pageNumber` and `pageSize` query parameters, and apply sorting by passing a stringified sort object as a query parameter.
+
+#### Query Parameters
+
+The `name` parameter is required unless the logged-in user is a `Global Admin`. For any other user type, the `name` parameter must be provided. All other query parameters are optional.
+
+| Name               | Type    | Comment |
+| ------------------ | ------- | ------- |
+| `name`             | String  | Search for any part of the user's name. Case insensitive. Diacritics insensitive. Required if the logged-in user's type is different than `Global Admin`. |
+| `pageNumber`       | Number  | The page number to return, starting from 1. Default is 1. |
+| `pageSize`         | Number  | The number of documents to return per page. The final page may contain fewer results. Default is 10. |
+| `sort`             | Object  | A stringified JSON object specifying sorting rules. Format: <br>`{`<br>`  "any.property": "asc/desc",`<br>`  "any.property": "asc/desc"`<br>`}`<br>Default is `{ "name": "asc" }`. |
+
+### Request example
+
+Following example is provided for REACT applications.
+You can create Users Resource file to communicate with REST API.
+
+```js
+import Axios from "axios";
+
+import RequestError from "./requestError";
+
+export default class UsersResource {
+    constructor() {
+        this.CLOUD_ID = "00000"; // Your 5 digit Humly cloud ID.
+        this.API_URL = `https://${this.CLOUD_ID}.humly.cloud/api/v1`;
+    }
+
+    getAllUsers(userId, authToken, queryParams) {
+        const requestOptions = {
+            headers: {
+                "X-User-Id": userId,
+                "X-Auth-Token": authToken,
+            },
+            params: {
+                name: queryParams.name,
+                pageNumber: queryParams.pageNumber,
+                pageSize: queryParams.pageSize,
+                sort: queryParams.sort,
+            },
+        };
+
+        return Axios.get(
+            `${this.API_URL}/users`,
+            requestOptions
+        ).then(response => (
+            { responseStatus: response.status, responseData: response.data }
+        )).catch((error) => {
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
+        });
+    }
+
+    getUser(userId, authToken, uniqueUserIdentifier) {
+        const requestOptions = {
+            headers: {
+                "Content-Type": "application/json",
+                "X-User-Id": userId,
+                "X-Auth-Token": authToken,
+            },
+        };
+
+        return Axios.get(
+            `${this.API_URL}/users/${uniqueUserIdentifier}`,
+            requestOptions
+        ).then(response => (
+            { responseStatus: response.status, responseData: response.data }
+        )).catch((error) => {
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
+        });
+    }
+
+    createUser(userId, authToken, userData) {
+        const requestOptions = {
+            headers: {
+                "Content-Type": "application/json",
+                "X-User-Id": userId,
+                "X-Auth-Token": authToken,
+            },
+        };
+
+        return Axios.post(
+            `${this.API_URL}/users`,
+            userData,
+            requestOptions
+        ).then(response => (
+            { responseStatus: response.status, responseData: response.data }
+        )).catch((error) => {
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
+        });
+    }
+
+    updateUser(userId, authToken, uniqueUserIdentifier, userData) {
+        const requestOptions = {
+            headers: {
+                "Content-Type": "application/json",
+                "X-User-Id": userId,
+                "X-Auth-Token": authToken,
+            },
+        };
+
+        return Axios.patch(
+            `${this.API_URL}/users/${uniqueUserIdentifier}`,
+            userData,
+            requestOptions
+        ).then(response => (
+            { responseStatus: response.status, responseData: response.data }
+        )).catch((error) => {
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
+        });
+    }
+
+    deleteUser(userId, authToken, uniqueUserIdentifier) {
+        const requestOptions = {
+            headers: {
+                "X-User-Id": userId,
+                "X-Auth-Token": authToken,
+            },
+        };
+
+        return Axios.delete(
+            `${this.API_URL}/users/${uniqueUserIdentifier}`,
+            requestOptions
+        ).then(response => (
+            { responseStatus: response.status, responseData: response.data }
+        )).catch((error) => {
+            throw new RequestError(
+                error.response.data.message,
+                error.response.status,
+                error.response.data
+            );
+        });
+    }
+}
+
+```
+
+### Response example
+
+```json
+{
+  "responseStatus": 200,
+  "responseData": {
+    "status": "success",
+    "data": [
+        {
+            "_id": "EucMas2KSnMkFkngS",
+            "createdAt": "2026-06-08T11:12:15.301Z",
+            "username": "john.doe@example.com",
+            "emails": [
+                {
+                    "address": "john.doe@example.com",
+                    "verified": false
+                }
+            ],
+            "profile": {
+                "name": "John Doe",
+                "normalizedName": "john doe",
+                "type": "User",
+                "description": "",
+                "organization": "",
+                "phoneNumber": "",
+                "licensePlates": [],
+                "language": "en",
+                "calendarWeekStartDay": "Monday"
+            }
+        }
+    ],
+    "page": {
+        "first": true,
+        "last": true,
+        "size": 10,
+        "totalElements": 1,
+        "totalPages": 1,
+        "number": 1,
+        "numberOfElements": 1
+    },
+    "sort": [
+        {
+            "property": "name",
+            "direction": "ASC"
+        }
+    ]
+  }
+}
+```
+
+### Type of response data
+
+| Name                          | Type    | Comment |
+| ----------------------------- | ------- | ------- |
+| `responseStatus`              | Number  | Status of HTTP/HTTPS request. |
+| `status`                      | String  | Status of API response. Can have values: success or error. |
+| `_id`                         | String  | User document unique identifier. |
+| `createdAt`                   | String  | Date and time when the user was created, in ISO 8601 format. |
+| `username`                    | String  | Username used to log in. Equals the user's email address. |
+| `emails`                      | Array   | Array of Objects. Email addresses associated with the user. Each object contains `address` (String) and `verified` (Boolean). |
+| `profile`                     | Object  | Object that contains the user profile data. |
+| `profile.name`               | String  | User's full name. |
+| `profile.normalizedName`     | String  | Normalized (lowercase, diacritics removed) version of the name used for searching. |
+| `profile.type`               | String  | User type. One of `User`, `Guest`, `Admin`, `LocalAdmin`, `StatisticsUser`, `VisitorAdmin`, `HospitalityManager`. |
+| `profile.description`        | String  | Additional description. |
+| `profile.organization`       | String  | Organization name. |
+| `profile.phoneNumber`        | String  | User's phone number. |
+| `profile.licensePlates`      | Array   | Array of Strings. User's vehicle license plates. |
+| `profile.language`           | String  | User's preferred language. ISO 639-1 or ISO 3166-1 alpha-2 language code. |
+| `profile.calendarWeekStartDay` | String | First day of the week used in the user's calendar. |
+
+### <a name="getOneUser"></a> Fetch a specific user by ID `GET {API_URL}/users/:id`
+
+Returns data for a specific user matching the ID. The `:id` parameter represents the unique identifier (`_id`) of the user.
+
+### Response example
+
+```json
+{
+  "responseStatus": 200,
+  "responseData": {
+    "status": "success",
+    "data": {
+        "_id": "EucMas2KSnMkFkngS",
+        "createdAt": "2026-06-08T11:12:15.301Z",
+        "username": "john.doe@example.com",
+        "emails": [
+            {
+                "address": "john.doe@example.com",
+                "verified": false
+            }
+        ],
+        "profile": {
+            "name": "John Doe",
+            "normalizedName": "john doe",
+            "type": "User",
+            "description": "",
+            "organization": "",
+            "phoneNumber": "",
+            "licensePlates": [],
+            "language": "en",
+            "calendarWeekStartDay": "Monday"
+        }
+    }
+  }
+}
+```
+
+### Create, update, and delete users
+
+Supported actions:
+- Create new user: [`POST {API_URL}/users`](#createUser)
+- Update user data: [`PATCH {API_URL}/users/:id`](#updateUser)
+- Delete user: [`DELETE {API_URL}/users/:id`](#deleteUser)
+
+### <a name="createUser"></a> Create new user `POST {API_URL}/users`
+
+This endpoint is used to add a new user. Upon creation, the generated password is sent to the user's email address, unless the user is created as an SSO-only user (see `groupSsoEnabled` below).
+
+### Parameters
+
+| Name              | Type    | Mandatory | Comment |
+| ----------------- | ------- | --------- | ------- |
+| `name`            | String  | Yes       | User's full name. |
+| `email`           | String  | Yes       | User's email address. Case insensitive. Must be unique. Also used as the username. |
+| `type`            | String  | Yes       | User type. Allowed values: `User`, `Guest`, `Admin`, `LocalAdmin`, `StatisticsUser`, `VisitorAdmin`, `HospitalityManager`. |
+| `rfid`            | String  | No        | RFID code of the user's card. |
+| `pin`             | String  | No        | User's PIN code. Only numbers are allowed. Length is defined in the global settings. Must be unique across users. A default PIN code will be generated if omitted. |
+| `description`     | String  | No        | Additional description. |
+| `organization`    | String  | No        | Organization name. |
+| `phoneNumber`     | String  | No        | User's phone number. Allowed characters: numbers 0-9, space, and `.()+-`. |
+| `language`        | String  | No        | User's preferred language. ISO 639-1 or ISO 3166-1 alpha-2 language code. |
+| `licensePlates`   | Array or String | No | User's vehicle license plates. Accepts an array of strings, or a string of comma- or semicolon-separated values. |
+| `groupSsoEnabled` | Boolean | No        | When `true`, creates an SSO-only user: no password is generated and no welcome email is sent. The user signs in exclusively via SSO, and the SSO login binds to this account by email instead of creating a duplicate. Defaults to `false`. Cannot be set through the update endpoint. |
+
+### Request example
+
+```js
+    createUser() {
+        const userData = {
+            name: "John Doe",
+            email: "john.doe@example.com",
+            type: "User",
+            organization: "Softhouse",
+            phoneNumber: "+46 70 123 45 67",
+            language: "en",
+            licensePlates: "ABC123,XYZ789",
+        };
+        this.usersResource.createUser(
+            "1234abcd5678efgh",
+            "abcdefghijklmnoprstuvzabcdefghijklmnoprstuvz",
+            userData
+        ).then((response) => {
+            console.log("CREATE USER --> response", response);
+        }).catch((error) => {
+            console.log("CREATE USER --> error", error);
+        });
+    }
+
+```
+
+### Response example
+
+```json
+{
+  "responseStatus": 201,
+  "responseData": {
+    "status": "success",
+    "data": {
+        "_id": "EucMas2KSnMkFkngS",
+        "createdAt": "2026-06-08T11:12:15.301Z",
+        "username": "john.doe@example.com",
+        "emails": [
+            {
+                "address": "john.doe@example.com",
+                "verified": false
+            }
+        ],
+        "profile": {
+            "name": "John Doe",
+            "normalizedName": "john doe",
+            "type": "User",
+            "description": "",
+            "organization": "Softhouse",
+            "phoneNumber": "+46 70 123 45 67",
+            "licensePlates": ["ABC123", "XYZ789"],
+            "language": "en",
+            "calendarWeekStartDay": "Monday"
+        }
+    }
+  }
+}
+```
+
+### Error response example
+
+```json
+// Required field is not provided
+{
+  "responseStatus": 400,
+  "responseData": {
+    "status": "error",
+    "message": "Email is required"
+  }
+}
+
+// Email already in use
+{
+  "responseStatus": 400,
+  "responseData": {
+    "status": "error",
+    "message": "Email already exist in the database"
+  }
+}
+
+// PIN already assigned to another user
+{
+  "responseStatus": 400,
+  "responseData": {
+    "status": "error",
+    "message": "The PIN you entered is already assigned to another user."
+  }
+}
+```
+
+### <a name="updateUser"></a> Update user data `PATCH {API_URL}/users/:id`
+
+The `:id` parameter represents the unique identifier (`_id`) of the user. This endpoint allows you to update the user's properties. Properties not included in the request body will remain unchanged in the database.
+
+> 👉 **Note!** The `email` property cannot be changed through this endpoint. If an `email` value is sent, it is ignored and the existing email is kept. The properties available for update are `name`, `type`, `rfid`, `pin`, `description`, `organization`, `phoneNumber`, `language`, and `licensePlates`, as described in the [Create user section](#createUser). The `groupSsoEnabled` flag cannot be changed through this endpoint. The expected response format is also identical to that of the creation endpoint.
+
+> 👉 **Note!** Changing the `type` property is subject to the following restrictions. A `400`, `401`, or `403` error is returned when the restriction is not met:
+> - Only a `Global Admin` can change another user's type.
+> - You cannot change your own user type.
+> - The type of an SSO user (created with `groupSsoEnabled: true`) cannot be changed.
+> - The type cannot be changed to or from `Guest`.
+
+### Request example
+
+```js
+    updateUser() {
+        const userData = {
+            name: "John Doe",
+            organization: "Softhouse",
+            phoneNumber: "+46 70 765 43 21",
+        };
+        this.usersResource.updateUser(
+            "1234abcd5678efgh",
+            "abcdefghijklmnoprstuvzabcdefghijklmnoprstuvz",
+            "EucMas2KSnMkFkngS",
+            userData
+        ).then((response) => {
+            console.log("UPDATE USER --> response", response);
+        }).catch((error) => {
+            console.log("UPDATE USER --> error", error);
+        });
+    }
+
+```
+
+### Error response example
+
+```json
+// Attempting to change the type of an SSO user
+{
+  "responseStatus": 400,
+  "responseData": {
+    "status": "error",
+    "message": "You cannot change the user type of an SSO user!"
+  }
+}
+
+// Attempting to change your own user type
+{
+  "responseStatus": 401,
+  "responseData": {
+    "status": "error",
+    "message": "You cannot change your user type!"
+  }
+}
+
+// Attempting to change a type to or from Guest
+{
+  "responseStatus": 400,
+  "responseData": {
+    "status": "error",
+    "message": "You cannot change user type to/from Guest!"
+  }
+}
+```
+
+### <a name="deleteUser"></a> Delete user `DELETE {API_URL}/users/:id`
+
+To delete a user from the database, send a `DELETE` request to `{API_URL}/users/:id`, where `:id` is the unique identifier (`_id`) of the user.
+
+### Request example
+
+```js
+    deleteUser() {
+        this.usersResource
+            .deleteUser(
+                "1234abcd5678efgh",
+                "abcdefghijklmnoprstuvzabcdefghijklmnoprstuvz",
+                "EucMas2KSnMkFkngS"
+            )
+            .then((response) => {
+                console.log("DELETE USER --> response", response);
+            })
+            .catch((error) => {
+                console.log("DELETE USER --> error", error);
+            });
+    }
+
+```
+
+### Response example
+
+```json
+{
+  "responseStatus": 200,
+  "responseData": {
+    "status": "success",
+    "data": {
+      "message": "User has been deleted!"
+    }
+  }
+}
+```
