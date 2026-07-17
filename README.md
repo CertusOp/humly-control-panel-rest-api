@@ -19,11 +19,6 @@ API documentation for Humly Control Panel version: `v1.0.x`
 - [Managing sensor readings - `{API_URL}/sensor-readings`](#sensorReadings)
 - [Get visitor screens - `{{API_URL}/visitor-screens}`](#getVisitorScreens)
 - [Working with users - `{API_URL}/users`](#users)
-  - [Fetch data for multiple users – `GET {API_URL}/users`](#getAllUsers)
-  - [Fetch a specific user by ID – `GET {API_URL}/users/:id`](#getOneUser)
-  - [Create new user – `POST {API_URL}/users`](#createUser)
-  - [Update user data – `PATCH {API_URL}/users/:id`](#updateUser)
-  - [Delete user – `DELETE {API_URL}/users/:id`](#deleteUser)
 
 ## <a name="introduction"></a> Introduction
 
