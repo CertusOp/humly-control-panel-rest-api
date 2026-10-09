@@ -1717,6 +1717,7 @@ This endpoint is used to get all bookings.
             "userId": "11223344aabbccdd",
             "isGuestUser": false
           },
+          "createdVia": "api",
           "sensitivity": "Normal",
           "isAllDayEvent": false,
           "endType": null,
@@ -1782,6 +1783,7 @@ This endpoint is used to get all bookings.
 | `createdAt`         | String  | Date and time of booking creation.
 | `userId`            | String  | Unique identifier of booking creator if registered in system. |
 | `isGuestUser`       | Boolean | `true` if booking creator is a Guest user. |
+| `createdVia`        | String  | Channel the booking was created through. See [Values of `createdVia`](#createdViaValues). Returned only to a global admin or the booking creator. Missing when the channel is unknown, for example on older bookings. |
 | `endType`           | String  | Description of meeting end event. |
 | `confirmed`         | Boolean | `true` if meeting is checked in. |
 | `subject`           | String  | Meeting subject. |
@@ -1796,6 +1798,26 @@ This endpoint is used to get all bookings.
 | `fetchedOrganizer`  | String  | Organizer fetched from booking system. |
 | `participants`      | Array   | Array of meeting participants. |
 | `attendees`         | Array   | Array of meeting attendees. |
+
+### <a name="createdViaValues"></a> Values of `createdVia`
+
+| Value                        | Comment |
+| ---------------------------- | ------- |
+| `api`                        | Created through this REST API. |
+| `reservations`               | Created in Reservations. |
+| `floorPlan`                  | Created on the floor plan in Reservations. |
+| `floorPlanInteractive`       | Created on the interactive floor plan. |
+| `microsoftTeamsReservations` | Created in Reservations opened in Microsoft Teams. |
+| `microsoftTeamsFloorPlan`    | Created on the floor plan in Reservations opened in Microsoft Teams. |
+| `qr`                         | Created in Reservations opened from a QR code. |
+| `hrm`                        | Created on an HRD1 device. |
+| `hbd`                        | Created on an HBD1 device. |
+| `legacy`                     | Created on a legacy Humly device. |
+| `sensor`                     | Created automatically by Humly Sense. |
+| `externalCalendar`           | Created in the booking system, for example Microsoft 365 or Google Calendar, and synchronized to Humly Control Panel. |
+| `internalCalendar`           | Created by a quick meeting command from Xyte. |
+
+Every occurrence of a recurring booking has the `createdVia` value of its series.
 
 ## <a name="createMeeting"></a> Create a meeting – <sub>`POST {API_URL}/bookings`</sub>
 
@@ -1837,6 +1859,8 @@ This endpoint is used to create a new meeting.
 
 The id is unique identifier of newly created meeting. id refers to _id in bookings endpoint.
 
+A booking created through this endpoint has `createdVia` set to `api`.
+
 ```json
 {
   "responseStatus": 201,
@@ -1863,6 +1887,7 @@ The id is unique identifier of newly created meeting. id refers to _id in bookin
           "userId": "11223344aabbccdd",
           "isGuestUser": false
         },
+        "createdVia": "api",
         "sensitivity": "Normal",
         "endType": null,
         "confirmed": false,
@@ -1960,6 +1985,7 @@ This endpoint is used to update existing meetings. Through it you can update mee
           "name": "HumlyUser",
           "mail": "HumlyUser@humly.com"
         },
+        "createdVia": "api",
         "dateCreated": "2019-09-01T11:55:05+00:00",
         "endType": null,
         "confirmed": false,
