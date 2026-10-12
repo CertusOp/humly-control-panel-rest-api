@@ -1817,7 +1817,7 @@ This endpoint is used to get all bookings.
 | `externalCalendar`           | Created in the booking system, for example Microsoft 365 or Google Calendar, and synchronized to Humly Control Panel. |
 | `internalCalendar`           | Created by a quick meeting command from Xyte. |
 
-Every occurrence of a recurring booking has the `createdVia` value of its series.
+Occurrences created together with their series have the `createdVia` value of the series.
 
 ## <a name="createMeeting"></a> Create a meeting – <sub>`POST {API_URL}/bookings`</sub>
 
