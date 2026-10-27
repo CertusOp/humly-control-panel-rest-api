@@ -2004,7 +2004,7 @@
 										{
 											"key": "distributor",
 											"value": "",
-											"description": "(string) Distributor the sensor belongs to. Must be one of sensorApiIntegration, qSys, or haltian. If omitted, or set to a value other than these, it defaults to sensorApiIntegration.",
+											"description": "(string) Distributor the sensor belongs to. Must be one of sensorApiIntegration, qSys, or haltian. The distributor names Q-SYS and Haltian are stored as qSys and haltian. If omitted, or set to any other value, it defaults to sensorApiIntegration. The request is rejected with 403 while the distributor is disabled.",
 											"type": "text",
 											"disabled": true
 										},
@@ -2122,7 +2122,7 @@
 										{
 											"key": "distributor",
 											"value": "",
-											"description": "(string) Distributor the sensor belongs to. Must be one of sensorApiIntegration, qSys, or haltian. If omitted, or set to a value other than these, it defaults to sensorApiIntegration.",
+											"description": "(string) Distributor the sensor belongs to. Must be one of sensorApiIntegration, qSys, or haltian. The distributor names Q-SYS and Haltian are stored as qSys and haltian. Any other value defaults to sensorApiIntegration. If omitted, the sensor keeps its distributor. The request is rejected with 403 while the current or the new distributor of the sensor is disabled.",
 											"type": "text",
 											"disabled": true
 										},
@@ -2441,7 +2441,7 @@
 										{
 											"key": "distributor",
 											"value": "",
-											"description": "(string) Distributor the sensor belongs to. Must be one of sensorApiIntegration, qSys, or haltian. If omitted, or set to a value other than these, it defaults to sensorApiIntegration.",
+											"description": "(string) Distributor the sensor belongs to. Must be one of sensorApiIntegration, qSys, or haltian. The distributor names Q-SYS and Haltian are stored as qSys and haltian. If omitted for a new sensor, or set to any other value, it defaults to sensorApiIntegration. If omitted for an existing sensor, the sensor keeps its distributor. The request is rejected with 403 while the current or the new distributor of the sensor is disabled.",
 											"type": "text",
 											"disabled": true
 										},

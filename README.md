@@ -2507,6 +2507,8 @@ The `/sensors` route provides a collection of endpoints for managing sensor data
 
 > 👉 **Note!** Adding sensors is optional. You can directly use the [`PUT {API_URL}/sensor-readings`](#addSensorReading) endpoint to create a new sensor and add a reading in a single request.
 
+> 👉 **Note!** An admin enables each distributor (`sensorApiIntegration`, `qSys`, or `haltian`) in Global Settings. While a distributor is disabled, every request that creates, updates, or deletes one of its sensors, or adds or deletes one of its sensor readings, is rejected with `403`. The API never enables a distributor.
+
 ### Retrieve sensor data
 
 You can retrieve sensor information by performing one of the following actions:
@@ -2647,7 +2649,7 @@ This endpoint is used to add a new sensor.
 | `status`           | String  | No        | Sensor status. `Online`, `Offline`, or `Unavailable`. |
 | `name`             | String  | No        | Sensor name. |
 | `description`      | String  | No        | Sensor description. |
-| `distributor`      | String  | No        | Distributor the sensor belongs to. Must be one of `sensorApiIntegration`, `qSys`, or `haltian`. If omitted, or set to a value other than these, it defaults to `sensorApiIntegration`. |
+| `distributor`      | String  | No        | Distributor the sensor belongs to. Must be one of `sensorApiIntegration`, `qSys`, or `haltian`. The distributor names `Q-SYS` and `Haltian` are stored as `qSys` and `haltian`. If omitted, or set to any other value, it defaults to `sensorApiIntegration`. The request is rejected with `403` while the distributor is disabled. |
 | `minRange`         | Number  | No        | Minimum sensor reading range considered as normal. In case of a CO2 sensor this value is upper limit for the normal concentration. |
 | `maxRange`         | Number  | No        | Maximum sensor reading range considered as normal. In case of a CO2 sensor this value is upper value for moderate concentration level. Concentration above this level is treated as critical. |
 | `displayUnitCode`  | String  | No        |  Unit code (eg. °C) to be used when showing readings. |
@@ -2719,17 +2721,28 @@ This endpoint is used to add a new sensor.
     "message": "External ID is required"
   }
 }
+
+// The distributor is disabled in Global Settings
+{
+  "responseStatus": 403,
+  "responseData": {
+    "status": "error",
+    "message": "Q-SYS is not enabled in Global Settings."
+  }
+}
 ```
 
 ### <a name="patchSensor"></a> Update sensor data `PATCH {API_URL}/sensors/:id`
 
 The `:id` parameter represents the unique identifier (`_id`) of the sensor. This endpoint allows you to update any of the sensor's properties. Properties not included in the request body will remain unchanged in the database. The properties available for update are the same as those described in the [Create sensor section](#createNewSensor) section. The expected response format is also identical to that of the creation endpoint.
 
-This includes the `distributor` property: you can reassign a sensor to a different distributor by sending a new `distributor` value. It follows the same rules as on creation — it must be one of `sensorApiIntegration`, `qSys`, or `haltian`, and any other value defaults to `sensorApiIntegration`. Reassigning a sensor enables the target distributor's integration. Omitting `distributor` from the request leaves the sensor's current distributor unchanged.
+This includes the `distributor` property: you can reassign a sensor to a different distributor by sending a new `distributor` value. It follows the same rules as on creation — it must be one of `sensorApiIntegration`, `qSys`, or `haltian`, and any other value defaults to `sensorApiIntegration`. Omitting `distributor` from the request leaves the sensor's current distributor unchanged.
+
+The request is rejected with `403` while the sensor's distributor is disabled. Reassigning a sensor also needs the target distributor to be enabled. The request never enables a distributor.
 
 ### <a name="deleteSensor"></a> Delete sensor `DELETE {API_URL}/sensors/:id`
 
-To delete a sensor from the database, send a `DELETE` request to `{API_URL}/sensors/:id`, where `:id` is the unique identifier (`_id`) of the sensor.
+To delete a sensor from the database, send a `DELETE` request to `{API_URL}/sensors/:id`, where `:id` is the unique identifier (`_id`) of the sensor. The request is rejected with `403` while the sensor's distributor is disabled.
 
 ## <a name="sensorReadings"></a> Managing sensor readings - `{API_URL}/sensor-readings`
 
@@ -2893,6 +2906,7 @@ Supported actions:
 This endpoint is used to add a new sensor reading. If no reading exists for the current day (based on the UTC time zone), a new document will be created. Otherwise, the reading will be appended to the existing readings array for that day.
 If the sensor does not already exist, this endpoint will automatically create it. In that case, you must provide the basic sensor information: `type`, `externalId`, `name`, `status`, and the list of resources the sensor is associated with (`resourceIds`).
 If the sensor already exists in the database, you only need to provide the `sensorId` and a reading `value` to add a new reading.
+The request is rejected with `403` while the sensor's distributor is disabled. If the sensor already exists and the request sends a different `distributor`, the sensor is reassigned to it, and both distributors must be enabled.
 
 ### Parameters
 
@@ -2904,7 +2918,7 @@ If the sensor already exists in the database, you only need to provide the `sens
 | `externalId`       | String  | Conditional | Sensor external identifier. Must to be provided if `sensorId` is omitted. |
 | `status`           | String  | No        | Sensor status. `Online`, `Offline`, or `Unavailable`. |
 | `name`             | String  | No        | Sensor name. |
-| `distributor`      | String  | No        | Distributor the sensor belongs to. Must be one of `sensorApiIntegration`, `qSys`, or `haltian`. If omitted, or set to a value other than these, it defaults to `sensorApiIntegration`. |
+| `distributor`      | String  | No        | Distributor the sensor belongs to. Must be one of `sensorApiIntegration`, `qSys`, or `haltian`. The distributor names `Q-SYS` and `Haltian` are stored as `qSys` and `haltian`. If omitted for a new sensor, or set to any other value, it defaults to `sensorApiIntegration`. If omitted for an existing sensor, the sensor keeps its distributor. |
 | `minRange`         | Number  | No        | Minimum sensor reading range considered as normal. In case of a CO2 sensor this value is upper limit for the normal concentration. |
 | `maxRange`         | Number  | No        | Maximum sensor reading range considered as normal. In case of a CO2 sensor this value is upper value for moderate concentration level. Concentration above this level is treated as critical. |
 | `displayUnitCode`  | String  | No        | Unit code (eg. °C) to be used when showing readings. |
@@ -3007,11 +3021,20 @@ If the sensor already exists in the database, you only need to provide the `sens
     "message": "You must provide externalId or sensorId"
   }
 }
+
+// The distributor is disabled in Global Settings
+{
+  "responseStatus": 403,
+  "responseData": {
+    "status": "error",
+    "message": "Q-SYS is not enabled in Global Settings."
+  }
+}
 ```
 
 ### <a name="deleteSensorReading"></a> Delete sensor reading `DELETE {API_URL}/sensor-readings/:id`
 
-To delete a sensor reading from the database, send a `DELETE` request to `{API_URL}/sensor-readings/:id`, where `:id` is the unique identifier (`_id`) of the sensor reading.
+To delete a sensor reading from the database, send a `DELETE` request to `{API_URL}/sensor-readings/:id`, where `:id` is the unique identifier (`_id`) of the sensor reading. The request is rejected with `403` while the distributor of the reading's sensor is disabled.
 
 
 ## <a name="getVisitorScreens"></a> Get visitor screens – <sub>`GET {API_URL}/visitor-screens`</sub>
