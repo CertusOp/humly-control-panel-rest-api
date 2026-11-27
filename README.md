@@ -3439,6 +3439,7 @@ export default class UsersResource {
                 "description": "",
                 "organization": "",
                 "phoneNumber": "",
+                "phoneCountry": "",
                 "licensePlates": [],
                 "language": "en",
                 "calendarWeekStartDay": "Monday"
@@ -3480,10 +3481,13 @@ export default class UsersResource {
 | `profile.type`               | String  | User type. One of `User`, `Guest`, `Admin`, `LocalAdmin`, `StatisticsUser`, `VisitorAdmin`, `HospitalityManager`. |
 | `profile.description`        | String  | Additional description. |
 | `profile.organization`       | String  | Organization name. |
-| `profile.phoneNumber`        | String  | User's phone number. |
+| `profile.phoneNumber`        | String  | User's phone number. In E.164 format, for example `+46701234567`, when the number has a country/region. A number without a country/region is returned as it was saved. |
+| `profile.phoneCountry`       | String  | ISO 3166-1 alpha-2 code of the phone number's country/region, for example `SE`. Empty or missing when the country/region is unknown. |
 | `profile.licensePlates`      | Array   | Array of Strings. User's vehicle license plates. |
 | `profile.language`           | String  | User's preferred language. ISO 639-1 or ISO 3166-1 alpha-2 language code. |
 | `profile.calendarWeekStartDay` | String | First day of the week used in the user's calendar. |
+
+> 👉 **Note!** When Humly Control Panel starts, it converts each stored phone number that starts with `+`, is valid, and has no country/region to E.164 format, and sets its country/region from the calling code. Other stored numbers, such as numbers in national format, keep the form they were saved in and have no country/region until one is saved for them.
 
 ### <a name="getOneUser"></a> Fetch a specific user by ID `GET {API_URL}/users/:id`
 
@@ -3513,6 +3517,7 @@ Returns data for a specific user matching the ID. The `:id` parameter represents
             "description": "",
             "organization": "",
             "phoneNumber": "",
+            "phoneCountry": "",
             "licensePlates": [],
             "language": "en",
             "calendarWeekStartDay": "Monday"
@@ -3544,7 +3549,8 @@ This endpoint is used to add a new user. Upon creation, the generated password i
 | `pin`             | String  | No        | User's PIN code. Only numbers are allowed. Length is defined in the global settings. Must be unique across users. A default PIN code will be generated if omitted. |
 | `description`     | String  | No        | Additional description. |
 | `organization`    | String  | No        | Organization name. |
-| `phoneNumber`     | String  | No        | User's phone number. Allowed characters: numbers 0-9, space, and `.()+-`. |
+| `phoneNumber`     | String  | No        | User's phone number. Allowed characters: numbers 0-9, space, and `.()+-`. Validated with libphonenumber for the country/region in `phoneCountry`, then stored and returned in E.164 format. For example, `"076-407 00 00"` with `phoneCountry` `"SE"` is stored as `"+46764070000"`. |
+| `phoneCountry`    | String  | No        | ISO 3166-1 alpha-2 code of the phone number's country/region, in capital letters, for example `SE`. Required when `phoneNumber` is in national format. When it is omitted and `phoneNumber` starts with `+`, the country/region is taken from the calling code, so `"+1 416 555 0123"` gets `CA`. |
 | `language`        | String  | No        | User's preferred language. ISO 639-1 or ISO 3166-1 alpha-2 language code. |
 | `licensePlates`   | Array or String | No | User's vehicle license plates. Accepts an array of strings, or a string of comma- or semicolon-separated values. |
 | `groupSsoEnabled` | Boolean | No        | When `true`, creates an SSO-only user: no password is generated and no welcome email is sent. The user signs in exclusively via SSO, and the SSO login binds to this account by email instead of creating a duplicate. Defaults to `false`. Cannot be set through the update endpoint. |
@@ -3559,6 +3565,7 @@ This endpoint is used to add a new user. Upon creation, the generated password i
             type: "User",
             organization: "Softhouse",
             phoneNumber: "+46 70 123 45 67",
+            phoneCountry: "SE",
             language: "en",
             licensePlates: "ABC123,XYZ789",
         };
@@ -3598,7 +3605,8 @@ This endpoint is used to add a new user. Upon creation, the generated password i
             "type": "User",
             "description": "",
             "organization": "Softhouse",
-            "phoneNumber": "+46 70 123 45 67",
+            "phoneNumber": "+46701234567",
+            "phoneCountry": "SE",
             "licensePlates": ["ABC123", "XYZ789"],
             "language": "en",
             "calendarWeekStartDay": "Monday"
@@ -3637,19 +3645,62 @@ This endpoint is used to add a new user. Upon creation, the generated password i
     "message": "The PIN you entered is already assigned to another user."
   }
 }
+
+// phoneNumber without phoneCountry, when the number is in national format or is not a valid "+" number
+{
+  "responseStatus": 400,
+  "responseData": {
+    "status": "error",
+    "message": "Select a country/region for the phone number."
+  }
+}
+
+// phoneCountry without a phone number
+{
+  "responseStatus": 400,
+  "responseData": {
+    "status": "error",
+    "message": "Enter a phone number for the selected country/region."
+  }
+}
+
+// phoneCountry is not a supported country/region code, for example "XX"
+{
+  "responseStatus": 400,
+  "responseData": {
+    "status": "error",
+    "message": "Unsupported country/region."
+  }
+}
+
+// phoneNumber is not valid for phoneCountry, or belongs to another country/region
+{
+  "responseStatus": 400,
+  "responseData": {
+    "status": "error",
+    "message": "Invalid phone number format for the selected country/region."
+  }
+}
 ```
 
 ### <a name="updateUser"></a> Update user data `PATCH {API_URL}/users/:id`
 
 The `:id` parameter represents the unique identifier (`_id`) of the user. This endpoint allows you to update the user's properties. Properties not included in the request body will remain unchanged in the database.
 
-> 👉 **Note!** The `email` property cannot be changed through this endpoint. If an `email` value is sent, it is ignored and the existing email is kept. The properties available for update are `name`, `type`, `rfid`, `pin`, `description`, `organization`, `phoneNumber`, `language`, and `licensePlates`, as described in the [Create user section](#createUser). The `groupSsoEnabled` flag cannot be changed through this endpoint. The expected response format is also identical to that of the creation endpoint.
+> 👉 **Note!** The `email` property cannot be changed through this endpoint. If an `email` value is sent, it is ignored and the existing email is kept. The properties available for update are `name`, `type`, `rfid`, `pin`, `description`, `organization`, `phoneNumber`, `phoneCountry`, `language`, and `licensePlates`, as described in the [Create user section](#createUser). The `groupSsoEnabled` flag cannot be changed through this endpoint. The expected response format is also identical to that of the creation endpoint.
 
 > 👉 **Note!** Changing the `type` property is subject to the following restrictions. A `400`, `401`, or `403` error is returned when the restriction is not met:
 > - Only a `Global Admin` can change another user's type.
 > - You cannot change your own user type.
 > - The type of an SSO user (created with `groupSsoEnabled: true`) cannot be changed.
 > - The type cannot be changed to or from `Guest`.
+
+> 👉 **Note!** The phone fields follow these rules on update. The `400` errors are listed in the [Create user section](#createUser).
+> - A `phoneNumber` in national format sent without `phoneCountry` is read against the stored country/region.
+> - A `phoneNumber` that starts with `+` sent without `phoneCountry` gets the country/region of its calling code, also when another country/region is stored.
+> - An empty `phoneNumber` clears both the phone number and the country/region.
+> - When you update another user and the body does not change the phone fields, the stored phone number is kept as it is.
+> - When you update your own user, the stored phone number is validated on every request. While it has no country/region, for example a number in national format saved without one, the request returns `400` with `Select a country/region for the phone number.`, also when the body does not change the phone fields. To save the update, send `phoneCountry` for the stored number, send a new `phoneNumber`, or clear `phoneNumber`.
 
 ### Request example
 
@@ -3658,7 +3709,8 @@ The `:id` parameter represents the unique identifier (`_id`) of the user. This e
         const userData = {
             name: "John Doe",
             organization: "Softhouse",
-            phoneNumber: "+46 70 765 43 21",
+            phoneNumber: "070-765 43 21",
+            phoneCountry: "SE",
         };
         this.usersResource.updateUser(
             "1234abcd5678efgh",
@@ -3701,6 +3753,15 @@ The `:id` parameter represents the unique identifier (`_id`) of the user. This e
   "responseData": {
     "status": "error",
     "message": "You cannot change user type to/from Guest!"
+  }
+}
+
+// Updating your own user while the stored phone number has no country/region
+{
+  "responseStatus": 400,
+  "responseData": {
+    "status": "error",
+    "message": "Select a country/region for the phone number."
   }
 }
 ```

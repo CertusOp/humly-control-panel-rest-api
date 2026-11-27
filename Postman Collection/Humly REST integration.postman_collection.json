@@ -3116,7 +3116,14 @@
 										{
 											"key": "phoneNumber",
 											"value": "",
-											"description": "(string) User's phone number. Allowed characters: numbers 0-9, space, and .()+-.",
+											"description": "(string) User's phone number. Allowed characters: numbers 0-9, space, and .()+-. Validated for the country/region in phoneCountry and stored in E.164 format.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "phoneCountry",
+											"value": "",
+											"description": "(string) ISO 3166-1 alpha-2 code of the phone number's country/region, for example SE. Required for a phone number in national format. Taken from the calling code when omitted for a number that starts with +.",
 											"type": "text",
 											"disabled": true
 										},
@@ -3236,7 +3243,14 @@
 										{
 											"key": "phoneNumber",
 											"value": "",
-											"description": "(string) User's phone number. Allowed characters: numbers 0-9, space, and .()+-.",
+											"description": "(string) User's phone number. Allowed characters: numbers 0-9, space, and .()+-. Validated for the country/region in phoneCountry and stored in E.164 format.",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "phoneCountry",
+											"value": "",
+											"description": "(string) ISO 3166-1 alpha-2 code of the phone number's country/region, for example SE. Required for a phone number in national format. Taken from the calling code when omitted for a number that starts with +.",
 											"type": "text",
 											"disabled": true
 										},
